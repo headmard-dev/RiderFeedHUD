@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zwift Rider Telemetry HUD</title>
+  <style>
+    :root {
+      --bg-opacity: 0.55;
+      --bg-r: 12;
+      --bg-g: 16;
+      --bg-b: 23;
+      --ui-scale: 1;
+      --hud-bg: rgba(var(--bg-r), var(--bg-g), var(--bg-b), var(--bg-opacity));
+      --border-alpha: calc(var(--bg-opacity) * 0.5);
+      --text-main: #ffffff;
+      --text-muted: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      overflow: hidden;
+      font-size: calc(13px * var(--ui-scale));
+    }
+
+    /* Main HUD Container - Concertinas horizontally with table width */
+    .hud-container {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      width: fit-content;
+      min-width: 300px;
+      max-width: 100%;
+      height: 100%;
+      background: var(--hud-bg);
+      backdrop-filter: blur(calc(var(--bg-opacity) * 8px));
+      border: 1px solid rgba(255, 255, 255, var(--border-alpha));
+      border-radius: 10px;
+      overflow: hidden;
+      transition: background 0.15s ease;
+    }
+
+    /* Row 1: Top Drag & Control Bar (fades out when not hovered) */
+    .control-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 5px 8px;
+      background: rgba(0, 0, 0, 0.82);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      -webkit-app-region: drag;
+      opacity: 0.18;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+    }
+
+    .hud-container:hover .control-bar,
+    .hud-container.palette-open .control-bar {
+      opacity: 1;
+    }
+
+    .status-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 0.80em;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 6px #ef4444;
+    }
+
+    .status-dot.live {
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .status-dot.demo {
+      background: #f59e0b;
+      box-shadow: 0 0 6px #f59e0b;
+    }
+
+    /* Climb & Wheel-Sit Tactical Coach Pill */
+    .climb-coach-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.90em;
+      font-weight: 800;
+      background: rgba(30, 41, 59, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+    .climb-coach-pill.coach-safe {
+      background: rgba(22, 101, 52, 0.88);
+      border-color: #4ade80;
+      color: #ffffff;
+    }
+    .climb-coach-pill.coach-warn {
+      background: rgba(180, 83, 9, 0.92);
+      border-color: #fbbf24;
+      color: #ffffff;
+    }
+    .climb-coach-pill.coach-danger {
+      background: rgba(185, 28, 28, 0.96);
+      border-color: #f87171;
+      color: #ffffff;
+      animation: redCellFlash 0.8s infinite ease-in-out;
+    }
+
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      -webkit-app-region: no-drag;
+      flex-wrap: wrap;
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.75em;
+      font-weight: 700;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .slider-group input[type="range"] {
+      width: 44px;
+      height: 4px;
+      accent-color: #f97316;
+      cursor: pointer;
+    }
+
+    .btn-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.30);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.74em;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-toggle:hover {
+      background: rgba(249, 115, 22, 0.90);
+    }
+
+    .btn-swatch-preview {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      background: rgb(var(--bg-r), var(--bg-g), var(--bg-b));
+      display: inline-block;
+    }
+
+    /* =========================================================================
+       256 PANTONE COLOUR CHART OVERLAY DRAWER
+       ========================================================================= */
+    .pantone-modal {
+      position: absolute;
+      top: 34px;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      background: rgba(10, 14, 22, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      display: none;
+      flex-direction: column;
+      z-index: 25;
+      overflow: hidden;
+      -webkit-app-region: no-drag;
+    }
+
+    .pantone-modal.open {
+      display: flex;
+    }
+
+    .pantone-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pantone-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pantone-title {
+      font-weight: 800;
+      font-size: 0.86em;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .pantone-live-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.78em;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .pantone-live-box {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      border: 1px solid #fff;
+    }
+
+    .pantone-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pantone-grid-wrap {
+      flex: 1;
+      padding: 8px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 transparent;
+    }
+
+    .pantone-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 3px;
+      width: 100%;
+    }
+
+    .pantone-cell {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 24px;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .pantone-cell:hover {
+      transform: scale(1.22);
+      border-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+      z-index: 5;
+    }
+
+    .pantone-cell.selected {
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 1px #f97316, 0 0 8px #f97316;
+      z-index: 4;
+    }
+
+    .pantone-code-strip {
+      background: rgba(255, 255, 255, 0.88);
+      color: #0f172a;
+      font-size: 7px;
+      font-weight: 800;
+      line-height: 1;
+      padding: 1px 2px;
+      text-align: center;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================================================================
+       TABLE & ROW 2 HIGH-CONTRAST WHITE BOLD HEADERS + CONCERTINA BARS
+       ========================================================================= */
+    .table-wrap {
+      position: relative;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -webkit-app-region: no-drag;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      display: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
+      width: max-content;
+    }
+
+    /* Row 2: PURE WHITE EXTRA-BOLD Header Row for Maximum Race Visibility */
+    thead th,
+    #headerRow2 th {
+      position: sticky;
+      top: 0;
+      background: rgba(var(--bg-r), var(--bg-g), var(--bg-b), calc(var(--bg-opacity) + 0.35));
+      color: #ffffff !important;
+      font-size: 0.86em;
+      font-weight: 900 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+      padding: 7px 10px 7px 5px;
+      text-align: right;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.35);
+      border-right: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98), 0 0 8px rgba(0, 0, 0, 0.9);
+    }
+
+    thead th.col-rider {
+      text-align: left;
+      padding-left: 8px;
+    }
+
+    thead th.col-red {
+      text-align: center;
+    }
+
+    thead th.col-collapsed {
+      padding-left: 2px !important;
+      padding-right: 8px !important;
+      color: #cbd5e1 !important;
+    }
+
+    .th-label {
+      display: inline-block;
+      max-width: 100%;
+      color: #ffffff !important;
+      font-weight: 900 !important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98), 0 0 8px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Mouse-Selectable Vertical Bar in Row 2 (Header) */
+    .col-resizer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 9px;
+      cursor: col-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 8;
+      -webkit-app-region: no-drag;
+      background: transparent;
+      transition: background 0.12s ease;
+    }
+
+    .col-resizer::before {
+      content: '';
+      width: 3px;
+      height: 74%;
+      border-left: 1px solid rgba(56, 189, 248, 0.9);
+      border-right: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 1px;
+      transition: all 0.12s ease;
+    }
+
+    .col-resizer:hover,
+    .col-resizer.dragging {
+      background: rgba(249, 115, 22, 0.38);
+    }
+
+    .col-resizer:hover::before,
+    .col-resizer.dragging::before {
+      width: 4px;
+      height: 92%;
+      background: #f97316;
+      border-color: #ffffff;
+      box-shadow: 0 0 8px #f97316;
+    }
+
+    .resize-guide-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #f97316;
+      box-shadow: 0 0 10px #f97316, 0 0 4px #ffffff;
+      pointer-events: none;
+      display: none;
+      z-index: 30;
+    }
+
+    .resize-guide-line.active {
+      display: block;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.12s ease;
+    }
+
+    tbody tr.watching {
+      background: rgba(var(--bg-r), var(--bg-g), var(--bg-b), calc(var(--bg-opacity) * 0.9));
+      font-weight: 800;
+    }
+
+    /* Bold White High-Contrast Data Cells Across All Rows */
+    tbody td {
+      position: relative;
+      padding: 5px 6px;
+      text-align: right;
+      color: #ffffff;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 5px rgba(0, 0, 0, 0.75);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .row-col-resizer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 6px;
+      cursor: col-resize;
+      z-index: 5;
+      -webkit-app-region: no-drag;
+    }
+
+    .row-col-resizer:hover {
+      background: rgba(56, 189, 248, 0.45);
+      border-right: 2px solid #f97316;
+    }
+
+    /* =========================================================================
+       1. ACTIVE RIDER (YOU): FULL-HEIGHT 256-COLOUR SPECTRUM BAR IN RIDER FIELD
+       ========================================================================= */
+    td.col-rider.self-full-bar-cell {
+      position: relative;
+      padding: 0;
+      height: 32px;
+      vertical-align: middle;
+      overflow: hidden;
+      border-radius: 4px 0 0 4px;
+      background: rgba(10, 14, 22, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .self-full-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      height: 100%;
+      z-index: 1;
+      transition: width 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+      border-right: 2px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .self-full-bar-ambient {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.28;
+      transition: background 0.22s ease;
+    }
+
+    .self-rider-label {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      font-weight: 900;
+      font-size: 1.02em;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.98), 0 0 8px rgba(0, 0, 0, 0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =========================================================================
+       2. OTHER RIDERS: SMALLER HR SPECTRUM BAR (SCALED TO AGE + MAX HR FORMULA)
+       ========================================================================= */
+    td.col-rider.other-rider-cell {
+      position: relative;
+      padding: 4px 8px 9px 8px;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+
+    .other-rider-label {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .other-hr-track {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 2px;
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .other-hr-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.25s ease, background 0.25s ease;
+      border-right: 1px solid rgba(255, 255, 255, 0.75);
+    }
+
+    .other-hr-z3-tick {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1.5px;
+      background: rgba(255, 255, 255, 0.8);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* =========================================================================
+       2B. PERSONAL 5-MIN FTP (3.40 W/KG) TANK & 1-MIN WTRL TTT PULL PACER BAR
+       ========================================================================= */
+    .personal-tactical-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 4px 8px;
+      background: rgba(10, 15, 28, 0.88);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.28);
+      user-select: none;
+    }
+
+    .tactical-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: rgba(30, 41, 59, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      overflow: hidden;
+      min-height: 28px;
+    }
+
+    .tactical-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+      transition: width 0.25s linear, background 0.25s ease;
+      pointer-events: none;
+    }
+
+    .tactical-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 6px;
+      font-size: 0.82em;
+    }
+
+    .tactical-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .tactical-title {
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+    }
+
+    .tactical-target-ctrl {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+      padding: 1px 3px;
+    }
+
+    .tactical-step-btn {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: none;
+      border-radius: 2px;
+      width: 15px;
+      height: 15px;
+      line-height: 13px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .tactical-step-btn:hover {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    .tactical-target-val {
+      font-weight: 900;
+      color: #fde047;
+      padding: 0 3px;
+      font-size: 0.96em;
+    }
+
+    .tactical-right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .tactical-status-pill {
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 900;
+      font-size: 0.90em;
+      letter-spacing: 0.2px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .tactical-timer {
+      font-size: 1.08em;
+      font-weight: 900;
+      color: #ffffff;
+      min-width: 40px;
+      text-align: right;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+    }
+
+    .tactical-mini-btn {
+      background: rgba(15, 23, 42, 0.82);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 0.85em;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tactical-mini-btn:hover {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* States for 5m FTP Tank & 1m TTT Pull Pacer */
+    .tactical-card.state-active-drain {
+      border-color: #fb923c;
+      box-shadow: 0 0 8px rgba(249, 115, 22, 0.55);
+    }
+
+    .tactical-card.state-danger-blowup {
+      border-color: #fca5a5;
+      animation: redCellFlash 0.7s infinite ease-in-out;
+    }
+
+    .tactical-card.state-ttt-good {
+      border-color: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.55);
+    }
+
+    .tactical-card.state-ttt-under {
+      border-color: #38bdf8;
+    }
+
+    .tactical-card.state-ttt-over {
+      border-color: #f87171;
+      animation: redCellFlash 0.75s infinite ease-in-out;
+    }
+
+    /* =========================================================================
+       3. ZONE 5/6/7 REDLINE TIMER (0 to 120s) & ORANGE FULL-ROW ATTACK ALERT
+       ========================================================================= */
+    /* ORANGE FULL-ROW ATTACK ALERT WITH REVERSED DARK FONT */
+    @keyframes attackRowPulse {
+      0%, 100% {
+        background-color: rgba(251, 146, 60, 0.95);
+      }
+      50% {
+        background-color: rgba(249, 115, 22, 0.99);
+      }
+    }
+
+    tbody tr.rider-attack-row {
+      background: linear-gradient(90deg, rgba(249, 115, 22, 0.96) 0%, rgba(251, 146, 60, 0.96) 55%, rgba(245, 158, 11, 0.96) 100%) !important;
+      animation: attackRowPulse 0.85s infinite ease-in-out !important;
+      box-shadow: inset 0 0 0 1.5px #fffbeb, 0 0 10px rgba(249, 115, 22, 0.75) !important;
+    }
+
+    /* Reverse font to crisp dark/black across all cells on an Orange Attack Row */
+    tbody tr.rider-attack-row td,
+    tbody tr.rider-attack-row td span:not(.wkg-badge):not(.hr-surge-badge):not(.red-timer-label):not(.red-zone-tag),
+    tbody tr.rider-attack-row .other-rider-label span,
+    tbody tr.rider-attack-row .self-rider-label span,
+    tbody tr.rider-attack-row .sub-unit {
+      color: #090d16 !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+      font-weight: 900 !important;
+    }
+
+    /* Keep active rider's full-height bar slightly translucent during attack so reversed dark text stays readable */
+    tbody tr.rider-attack-row td.self-full-bar-cell .self-full-bar-fill,
+    tbody tr.rider-attack-row td.self-full-bar-cell .self-full-bar-ambient {
+      opacity: 0.25 !important;
+    }
+
+    .attack-tag {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 0px 4px;
+      border-radius: 3px;
+      font-size: 0.72em;
+      font-weight: 900;
+      background: #090d16;
+      color: #fde047 !important;
+      text-shadow: none !important;
+      letter-spacing: 0.3px;
+      vertical-align: middle;
+    }
+    @keyframes hrSurgeRowFlash {
+      0%, 100% {
+        background-color: rgba(220, 38, 38, 0.10);
+      }
+      50% {
+        background-color: rgba(239, 68, 68, 0.35);
+      }
+    }
+
+    @keyframes redCellFlash {
+      0%, 100% {
+        background-color: rgba(220, 38, 38, 0.85);
+        box-shadow: 0 0 6px rgba(239, 68, 68, 0.85);
+        color: #ffffff;
+        transform: scale(1);
+      }
+      50% {
+        background-color: rgba(254, 202, 202, 0.98);
+        box-shadow: 0 0 14px rgba(239, 68, 68, 1);
+        color: #7f1d1d;
+        transform: scale(1.06);
+      }
+    }
+
+    tbody tr.hr-surge-row {
+      animation: hrSurgeRowFlash 0.9s infinite ease-in-out;
+    }
+
+    td.col-red-cell {
+      text-align: center;
+      vertical-align: middle;
+      padding: 3px 4px;
+    }
+
+    .red-timer-box {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 72px;
+      height: 21px;
+      border-radius: 4px;
+      background: rgba(15, 23, 42, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      overflow: hidden;
+      font-size: 0.86em;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .red-zone-tag {
+      font-size: 0.78em;
+      font-weight: 900;
+      padding: 0 3px;
+      margin-right: 2px;
+      border-radius: 2px;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fde047 !important;
+      text-shadow: none !important;
+      letter-spacing: 0.2px;
+    }
+
+    .red-timer-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(249, 115, 22, 0.55), rgba(220, 38, 38, 0.85));
+      z-index: 1;
+      transition: width 0.25s linear;
+    }
+
+    .red-timer-label {
+      position: relative;
+      z-index: 2;
+      color: #ffffff;
+      font-weight: 800;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+    }
+
+    .red-timer-box.flashing-z45 {
+      border-color: #fca5a5;
+      font-weight: 900;
+      animation: redCellFlash 0.75s infinite ease-in-out;
+    }
+
+    .red-timer-box.flashing-z45 .red-timer-label {
+      text-shadow: none;
+    }
+
+    .red-timer-box.cooling-down {
+      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.5);
+    }
+
+    .hr-surge-badge {
+      display: inline-block;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-weight: 900;
+      color: #ffffff;
+      background: #dc2626;
+      text-shadow: none;
+      animation: redCellFlash 0.75s infinite ease-in-out;
+    }
+
+    td.col-rider {
+      text-align: left;
+    }
+
+    .sub-unit {
+      font-size: 0.76em;
+      color: #ffffff;
+      margin-left: 1px;
+      font-weight: 700;
+      opacity: 0.92;
+    }
+
+    /* WKG-Only Column Badges */
+    .wkg-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.94em;
+      font-weight: 900;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      min-width: 42px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+    }
+    .z1 { background: rgba(100, 116, 139, 0.85); }
+    .z2 { background: rgba(37, 99, 235, 0.88); }
+    .z3 { background: rgba(22, 163, 74, 0.90); }
+    .z4 { background: rgba(234, 179, 8, 0.95); color: #111827 !important; text-shadow: none !important; border-color: rgba(0,0,0,0.35); }
+    .z5 { background: rgba(234, 88, 12, 0.95); }
+    .z6 { background: rgba(220, 38, 38, 0.96); }
+    .z7 { background: linear-gradient(90deg, #dc2626, #9333ea); box-shadow: 0 0 6px rgba(239, 68, 68, 0.85); }
+
+    tbody tr.rider-attack-row .wkg-badge {
+      background: #090d16 !important;
+      color: #fde047 !important;
+      border: 1.5px solid #ffffff !important;
+      text-shadow: none !important;
+    }
+
+    /* Climb % Colour Coding */
+    .climb-flat     { color: #ffffff; font-weight: 700; }
+    .climb-descent  { color: #38bdf8; font-weight: 800; }
+    .climb-moderate { color: #fde047; font-weight: 800; }
+    .climb-steep    { color: #fb923c; font-weight: 900; }
+    .climb-hc       { color: #f87171; font-weight: 900; }
+
+    /* =========================================================================
+       4. GAP SPLIT / ELASTIC SNAP WARNING ARROWS (▲ Closing / ▼ Opening)
+       ========================================================================= */
+    .draft-active { color: #38bdf8; font-weight: 800; }
+    .gap-ahead    { color: #4ade80; font-weight: 800; }
+    .gap-behind   { color: #fbbf24; font-weight: 800; }
+    .gap-self     { color: #ffffff; font-weight: 900; }
+
+    .gap-trend-arrow {
+      display: inline-block;
+      margin-left: 3px;
+      font-size: 0.82em;
+      font-weight: 900;
+      line-height: 1;
+      vertical-align: baseline;
+    }
+
+    /* Ahead: Closing gap (Good - Green ▲) | Opening gap (Danger - Amber ▼) */
+    .trend-closing-good {
+      color: #4ade80;
+      text-shadow: 0 0 6px rgba(74, 222, 128, 0.8);
+    }
+
+    .trend-opening-warn {
+      color: #fb923c;
+      text-shadow: 0 0 6px rgba(251, 146, 60, 0.85);
+    }
+
+    /* Behind: Chaser closing on you (Amber ▲) | Dropping chaser (Sky/Green ▼) */
+    .trend-chaser-closing {
+      color: #fde047;
+      text-shadow: 0 0 6px rgba(253, 224, 71, 0.8);
+    }
+
+    .trend-chaser-dropping {
+      color: #38bdf8;
+    }
+
+    .trend-steady {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.70em;
+    }
+
+    /* Flashing Amber/Orange Elastic Snap Alert when a wheel ahead (-1.4s to -3.2s) is slipping away */
+    @keyframes elasticSnapFlash {
+      0%, 100% {
+        background-color: rgba(245, 158, 11, 0.25);
+        box-shadow: inset 0 0 6px rgba(245, 158, 11, 0.65);
+        color: #ffffff;
+      }
+      50% {
+        background-color: rgba(249, 115, 22, 0.92);
+        box-shadow: inset 0 0 12px rgba(254, 215, 170, 0.95);
+        color: #111827;
+        text-shadow: none;
+      }
+    }
+
+    td.gap-elastic-danger {
+      animation: elasticSnapFlash 0.65s infinite ease-in-out;
+      border-radius: 4px;
+      font-weight: 900 !important;
+    }
+
+    td.gap-elastic-danger .gap-trend-arrow {
+      color: inherit !important;
+      text-shadow: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="hudContainer" class="hud-container">
+    <!-- Row 1: Top Drag & Control Bar -->
+    <div class="control-bar">
+      <div class="status-group">
+        <span id="statusDot" class="status-dot"></span>
+        <span id="statusText">Connecting...</span>
+        <span id="climbCoachPill" class="climb-coach-pill" title="Live Climb, Draft & Elastic Snap Pacing Advisor">PACE OK</span>
+      </div>
+
+      <div class="controls-right">
+        <div class="slider-group" title="Orange Full-Row Attack Trigger (W/kg). Any rider at or above this W/kg (or surging +1.0 W/kg) turns their entire row ORANGE with reversed black text.">
+          <span>Atk</span>
+          <input id="atkSlider" type="range" min="3.5" max="6.5" step="0.1" value="4.5" />
+          <span id="atkVal">4.5w/kg</span>
+        </div>
+
+        <div class="slider-group" title="Zone 5/6/7 Redline Trigger (% of Age-Computed Max HR). Default 90% = Zone 5/6/7 (ignores Zone 4 race threshold).">
+          <span>Z5/6/7</span>
+          <input id="z3Slider" type="range" min="85" max="96" step="1" value="90" />
+          <span id="z3Val">90%</span>
+        </div>
+
+        <div class="slider-group" title="Adjust HUD Background Opacity">
+          <span>Opacity</span>
+          <input id="opacitySlider" type="range" min="0.05" max="0.95" step="0.05" value="0.55" />
+          <span id="opacityVal">55%</span>
+        </div>
+
+        <div class="slider-group" title="Scale HUD Text Size">
+          <span>Scale</span>
+          <input id="scaleSlider" type="range" min="0.8" max="1.4" step="0.05" value="1" />
+        </div>
+
+        <button id="compactColsBtn" class="btn-toggle" title="Concertina all columns tightly together to remove extra space (or double-click any vertical bar in Row 2)">Compact Cols</button>
+        <button id="resetColsBtn" class="btn-toggle" title="Restore default column widths">Reset Cols</button>
+
+        <button id="pantoneBtn" class="btn-toggle" title="Open 256 Pantone Colour Chart to change HUD Background Colour">
+          <span id="btnSwatch" class="btn-swatch-preview"></span>
+          <span>Pantone BG</span>
+        </button>
+
+        <button id="resetRedBtn" class="btn-toggle" title="Reset all 0-120s Zone 4/5 timers to 0s">Reset 120s</button>
+        <button id="demoBtn" class="btn-toggle" title="Toggle Simulated Rider Feed">Demo</button>
+      </div>
+    </div>
+
+    <!-- 256 Pantone Colour Chart Modal -->
+    <div id="pantoneModal" class="pantone-modal">
+      <div class="pantone-header">
+        <div class="pantone-title-wrap">
+          <span class="pantone-title">256 Pantone Background Chart</span>
+          <div class="pantone-live-chip">
+            <span id="pantonePreviewBox" class="pantone-live-box"></span>
+            <span id="pantonePreviewText">PMS 296 C • Midnight Navy (12, 16, 23)</span>
+          </div>
+        </div>
+        <div class="pantone-actions">
+          <button id="pantoneDefaultBtn" class="btn-toggle" title="Restore Default Dark Navy HUD Background">Default Dark</button>
+          <button id="pantoneCloseBtn" class="btn-toggle" title="Close Pantone Chart">Close ✕</button>
+        </div>
+      </div>
+      <div class="pantone-grid-wrap">
+        <div id="pantoneGrid" class="pantone-grid"></div>
+      </div>
+    </div>
+
+    <!-- Personal 5m FTP (3.40 W/kg) Tank & 1m WTRL TTT Pull Pacer Bar -->
+    <div class="personal-tactical-bar">
+      <!-- Left Gauge: 5-Minute FTP (3.40 W/kg) Threshold & Countdown -->
+      <div id="ftp5mCard" class="tactical-card" title="5-Minute FTP Threshold Tank. Counts down from 5:00 (300s) whenever your W/kg reaches or exceeds your 5m FTP target (default 3.40 W/kg). Recharges gradually below threshold.">
+        <div id="ftp5mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.35), rgba(16, 185, 129, 0.55));"></div>
+        <div class="tactical-content">
+          <div class="tactical-left">
+            <span class="tactical-title">5m FTP</span>
+            <div class="tactical-target-ctrl" title="Adjust your 5-Minute FTP Threshold W/kg (Default: 3.40 W/kg)">
+              <button id="ftp5mMinus" class="tactical-step-btn" type="button">−</button>
+              <span id="ftp5mTargetText" class="tactical-target-val">3.40</span>
+              <button id="ftp5mPlus" class="tactical-step-btn" type="button">+</button>
+            </div>
+          </div>
+          <div class="tactical-right">
+            <span id="ftp5mStatus" class="tactical-status-pill">SAFE</span>
+            <span id="ftp5mTimer" class="tactical-timer">5:00</span>
+            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Reset 5-Minute FTP tank back to 5:00 (300s)">Rst</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Gauge: 1-Minute WTRL TTT Pull Pacer & Countdown -->
+      <div id="ttt1mCard" class="tactical-card" title="1-Minute WTRL TTT Pull Pacer. Set the W/kg called by your TTT leader: auto-counts down 60s -> 0s while you pull at target W/kg (or click Pull to start/reset manually).">
+        <div id="ttt1mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(56, 189, 248, 0.30), rgba(59, 130, 246, 0.50));"></div>
+        <div class="tactical-content">
+          <div class="tactical-left">
+            <span class="tactical-title">1m TTT</span>
+            <div class="tactical-target-ctrl" title="Set the WTRL TTT Leader's target pull W/kg">
+              <button id="ttt1mMinus" class="tactical-step-btn" type="button">−</button>
+              <span id="ttt1mTargetText" class="tactical-target-val">3.40</span>
+              <button id="ttt1mPlus" class="tactical-step-btn" type="button">+</button>
+            </div>
+          </div>
+          <div class="tactical-right">
+            <span id="ttt1mStatus" class="tactical-status-pill">READY</span>
+            <span id="ttt1mTimer" class="tactical-timer">60s</span>
+            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Start or Reset 60s WTRL TTT Pull Countdown (also starts automatically when you hit target W/kg)">Pull</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rider Telemetry Feed -->
+    <div id="tableWrap" class="table-wrap">
+      <div id="resizeGuideLine" class="resize-guide-line"></div>
+      <table id="riderTable">
+        <colgroup id="tableColGroup">
+          <col id="col-0" />
+          <col id="col-1" />
+          <col id="col-2" />
+          <col id="col-3" />
+          <col id="col-4" />
+          <col id="col-5" />
+          <col id="col-6" />
+          <col id="col-7" />
+          <col id="col-8" />
+        </colgroup>
+        <thead>
+          <tr id="headerRow2">
+            <th class="col-rider" data-col="0">
+              <span class="th-label">Rider</span>
+              <div class="col-resizer" data-col="0" title="Drag left/right to expand or concertina Rider column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-pwr" data-col="1" title="Rider Power-to-Weight Ratio (W/kg only)">
+              <span class="th-label">WKG</span>
+              <div class="col-resizer" data-col="1" title="Drag left/right to expand or concertina WKG column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-hr" data-col="2">
+              <span class="th-label">HR</span>
+              <div class="col-resizer" data-col="2" title="Drag left/right to expand or concertina HR column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-red" data-col="3" title="Zone 5/6/7 Redline Timer (0 to 120s). Flashes red ONLY when a rider enters Heart Rate Zone 5, 6, or 7 (>=90% Age Max HR).">
+              <span class="th-label">RED 0-120s</span>
+              <div class="col-resizer" data-col="3" title="Drag left/right to expand or concertina RED 0-120s column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-age" data-col="4">
+              <span class="th-label">AGE</span>
+              <div class="col-resizer" data-col="4" title="Drag left/right to expand or concertina AGE column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-wt" data-col="5">
+              <span class="th-label">Weight</span>
+              <div class="col-resizer" data-col="5" title="Drag left/right to expand or concertina Weight column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-draft" data-col="6">
+              <span class="th-label">Draft</span>
+              <div class="col-resizer" data-col="6" title="Drag left/right to expand or concertina Draft column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-climb" data-col="7">
+              <span class="th-label">Climb %</span>
+              <div class="col-resizer" data-col="7" title="Drag left/right to expand or concertina Climb % column • Double-click to toggle tight/collapsed"></div>
+            </th>
+            <th class="col-gap" data-col="8" title="Time Gap + Live Velocity Arrow (▲ Closing / ▼ Opening). Flashes Amber when the draft elastic (-1.4s to -3.2s ahead) is about to snap!">
+              <span class="th-label">Gap</span>
+              <div class="col-resizer" data-col="8" title="Drag left/right to expand or concertina Gap column • Double-click to toggle tight/collapsed"></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="riderTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    const hudContainer = document.getElementById('hudContainer');
+    const tableWrap = document.getElementById('tableWrap');
+    const riderTable = document.getElementById('riderTable');
+    const resizeGuideLine = document.getElementById('resizeGuideLine');
+    const tbody = document.getElementById('riderTableBody');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const climbCoachPill = document.getElementById('climbCoachPill');
+    const opacitySlider = document.getElementById('opacitySlider');
+    const opacityVal = document.getElementById('opacityVal');
+    const scaleSlider = document.getElementById('scaleSlider');
+    const z3Slider = document.getElementById('z3Slider');
+    const z3Val = document.getElementById('z3Val');
+    const compactColsBtn = document.getElementById('compactColsBtn');
+    const resetColsBtn = document.getElementById('resetColsBtn');
+    const pantoneBtn = document.getElementById('pantoneBtn');
+    const pantoneModal = document.getElementById('pantoneModal');
+    const pantoneGrid = document.getElementById('pantoneGrid');
+    const pantonePreviewBox = document.getElementById('pantonePreviewBox');
+    const pantonePreviewText = document.getElementById('pantonePreviewText');
+    const pantoneDefaultBtn = document.getElementById('pantoneDefaultBtn');
+    const pantoneCloseBtn = document.getElementById('pantoneCloseBtn');
+    const resetRedBtn = document.getElementById('resetRedBtn');
+    const demoBtn = document.getElementById('demoBtn');
+
+    // =========================================================================
+    // ROW 2 COLUMN RESIZER / CONCERTINA SYSTEM
+    // =========================================================================
+    const DEFAULT_COL_WIDTHS = [155, 68, 68, 78, 46, 64, 58, 64, 72];
+    const COMPACT_COL_WIDTHS = [118, 54, 54, 62, 36, 50, 48, 52, 60];
+    const MIN_COL_WIDTH = 18;
+    const MAX_COL_WIDTH = 360;
+
+    let colWidths = [...DEFAULT_COL_WIDTHS];
+    let prevColWidthsBeforeFold = [...DEFAULT_COL_WIDTHS];
+
+    function loadSavedColWidths() {
+      try {
+        const raw = localStorage.getItem('zwift_hud_col_widths_v12');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length === DEFAULT_COL_WIDTHS.length) {
+            colWidths = parsed.map((w, i) => Math.max(MIN_COL_WIDTH, Math.min(MAX_COL_WIDTH, Number(w) || DEFAULT_COL_WIDTHS[i])));
+          }
+        }
+      } catch (e) {}
+      applyColWidths(false);
+    }
+
+    function applyColWidths(save = true) {
+      let totalWidth = 0;
+      const thElements = document.querySelectorAll('#headerRow2 th');
+      for (let i = 0; i < colWidths.length; i++) {
+        const w = Math.round(colWidths[i]);
+        totalWidth += w;
+        const colEl = document.getElementById(`col-${i}`);
+        if (colEl) colEl.style.width = `${w}px`;
+        if (thElements[i]) {
+          thElements[i].classList.toggle('col-collapsed', w <= 26);
+        }
+      }
+      riderTable.style.width = `${totalWidth}px`;
+      if (save) {
+        localStorage.setItem('zwift_hud_col_widths_v12', JSON.stringify(colWidths));
+      }
+    }
+
+    function startColumnResize(e, colIdx, handleEl) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const startX = e.clientX;
+      const startWidth = colWidths[colIdx];
+      const wrapRect = tableWrap.getBoundingClientRect();
+
+      if (handleEl) handleEl.classList.add('dragging');
+      resizeGuideLine.classList.add('active');
+      resizeGuideLine.style.left = `${e.clientX - wrapRect.left}px`;
+      document.body.style.cursor = 'col-resize';
+
+      function onMouseMove(moveEvent) {
+        const deltaX = moveEvent.clientX - startX;
+        const newWidth = Math.max(MIN_COL_WIDTH, Math.min(MAX_COL_WIDTH, startWidth + deltaX));
+        colWidths[colIdx] = newWidth;
+        applyColWidths(false);
+        resizeGuideLine.style.left = `${ Math.max(0, moveEvent.clientX - wrapRect.left) }px`;
+      }
+
+      function onMouseUp() {
+        if (handleEl) handleEl.classList.remove('dragging');
+        resizeGuideLine.classList.remove('active');
+        document.body.style.cursor = '';
+        applyColWidths(true);
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+      }
+
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    }
+
+    function toggleColumnConcertina(colIdx) {
+      const currentW = colWidths[colIdx];
+      const compactW = COMPACT_COL_WIDTHS[colIdx];
+      const defaultW = DEFAULT_COL_WIDTHS[colIdx];
+
+      if (currentW > compactW + 4) {
+        prevColWidthsBeforeFold[colIdx] = currentW;
+        colWidths[colIdx] = compactW;
+      } else if (currentW > 24) {
+        colWidths[colIdx] = 20;
+      } else {
+        colWidths[colIdx] = defaultW;
+      }
+      applyColWidths(true);
+    }
+
+    document.querySelectorAll('#headerRow2 .col-resizer').forEach(handle => {
+      const colIdx = Number(handle.dataset.col);
+      handle.addEventListener('mousedown', (e) => startColumnResize(e, colIdx, handle));
+      handle.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleColumnConcertina(colIdx);
+      });
+    });
+
+    tbody.addEventListener('mousedown', (e) => {
+      const handle = e.target.closest('.row-col-resizer');
+      if (!handle) return;
+      const colIdx = Number(handle.dataset.col);
+      startColumnResize(e, colIdx, handle);
+    });
+
+    tbody.addEventListener('dblclick', (e) => {
+      const handle = e.target.closest('.row-col-resizer');
+      if (!handle) return;
+      e.preventDefault();
+      e.stopPropagation();
+      toggleColumnConcertina(Number(handle.dataset.col));
+    });
+
+    compactColsBtn.addEventListener('click', () => {
+      colWidths = [...COMPACT_COL_WIDTHS];
+      applyColWidths(true);
+    });
+
+    resetColsBtn.addEventListener('click', () => {
+      colWidths = [...DEFAULT_COL_WIDTHS];
+      applyColWidths(true);
+    });
+
+    // =========================================================================
+    // Build 256 Curated Pantone Coated (PMS) Colour Chart
+    // =========================================================================
+    const PANTONE_256_CHART = build256PantoneChart();
+    let selectedPantoneIndex = 0;
+
+    function hslToRgb(h, s, l) {
+      s /= 100;
+      l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      return [Math.round(255 * f(0)), Math.round(255 * f(8)), Math.round(255 * f(4))];
+    }
+
+    function build256PantoneChart() {
+      const families = [
+        { name: 'Neutral Slate',   hue: 215, sat: 14, baseCode: 400 },
+        { name: 'Cool Charcoal',   hue: 222, sat: 28, baseCode: 420 },
+        { name: 'Warm Graphite',   hue: 28,  sat: 16, baseCode: 440 },
+        { name: 'Crimson Red',     hue: 355, sat: 78, baseCode: 185 },
+        { name: 'Scarlet Flame',   hue: 12,  sat: 82, baseCode: 165 },
+        { name: 'Amber Gold',      hue: 32,  sat: 85, baseCode: 135 },
+        { name: 'Saffron Ochre',   hue: 48,  sat: 80, baseCode: 115 },
+        { name: 'Lime Chartreuse', hue: 82,  sat: 68, baseCode: 375 },
+        { name: 'Emerald Green',   hue: 135, sat: 70, baseCode: 340 },
+        { name: 'Forest Pine',     hue: 160, sat: 72, baseCode: 325 },
+        { name: 'Teal Lagoon',     hue: 182, sat: 76, baseCode: 310 },
+        { name: 'Cerulean Cyan',   hue: 198, sat: 80, baseCode: 290 },
+        { name: 'Cobalt Blue',     hue: 216, sat: 82, baseCode: 280 },
+        { name: 'Sapphire Navy',   hue: 234, sat: 75, baseCode: 270 },
+        { name: 'Royal Violet',    hue: 268, sat: 70, baseCode: 255 },
+        { name: 'Magenta Berry',   hue: 318, sat: 72, baseCode: 225 }
+      ];
+
+      const chart = [];
+      for (let row = 0; row < 16; row++) {
+        const fam = families[row];
+        for (let col = 0; col < 16; col++) {
+          const idx = row * 16 + col;
+          if (idx === 0) {
+            chart.push({
+              index: 0,
+              code: 'PMS 296 C',
+              name: 'Midnight Navy (Default)',
+              r: 12, g: 16, b: 23
+            });
+            continue;
+          }
+          const lightness = 7 + (col * 4.6);
+          const satAdjust = col < 4 ? fam.sat * 0.85 : (col > 12 ? fam.sat * 0.75 : fam.sat);
+          const [r, g, b] = hslToRgb(fam.hue, satAdjust, lightness);
+          const pmsNum = fam.baseCode + col;
+          chart.push({
+            index: idx,
+            code: `PMS ${pmsNum} C`,
+            name: `${fam.name} ${col + 1}`,
+            r, g, b
+          });
+        }
+      }
+      return chart;
+    }
+
+    function applyPantoneColor(swatch, save = true) {
+      if (!swatch) return;
+      selectedPantoneIndex = swatch.index;
+      document.documentElement.style.setProperty('--bg-r', swatch.r);
+      document.documentElement.style.setProperty('--bg-g', swatch.g);
+      document.documentElement.style.setProperty('--bg-b', swatch.b);
+
+      updatePantonePreviewBanner(swatch);
+
+      const cells = pantoneGrid.querySelectorAll('.pantone-cell');
+      cells.forEach((cell, idx) => {
+        cell.classList.toggle('selected', idx === swatch.index);
+      });
+
+      if (save) {
+        localStorage.setItem('zwift_hud_pantone_idx', String(swatch.index));
+      }
+    }
+
+    function updatePantonePreviewBanner(swatch) {
+      pantonePreviewBox.style.background = `rgb(${swatch.r}, ${swatch.g}, ${swatch.b})`;
+      pantonePreviewText.textContent = `${swatch.code} • ${swatch.name} (${swatch.r}, ${swatch.g}, ${swatch.b})`;
+    }
+
+    function renderPantoneGrid() {
+      pantoneGrid.innerHTML = PANTONE_256_CHART.map(sw => `
+        <div
+          class="pantone-cell ${sw.index === selectedPantoneIndex ? 'selected' : ''}"
+          data-idx="${sw.index}"
+          style="background: rgb(${sw.r}, ${sw.g}, ${sw.b});"
+          title="${sw.code} - ${sw.name} | RGB(${sw.r}, ${sw.g}, ${sw.b})"
+        >
+          <span class="pantone-code-strip">${sw.code.replace('PMS ', '')}</span>
+        </div>
+      `).join('');
+
+      pantoneGrid.querySelectorAll('.pantone-cell').forEach(cell => {
+        const idx = Number(cell.dataset.idx);
+        const swatch = PANTONE_256_CHART[idx];
+        cell.addEventListener('mouseenter', () => updatePantonePreviewBanner(swatch));
+        cell.addEventListener('mouseleave', () => updatePantonePreviewBanner(PANTONE_256_CHART[selectedPantoneIndex]));
+        cell.addEventListener('click', () => applyPantoneColor(swatch, true));
+      });
+    }
+
+    pantoneBtn.addEventListener('click', () => {
+      const isOpen = pantoneModal.classList.toggle('open');
+      hudContainer.classList.toggle('palette-open', isOpen);
+    });
+
+    pantoneCloseBtn.addEventListener('click', () => {
+      pantoneModal.classList.remove('open');
+      hudContainer.classList.remove('palette-open');
+    });
+
+    pantoneDefaultBtn.addEventListener('click', () => {
+      applyPantoneColor(PANTONE_256_CHART[0], true);
+    });
+
+    // =========================================================================
+    // Dynamic Local Athlete Cache
+    // =========================================================================
+    let detectedSelfAthlete = {
+      name: null,
+      age: null,
+      weight: null
+    };
+
+    function updateDetectedSelfAthlete(athleteObj) {
+      if (!athleteObj || typeof athleteObj !== 'object') return;
+      const name = athleteObj.sanitizedFullname || athleteObj.fullname ||
+        ([athleteObj.firstName, athleteObj.lastName].filter(Boolean).join(' ').trim()) || null;
+      if (name) detectedSelfAthlete.name = name;
+      if (athleteObj.age != null && athleteObj.age > 0) detectedSelfAthlete.age = Number(athleteObj.age);
+      if (athleteObj.weight != null && athleteObj.weight > 0) detectedSelfAthlete.weight = Number(athleteObj.weight);
+    }
+
+    // =========================================================================
+    // Per-Rider 0-120s Zone 5/6/7 Redline Timer Tracker
+    // Counts up ONLY when rider is in Heart Rate Zone 5, 6, or 7 (ignores Zone 4)
+    // =========================================================================
+    const MAX_REDLINE_SECONDS = 120;
+    const riderRedlineTimers = new Map();
+
+    function updateRiderRedlineSeconds(riderKey, isInZone567, nowMs) {
+      let record = riderRedlineTimers.get(riderKey);
+      if (!record) {
+        record = { seconds: 0, lastUpdateMs: nowMs };
+        riderRedlineTimers.set(riderKey, record);
+        return 0;
+      }
+
+      const elapsedSec = Math.max(0, Math.min(2.5, (nowMs - record.lastUpdateMs) / 1000));
+      record.lastUpdateMs = nowMs;
+
+      if (isInZone567) {
+        record.seconds = Math.min(MAX_REDLINE_SECONDS, record.seconds + elapsedSec);
+      } else {
+        record.seconds = Math.max(0, record.seconds - (elapsedSec * 0.5));
+      }
+      return record.seconds;
+    }
+
+    // =========================================================================
+    // Per-Rider Attack Detector (Orange Full-Row Highlight + Reversed Dark Text)
+    // Triggers when a rider's W/kg >= attackWkgThreshold (default 4.5 W/kg)
+    // OR when they surge >= +1.0 W/kg above their rolling baseline (and >= 3.8 W/kg)
+    // =========================================================================
+    let attackWkgThreshold = 4.5;
+    const riderPowerBaseline = new Map(); // riderKey -> { rollingWkg, lastMs }
+
+    function evaluateRiderAttack(riderKey, wkg, nowMs) {
+      if (wkg == null || Number.isNaN(wkg) || wkg <= 0) {
+        return { isAttacking: false, attackReason: '' };
+      }
+      let rec = riderPowerBaseline.get(riderKey);
+      if (!rec) {
+        rec = { rollingWkg: wkg, lastMs: nowMs };
+        riderPowerBaseline.set(riderKey, rec);
+      } else {
+        const dt = Math.max(0.1, Math.min(3.0, (nowMs - rec.lastMs) / 1000));
+        // Slow rolling baseline (~8s time constant) to catch sudden accelerations
+        const alpha = Math.min(0.35, dt / 8.0);
+        rec.rollingWkg = (rec.rollingWkg * (1 - alpha)) + (wkg * alpha);
+        rec.lastMs = nowMs;
+      }
+
+      const surgeDelta = wkg - rec.rollingWkg;
+      if (wkg >= attackWkgThreshold) {
+        return {
+          isAttacking: true,
+          attackReason: `ATTACKING at ${wkg.toFixed(2)} W/kg (>= ${attackWkgThreshold.toFixed(1)} W/kg threshold)`
+        };
+      }
+      if (wkg >= 3.8 && surgeDelta >= 0.95) {
+        return {
+          isAttacking: true,
+          attackReason: `SURGING +${surgeDelta.toFixed(2)} W/kg above rolling pace (${wkg.toFixed(2)} W/kg)`
+        };
+      }
+      return { isAttacking: false, attackReason: '' };
+    }
+
+    // =========================================================================
+    // Personal 5-Minute FTP (Default 3.40 W/kg) Countdown Tank (300s -> 0s)
+    // & 1-Minute WTRL TTT Pull Pacer (60s -> 0s)
+    // =========================================================================
+    const MAX_5M_FTP_SECONDS = 300;
+    let ftp5mTargetWkg = 3.40;
+    let ftp5mRemainingSec = MAX_5M_FTP_SECONDS;
+    let ftp5mLastMs = performance.now();
+
+    const MAX_1M_TTT_SECONDS = 60;
+    let ttt1mTargetWkg = 3.40;
+    let ttt1mRemainingSec = MAX_1M_TTT_SECONDS;
+    let ttt1mActiveManual = false;
+    let ttt1mBelowTargetSec = 0;
+    let ttt1mLastMs = performance.now();
+
+    const ftp5mCard = document.getElementById('ftp5mCard');
+    const ftp5mFill = document.getElementById('ftp5mFill');
+    const ftp5mTargetText = document.getElementById('ftp5mTargetText');
+    const ftp5mStatus = document.getElementById('ftp5mStatus');
+    const ftp5mTimer = document.getElementById('ftp5mTimer');
+    const ftp5mMinus = document.getElementById('ftp5mMinus');
+    const ftp5mPlus = document.getElementById('ftp5mPlus');
+    const ftp5mResetBtn = document.getElementById('ftp5mResetBtn');
+
+    const ttt1mCard = document.getElementById('ttt1mCard');
+    const ttt1mFill = document.getElementById('ttt1mFill');
+    const ttt1mTargetText = document.getElementById('ttt1mTargetText');
+    const ttt1mStatus = document.getElementById('ttt1mStatus');
+    const ttt1mTimer = document.getElementById('ttt1mTimer');
+    const ttt1mMinus = document.getElementById('ttt1mMinus');
+    const ttt1mPlus = document.getElementById('ttt1mPlus');
+    const ttt1mToggleBtn = document.getElementById('ttt1mToggleBtn');
+
+    function formatMinSec(sec) {
+      const s = Math.max(0, Math.round(sec));
+      const m = Math.floor(s / 60);
+      const rem = s % 60;
+      return `${m}:${rem < 10 ? '0' : ''}${rem}`;
+    }
+
+    function setFtp5mTarget(val) {
+      ftp5mTargetWkg = Math.max(1.50, Math.min(6.50, Math.round(Number(val) * 20) / 20));
+      ftp5mTargetText.textContent = ftp5mTargetWkg.toFixed(2);
+      localStorage.setItem('zwift_hud_ftp5m_wkg', ftp5mTargetWkg.toFixed(2));
+    }
+
+    function setTtt1mTarget(val) {
+      ttt1mTargetWkg = Math.max(1.50, Math.min(7.50, Math.round(Number(val) * 20) / 20));
+      ttt1mTargetText.textContent = ttt1mTargetWkg.toFixed(2);
+      localStorage.setItem('zwift_hud_ttt1m_wkg', ttt1mTargetWkg.toFixed(2));
+    }
+
+    ftp5mMinus.addEventListener('click', () => setFtp5mTarget(ftp5mTargetWkg - 0.05));
+    ftp5mPlus.addEventListener('click', () => setFtp5mTarget(ftp5mTargetWkg + 0.05));
+    ftp5mResetBtn.addEventListener('click', () => {
+      ftp5mRemainingSec = MAX_5M_FTP_SECONDS;
+      ftp5mLastMs = performance.now();
+    });
+
+    ttt1mMinus.addEventListener('click', () => setTtt1mTarget(ttt1mTargetWkg - 0.05));
+    ttt1mPlus.addEventListener('click', () => setTtt1mTarget(ttt1mTargetWkg + 0.05));
+    ttt1mToggleBtn.addEventListener('click', () => {
+      if (ttt1mActiveManual || ttt1mRemainingSec < MAX_1M_TTT_SECONDS) {
+        // Reset back to 60s ready
+        ttt1mActiveManual = false;
+        ttt1mRemainingSec = MAX_1M_TTT_SECONDS;
+        ttt1mBelowTargetSec = 0;
+        ttt1mToggleBtn.textContent = 'Pull';
+      } else {
+        // Manually start 60s TTT pull countdown immediately
+        ttt1mActiveManual = true;
+        ttt1mRemainingSec = MAX_1M_TTT_SECONDS;
+        ttt1mBelowTargetSec = 0;
+        ttt1mToggleBtn.textContent = 'Rst';
+      }
+      ttt1mLastMs = performance.now();
+    });
+
+    function updatePersonalPowerGauges(selfWkg, nowMs) {
+      const dt5 = Math.max(0, Math.min(2.5, (nowMs - ftp5mLastMs) / 1000));
+      ftp5mLastMs = nowMs;
+
+      const curWkg = (selfWkg != null && !Number.isNaN(selfWkg)) ? Number(selfWkg) : 0;
+
+      // 1. Update 5-Minute FTP (3.40 W/kg) Tank
+      const isAtOrAbove5mFtp = curWkg >= ftp5mTargetWkg;
+      if (isAtOrAbove5mFtp) {
+        // If pushing significantly above 5m FTP (e.g. +0.5 W/kg over), tank drains slightly faster
+        const overRatio = Math.max(1.0, 1.0 + ((curWkg - ftp5mTargetWkg) * 0.65));
+        ftp5mRemainingSec = Math.max(0, ftp5mRemainingSec - (dt5 * overRatio));
+      } else {
+        // Recover at +0.5s/sec when riding below 5m FTP threshold
+        ftp5mRemainingSec = Math.min(MAX_5M_FTP_SECONDS, ftp5mRemainingSec + (dt5 * 0.5));
+      }
+
+      const pct5m = Math.max(0, Math.min(100, Math.round((ftp5mRemainingSec / MAX_5M_FTP_SECONDS) * 100)));
+      ftp5mFill.style.width = `${pct5m}%`;
+      ftp5mTimer.textContent = formatMinSec(ftp5mRemainingSec);
+
+      if (isAtOrAbove5mFtp) {
+        if (ftp5mRemainingSec <= 60) {
+          ftp5mCard.className = 'tactical-card state-danger-blowup';
+          ftp5mFill.style.background = 'linear-gradient(90deg, rgba(220, 38, 38, 0.75), rgba(239, 68, 68, 0.92))';
+          ftp5mStatus.textContent = `BLOW-UP! ${curWkg.toFixed(2)}`;
+          ftp5mStatus.style.background = '#7f1d1d';
+          ftp5mStatus.style.color = '#fef2f2';
+        } else {
+          ftp5mCard.className = 'tactical-card state-active-drain';
+          ftp5mFill.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.55), rgba(249, 115, 22, 0.82))';
+          ftp5mStatus.textContent = `ON 5m (${curWkg.toFixed(2)})`;
+          ftp5mStatus.style.background = '#9a3412';
+          ftp5mStatus.style.color = '#ffedd5';
+        }
+      } else {
+        ftp5mCard.className = 'tactical-card';
+        ftp5mFill.style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.30), rgba(16, 185, 129, 0.50))';
+        ftp5mStatus.textContent = curWkg > 0 ? `${curWkg.toFixed(2)} SAFE` : 'SAFE';
+        ftp5mStatus.style.background = 'rgba(15, 23, 42, 0.75)';
+        ftp5mStatus.style.color = '#4ade80';
+      }
+
+      // 2. Update 1-Minute WTRL TTT Pull Pacer (60s -> 0s)
+      const dt1 = Math.max(0, Math.min(2.5, (nowMs - ttt1mLastMs) / 1000));
+      ttt1mLastMs = nowMs;
+
+      const diffTtt = curWkg - ttt1mTargetWkg;
+      // Auto-engage pull countdown when within -0.12 W/kg of TTT target (or above), or when manually started
+      const isPullingNow = ttt1mActiveManual || (curWkg >= (ttt1mTargetWkg - 0.12));
+
+      if (isPullingNow) {
+        ttt1mBelowTargetSec = 0;
+        ttt1mRemainingSec = Math.max(0, ttt1mRemainingSec - dt1);
+        ttt1mToggleBtn.textContent = 'Rst';
+      } else if (ttt1mRemainingSec < MAX_1M_TTT_SECONDS) {
+        ttt1mBelowTargetSec += dt1;
+        // If rider drops into draft (>0.25 W/kg below pull target) for 5 seconds, auto-reset to 60s for next turn!
+        if (ttt1mBelowTargetSec >= 5.0) {
+          ttt1mRemainingSec = MAX_1M_TTT_SECONDS;
+          ttt1mBelowTargetSec = 0;
+          ttt1mToggleBtn.textContent = 'Pull';
+        }
+      }
+
+      const pct1m = Math.max(0, Math.min(100, Math.round((ttt1mRemainingSec / MAX_1M_TTT_SECONDS) * 100)));
+      ttt1mFill.style.width = `${pct1m}%`;
+      ttt1mTimer.textContent = `${Math.round(ttt1mRemainingSec)}s`;
+
+      if (isPullingNow && ttt1mRemainingSec <= 0.4) {
+        ttt1mCard.className = 'tactical-card state-ttt-good';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(168, 85, 247, 0.65), rgba(59, 130, 246, 0.85))';
+        ttt1mStatus.textContent = 'DONE! DROP BACK';
+        ttt1mStatus.style.background = '#581c87';
+        ttt1mStatus.style.color = '#fde047';
+      } else if (isPullingNow) {
+        if (diffTtt > 0.20) {
+          // Pulling too hard -> risks gapping teammates!
+          ttt1mCard.className = 'tactical-card state-ttt-over';
+          ttt1mFill.style.background = 'linear-gradient(90deg, rgba(220, 38, 38, 0.70), rgba(249, 115, 22, 0.88))';
+          ttt1mStatus.textContent = `EASE -${diffTtt.toFixed(2)}`;
+          ttt1mStatus.style.background = '#7f1d1d';
+          ttt1mStatus.style.color = '#fef2f2';
+        } else if (diffTtt < -0.12) {
+          // Manually started pull, but below target W/kg
+          ttt1mCard.className = 'tactical-card state-ttt-under';
+          ttt1mFill.style.background = 'linear-gradient(90deg, rgba(56, 189, 248, 0.45), rgba(37, 99, 235, 0.70))';
+          ttt1mStatus.textContent = `PUSH +${Math.abs(diffTtt).toFixed(2)}`;
+          ttt1mStatus.style.background = '#1e3a8a';
+          ttt1mStatus.style.color = '#bae6fd';
+        } else {
+          // Spot-on TTT Pull target!
+          ttt1mCard.className = 'tactical-card state-ttt-good';
+          ttt1mFill.style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.55), rgba(16, 185, 129, 0.82))';
+          ttt1mStatus.textContent = `PULL OK (${curWkg.toFixed(2)})`;
+          ttt1mStatus.style.background = '#14532d';
+          ttt1mStatus.style.color = '#bbf7d0';
+        }
+      } else {
+        ttt1mCard.className = 'tactical-card';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(56, 189, 248, 0.25), rgba(59, 130, 246, 0.40))';
+        ttt1mStatus.textContent = ttt1mRemainingSec < MAX_1M_TTT_SECONDS ? 'RECOVER' : 'IN DRAFT';
+        ttt1mStatus.style.background = 'rgba(15, 23, 42, 0.75)';
+        ttt1mStatus.style.color = '#38bdf8';
+      }
+    }
+
+    // =========================================================================
+    // NEW OPTION 1: GAP SPLIT / ELASTIC SNAP VELOCITY TRACKER
+    // Computes smoothed d(|gap|)/dt (seconds per second) for each rider:
+    // - Riders Ahead (gap < 0):
+    //   • Closing gap (|gap| shrinking): Green ▲
+    //   • Opening gap (|gap| growing):   Amber ▼
+    //   • Elastic Snap Danger (-1.4s to -3.2s ahead & opening): Flashing Amber Cell!
+    // - Riders Behind (gap > 0):
+    //   • Chasers closing (|gap| shrinking): Yellow ▲
+    //   • Dropping chasers (|gap| growing):  Sky Blue ▼
+    // =========================================================================
+    const riderGapTrackers = new Map(); // riderKey -> { lastAbsGap, smoothedRate, lastMs }
+
+    function evaluateRiderGapTrend(riderKey, gapSec, isSelf, nowMs) {
+      if (isSelf || gapSec == null || Number.isNaN(Number(gapSec))) {
+        return {
+          arrowHtml: '',
+          cellDangerClass: '',
+          tooltip: 'Active Rider (YOU)',
+          isElasticSnapDanger: false,
+          rateSecPerSec: 0
+        };
+      }
+
+      const numGap = Number(gapSec);
+      const absGap = Math.abs(numGap);
+      let rec = riderGapTrackers.get(riderKey);
+
+      if (!rec) {
+        rec = { lastAbsGap: absGap, smoothedRate: 0, lastMs: nowMs };
+        riderGapTrackers.set(riderKey, rec);
+      } else {
+        const dt = (nowMs - rec.lastMs) / 1000;
+        if (dt >= 0.25 && dt <= 4.0) {
+          // Positive rate = distance between you and this rider is INCREASING (opening)
+          // Negative rate = distance between you and this rider is DECREASING (closing)
+          const instantRate = (absGap - rec.lastAbsGap) / dt;
+          rec.smoothedRate = (rec.smoothedRate * 0.55) + (instantRate * 0.45);
+          rec.lastAbsGap = absGap;
+          rec.lastMs = nowMs;
+        } else if (dt > 4.0) {
+          rec.lastAbsGap = absGap;
+          rec.smoothedRate = 0;
+          rec.lastMs = nowMs;
+        }
+      }
+
+      const rate = rec.smoothedRate;
+      const isAhead = numGap < 0;
+      const DEADBAND = 0.055; // s/s deadband to avoid jitter on steady gaps
+
+      let arrowHtml = `<span class="gap-trend-arrow trend-steady">•</span>`;
+      let cellDangerClass = '';
+      let isElasticSnapDanger = false;
+      let statusDesc = 'Steady gap';
+
+      if (isAhead) {
+        if (rate <= -DEADBAND) {
+          // |gap| is shrinking -> You are closing on the rider ahead!
+          arrowHtml = `<span class="gap-trend-arrow trend-closing-good">▲</span>`;
+          statusDesc = `Closing gap (${Math.abs(rate).toFixed(2)}s/s)`;
+        } else if (rate >= DEADBAND) {
+          // |gap| is growing -> Rider ahead is pulling away!
+          arrowHtml = `<span class="gap-trend-arrow trend-opening-warn">▼</span>`;
+          statusDesc = `Gap opening (+${rate.toFixed(2)}s/s)`;
+          // Draft elastic snaps around 2.5s - 3.0s in Zwift. Warn immediately between 1.3s and 3.3s!
+          if (absGap >= 1.3 && absGap <= 3.3 && rate >= 0.08) {
+            isElasticSnapDanger = true;
+            cellDangerClass = 'gap-elastic-danger';
+            statusDesc = `ELASTIC SNAP WARNING! Wheel slipping away at +${rate.toFixed(2)}s/s`;
+          }
+        }
+      } else {
+        // Rider is behind you (numGap > 0)
+        if (rate <= -DEADBAND) {
+          // Chaser behind is closing the gap on you
+          arrowHtml = `<span class="gap-trend-arrow trend-chaser-closing">▲</span>`;
+          statusDesc = `Chaser closing (${Math.abs(rate).toFixed(2)}s/s)`;
+        } else if (rate >= DEADBAND) {
+          // You are pulling away from chaser behind
+          arrowHtml = `<span class="gap-trend-arrow trend-chaser-dropping">▼</span>`;
+          statusDesc = `Dropping chaser (+${rate.toFixed(2)}s/s)`;
+        }
+      }
+
+      return {
+        arrowHtml,
+        cellDangerClass,
+        tooltip: `${statusDesc} | Draft elastic snaps at ~2.5s`,
+        isElasticSnapDanger,
+        rateSecPerSec: rate
+      };
+    }
+
+    resetRedBtn.addEventListener('click', () => {
+      riderRedlineTimers.clear();
+      riderGapTrackers.clear();
+      riderPowerBaseline.clear();
+    });
+
+    let demoMode = false;
+    let demoTimer = null;
+    let demoTickCount = 0;
+    let demoSelfHr = 115;
+    let demoSelfHrDir = 3;
+    let demoClimbGrade = 0.045;
+    let demoClimbDir = 0.004;
+    let liveConnected = false;
+    let z567TriggerPct = 90; // Default 90% of Age Max HR = Entry to Zone 5/6/7
+
+    // =========================================================================
+    // Build 256-Colour Spectrum Lookup Table (LUT) for HR Bars
+    // =========================================================================
+    const MIN_HR_BPM = 55;
+    const HR_SPECTRUM_256 = build256ColourSpectrum();
+
+    function build256ColourSpectrum() {
+      const stops = [
+        { pos: 0.00, r: 20,  g: 95,  b: 255 },
+        { pos: 0.22, r: 0,   g: 210, b: 255 },
+        { pos: 0.45, r: 16,  g: 215, b: 85  },
+        { pos: 0.66, r: 250, g: 215, b: 15  },
+        { pos: 0.84, r: 255, g: 90,  b: 10  },
+        { pos: 1.00, r: 145, g: 0,   b: 0   }
+      ];
+
+      const palette = new Array(256);
+      for (let i = 0; i < 256; i++) {
+        const t = i / 255;
+        let s0 = stops[0];
+        let s1 = stops[stops.length - 1];
+        for (let j = 0; j < stops.length - 1; j++) {
+          if (t >= stops[j].pos && t <= stops[j + 1].pos) {
+            s0 = stops[j];
+            s1 = stops[j + 1];
+            break;
+          }
+        }
+        const localT = (s1.pos === s0.pos) ? 0 : (t - s0.pos) / (s1.pos - s0.pos);
+        const r = Math.round(s0.r + (s1.r - s0.r) * localT);
+        const g = Math.round(s0.g + (s1.g - s0.g) * localT);
+        const b = Math.round(s0.b + (s1.b - s0.b) * localT);
+        palette[i] = { r, g, b, css: `rgb(${r}, ${g}, ${b})` };
+      }
+      return palette;
+    }
+
+    function getSpectrumBarBackground(colorIdx, alpha = 0.92) {
+      const cEnd = HR_SPECTRUM_256[colorIdx];
+      const cMid = HR_SPECTRUM_256[Math.floor(colorIdx * 0.6)];
+      const cStart = HR_SPECTRUM_256[0];
+      return `linear-gradient(90deg, rgba(${cStart.r},${cStart.g},${cStart.b},${alpha * 0.75}) 0%, rgba(${cMid.r},${cMid.g},${cMid.b},${alpha * 0.88}) 50%, rgba(${cEnd.r},${cEnd.g},${cEnd.b},${alpha}) 100%)`;
+    }
+
+    function getHrToneMetrics(hr, minBpm, maxBpm) {
+      const numericHr = (hr != null && hr > 0) ? Number(hr) : minBpm;
+      const span = Math.max(10, maxBpm - minBpm);
+      const clamped = Math.max(minBpm, Math.min(maxBpm, numericHr));
+      const ratio = (clamped - minBpm) / span;
+      const colorIdx = Math.min(255, Math.max(0, Math.round(ratio * 255)));
+      const c = HR_SPECTRUM_256[colorIdx];
+      const fillPct = (hr != null && hr > 0) ? Math.max(6, Math.round(ratio * 100)) : 0;
+      return {
+        colorIdx,
+        fillPct,
+        r: c.r,
+        g: c.g,
+        b: c.b,
+        rgbCss: c.css
+      };
+    }
+
+    function getRiderAgeComputedMaxHr(ageVal, isSelf = false) {
+      const numericAge = Number(ageVal ?? (isSelf ? detectedSelfAthlete.age : null));
+      if (numericAge && numericAge > 10 && numericAge < 105) {
+        return Math.round(208 - (0.7 * numericAge));
+      }
+      return isSelf ? 160 : 185;
+    }
+
+    function getRiderZone567ThresholdBpm(ageVal, isSelf = false) {
+      const maxHr = getRiderAgeComputedMaxHr(ageVal, isSelf);
+      return Math.round(maxHr * (z567TriggerPct / 100));
+    }
+
+    function getRiderHrZoneInfo(hr, maxHr, z5ThresholdBpm) {
+      if (hr == null || hr <= 0 || !maxHr) {
+        return { zoneNum: 0, zoneLabel: '—', isInZone567: false, pctMax: null };
+      }
+      const pctMax = (hr / maxHr) * 100;
+      const isInZone567 = hr >= z5ThresholdBpm;
+
+      if (isInZone567) {
+        const span = Math.max(3, maxHr - z5ThresholdBpm);
+        const redRatio = (hr - z5ThresholdBpm) / span;
+        if (pctMax >= 98 || redRatio >= 0.75) {
+          return { zoneNum: 7, zoneLabel: 'Z7', isInZone567: true, pctMax: Math.round(pctMax) };
+        }
+        if (pctMax >= 94 || redRatio >= 0.38) {
+          return { zoneNum: 6, zoneLabel: 'Z6', isInZone567: true, pctMax: Math.round(pctMax) };
+        }
+        return { zoneNum: 5, zoneLabel: 'Z5', isInZone567: true, pctMax: Math.round(pctMax) };
+      }
+
+      if (pctMax >= 80) return { zoneNum: 4, zoneLabel: 'Z4', isInZone567: false, pctMax: Math.round(pctMax) };
+      if (pctMax >= 70) return { zoneNum: 3, zoneLabel: 'Z3', isInZone567: false, pctMax: Math.round(pctMax) };
+      if (pctMax >= 60) return { zoneNum: 2, zoneLabel: 'Z2', isInZone567: false, pctMax: Math.round(pctMax) };
+      return { zoneNum: 1, zoneLabel: 'Z1', isInZone567: false, pctMax: Math.round(pctMax) };
+    }
+
+    function parseClimbGradePct(rawGrade) {
+      if (rawGrade == null || Number.isNaN(Number(rawGrade))) return 0;
+      const g = Number(rawGrade);
+      return Math.abs(g) <= 0.45 ? (g * 100) : g;
+    }
+
+    function formatClimbHtml(gradePct) {
+      const rounded = gradePct.toFixed(1);
+      const sign = gradePct > 0.05 ? '+' : '';
+      let cls = 'climb-flat';
+      if (gradePct >= 8.0) cls = 'climb-hc';
+      else if (gradePct >= 5.0) cls = 'climb-steep';
+      else if (gradePct >= 2.0) cls = 'climb-moderate';
+      else if (gradePct <= -1.5) cls = 'climb-descent';
+      return `<span class="${cls}">${sign}${rounded}<span class="sub-unit">%</span></span>`;
+    }
+
+    function updateClimbWheelSitAdvisor(selfEntry, ridersAhead, nearestElasticSlipGap) {
+      if (!selfEntry) {
+        climbCoachPill.className = 'climb-coach-pill';
+        climbCoachPill.textContent = 'WAITING';
+        return;
+      }
+
+      const state = selfEntry.state || {};
+      const athlete = selfEntry.athlete || {};
+      const rawAge = athlete.age ?? detectedSelfAthlete.age;
+      const maxHr = getRiderAgeComputedMaxHr(rawAge, true);
+      const z567Threshold = getRiderZone567ThresholdBpm(rawAge, true);
+      const hr = state.heartrate ? Math.round(state.heartrate) : null;
+      const selfZone = getRiderHrZoneInfo(hr, maxHr, z567Threshold);
+      const draft = state.draft ? Math.round(state.draft) : 0;
+      const myGradePct = parseClimbGradePct(state.grade);
+
+      let aheadMaxGrade = myGradePct;
+      let aheadRedlining = false;
+      for (const r of ridersAhead) {
+        if (r.gap != null && r.gap >= -4.0 && r.gap < 0) {
+          const g = parseClimbGradePct(r.state?.grade);
+          if (g > aheadMaxGrade) aheadMaxGrade = g;
+          const rAge = r.athlete?.age;
+          const rZ567 = getRiderZone567ThresholdBpm(rAge, false);
+          if (r.state?.heartrate >= rZ567) aheadRedlining = true;
+        }
+      }
+
+      const headroomBpm = (hr !== null) ? (z567Threshold - hr) : 20;
+
+      if (selfZone.isInZone567) {
+        climbCoachPill.className = 'climb-coach-pill coach-danger';
+        climbCoachPill.textContent = `IN RED ${selfZone.zoneLabel} (>=${z567Threshold}bpm) - EASE 10-15W!`;
+      } else if (nearestElasticSlipGap !== null && headroomBpm >= 3) {
+        climbCoachPill.className = 'climb-coach-pill coach-warn';
+        climbCoachPill.textContent = `ELASTIC SLIPPING (${nearestElasticSlipGap.toFixed(1)}s ▼) - CLOSE WHEEL`;
+      } else if (myGradePct >= 2.0 && headroomBpm <= 4) {
+        if (aheadRedlining && myGradePct >= 5.0) {
+          climbCoachPill.className = 'climb-coach-pill coach-warn';
+          climbCoachPill.textContent = `CLIMB +${myGradePct.toFixed(1)}% | RIVAL IN Z5/6/7 - CAP <${z567Threshold}bpm`;
+        } else {
+          climbCoachPill.className = 'climb-coach-pill coach-warn';
+          climbCoachPill.textContent = `HIGH Z4 (${headroomBpm}bpm to Z5 Red) - SURF WHEEL (${draft}W)`;
+        }
+      } else if (aheadMaxGrade - myGradePct >= 1.5) {
+        climbCoachPill.className = 'climb-coach-pill coach-warn';
+        climbCoachPill.textContent = `RAMP AHEAD +${aheadMaxGrade.toFixed(1)}% - SHIFT & HOLD Z4`;
+      } else if (myGradePct >= 2.0) {
+        climbCoachPill.className = 'climb-coach-pill coach-safe';
+        climbCoachPill.textContent = draft >= 15
+          ? `CLIMB +${myGradePct.toFixed(1)}% | GOOD DRAFT (${draft}W) - SIT IN`
+          : `CLIMB +${myGradePct.toFixed(1)}% | PACE <=Z4 (<${z567Threshold}bpm)`;
+      } else {
+        climbCoachPill.className = 'climb-coach-pill coach-safe';
+        climbCoachPill.textContent = `${selfZone.zoneLabel !== '—' ? selfZone.zoneLabel : 'Z1-Z4'} SAFE (<${z567Threshold}bpm) | DRAFT ${draft}W`;
+      }
+    }
+
+    const atkSlider = document.getElementById('atkSlider');
+    const atkVal = document.getElementById('atkVal');
+
+    // Restore saved settings
+    renderPantoneGrid();
+    loadSavedColWidths();
+    const savedOpacity = localStorage.getItem('zwift_hud_opacity') || '0.55';
+    const savedScale = localStorage.getItem('zwift_hud_scale') || '1';
+    const savedZ567Pct = localStorage.getItem('zwift_hud_z567_pct') || '90';
+    const savedAtkWkg = localStorage.getItem('zwift_hud_atk_wkg') || '4.5';
+    const savedFtp5m = localStorage.getItem('zwift_hud_ftp5m_wkg') || '3.40';
+    const savedTtt1m = localStorage.getItem('zwift_hud_ttt1m_wkg') || '3.40';
+    const savedPantoneIdx = Number(localStorage.getItem('zwift_hud_pantone_idx') || '0');
+
+    setOpacity(savedOpacity);
+    setScale(savedScale);
+    setZ567Pct(savedZ567Pct);
+    setAtkWkg(savedAtkWkg);
+    setFtp5mTarget(savedFtp5m);
+    setTtt1mTarget(savedTtt1m);
+    applyPantoneColor(PANTONE_256_CHART[savedPantoneIdx] || PANTONE_256_CHART[0], false);
+
+    opacitySlider.value = savedOpacity;
+    scaleSlider.value = savedScale;
+    z3Slider.value = savedZ567Pct;
+    atkSlider.value = savedAtkWkg;
+
+    opacitySlider.addEventListener('input', (e) => setOpacity(e.target.value));
+    scaleSlider.addEventListener('input', (e) => setScale(e.target.value));
+    z3Slider.addEventListener('input', (e) => setZ567Pct(e.target.value));
+    atkSlider.addEventListener('input', (e) => setAtkWkg(e.target.value));
+
+    function setOpacity(val) {
+      document.documentElement.style.setProperty('--bg-opacity', val);
+      opacityVal.textContent = `${Math.round(val * 100)}%`;
+      localStorage.setItem('zwift_hud_opacity', val);
+    }
+
+    function setScale(val) {
+      document.documentElement.style.setProperty('--ui-scale', val);
+      localStorage.setItem('zwift_hud_scale', val);
+    }
+
+    function setZ567Pct(val) {
+      z567TriggerPct = Number(val);
+      z3Val.textContent = `${z567TriggerPct}%`;
+      localStorage.setItem('zwift_hud_z567_pct', val);
+    }
+
+    function setAtkWkg(val) {
+      attackWkgThreshold = Number(val);
+      atkVal.textContent = `${attackWkgThreshold.toFixed(1)}w/kg`;
+      localStorage.setItem('zwift_hud_atk_wkg', val);
+    }
+
+    function getWkgZoneClass(wkg) {
+      if (wkg >= 7.0) return 'z7';
+      if (wkg >= 5.5) return 'z6';
+      if (wkg >= 4.5) return 'z5';
+      if (wkg >= 3.4) return 'z4';
+      if (wkg >= 2.6) return 'z3';
+      if (wkg >= 1.8) return 'z2';
+      return 'z1';
+    }
+
+    function formatGapText(gapSec, isSelf) {
+      if (isSelf) return 'YOU';
+      if (gapSec == null || Number.isNaN(gapSec)) return '-';
+      const sign = gapSec > 0 ? '+' : '';
+      return `${sign}${gapSec.toFixed(1)}s`;
+    }
+
+    function renderRiders(nearbyList) {
+      if (!Array.isArray(nearbyList) || nearbyList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 18px; color:#ffffff; font-weight:700;">Waiting for nearby riders in Zwift...</td></tr>`;
+        return;
+      }
+
+      const nowMs = performance.now();
+
+      const watchedEntry = nearbyList.find(r => r && r.watching);
+      if (watchedEntry && watchedEntry.athlete) {
+        updateDetectedSelfAthlete(watchedEntry.athlete);
+      }
+
+      const sorted = [...nearbyList].sort((a, b) => (a.gap ?? 0) - (b.gap ?? 0));
+
+      const watchIdx = sorted.findIndex(r => r.watching);
+      let startIdx = 0;
+      if (watchIdx !== -1 && sorted.length > 16) {
+        startIdx = Math.max(0, Math.min(watchIdx - 7, sorted.length - 16));
+      }
+      const visibleRiders = sorted.slice(startIdx, startIdx + 16);
+
+      let nearestElasticSlipGap = null;
+      let selfLiveWkg = null;
+
+      const rowsHtml = visibleRiders.map((entry, rowIdx) => {
+        const athlete = entry.athlete || {};
+        const state = entry.state || {};
+        const isSelf = Boolean(entry.watching);
+
+        const name = athlete.sanitizedFullname || athlete.fullname ||
+          ([athlete.firstName, athlete.lastName].filter(Boolean).join(' ').trim()) ||
+          (isSelf && detectedSelfAthlete.name ? detectedSelfAthlete.name : `Rider #${entry.athleteId || ''}`);
+
+        const rawWeight = athlete.weight ?? (isSelf ? detectedSelfAthlete.weight : null);
+        const weight = (rawWeight != null && Number(rawWeight) > 0) ? Number(rawWeight) : null;
+
+        const rawAge = athlete.age ?? (isSelf ? detectedSelfAthlete.age : null);
+        const numericAge = (rawAge != null && Number(rawAge) > 0) ? Math.round(Number(rawAge)) : null;
+        const ageDisplay = numericAge !== null ? numericAge : '—';
+
+        const power = state.power != null ? Math.round(state.power) : 0;
+        const wkg = (weight && weight > 0) ? (power / weight) : null;
+        if (isSelf) selfLiveWkg = wkg;
+        const zoneClass = wkg != null ? getWkgZoneClass(wkg) : 'z1';
+
+        const riderKey = String(entry.athleteId ?? name);
+        const attackInfo = evaluateRiderAttack(riderKey, wkg, nowMs);
+
+        const hr = state.heartrate != null && state.heartrate > 0 ? Math.round(state.heartrate) : null;
+        const maxHr = getRiderAgeComputedMaxHr(numericAge, isSelf);
+        const z567ThresholdBpm = getRiderZone567ThresholdBpm(numericAge, isSelf);
+        const hrZoneInfo = getRiderHrZoneInfo(hr, maxHr, z567ThresholdBpm);
+        const isInZone567 = hrZoneInfo.isInZone567;
+
+        const redSecondsRaw = updateRiderRedlineSeconds(riderKey, isInZone567, nowMs);
+        const redSecondsInt = Math.round(redSecondsRaw);
+        const redFillPct = Math.min(100, Math.round((redSecondsRaw / MAX_REDLINE_SECONDS) * 100));
+
+        const draft = state.draft != null ? Math.round(state.draft) : 0;
+        const climbPct = parseClimbGradePct(state.grade);
+        const gap = entry.gap;
+        const gapBaseClass = isSelf ? 'gap-self' : (gap < 0 ? 'gap-ahead' : 'gap-behind');
+
+        // Evaluate Gap Split Velocity & Elastic Snap Warning
+        const gapTrend = evaluateRiderGapTrend(riderKey, gap, isSelf, nowMs);
+        if (gapTrend.isElasticSnapDanger && gap < 0 && (nearestElasticSlipGap === null || gap > nearestElasticSlipGap)) {
+          nearestElasticSlipGap = gap;
+        }
+
+        const gapCellClasses = [gapBaseClass, gapTrend.cellDangerClass].filter(Boolean).join(' ');
+
+        const rowClasses = [
+          isSelf ? 'watching' : '',
+          attackInfo.isAttacking ? 'rider-attack-row' : (isInZone567 ? 'hr-surge-row' : '')
+        ].filter(Boolean).join(' ');
+
+        const resizerFor = (colIdx) => rowIdx < 2 ? `<div class="row-col-resizer" data-col="${colIdx}" title="Drag to resize/concertina column"></div>` : '';
+        const attackBadgeHtml = attackInfo.isAttacking ? `<span class="attack-tag">ATK</span>` : '';
+
+        let riderCellHtml = '';
+
+        if (isSelf) {
+          const selfTone = getHrToneMetrics(hr, MIN_HR_BPM, maxHr);
+          const barBg = getSpectrumBarBackground(selfTone.colorIdx, 0.94);
+          const ambientBg = `linear-gradient(90deg, rgba(${selfTone.r},${selfTone.g},${selfTone.b},0.65) 0%, rgba(${selfTone.r},${selfTone.g},${selfTone.b},0.2) 100%)`;
+          const glowShadow = `0 0 12px rgba(${selfTone.r},${selfTone.g},${selfTone.b},0.75)`;
+
+          riderCellHtml = `
+            <td class="col-rider self-full-bar-cell" title="${name} | Age: ${ageDisplay} -> Max HR: ${maxHr} bpm (${hrZoneInfo.zoneLabel}) | Z5/6/7 Redline: >=${z567ThresholdBpm} bpm | Colour ${selfTone.colorIdx + 1}/256">
+              <div class="self-full-bar-ambient" style="background: ${ambientBg};"></div>
+              <div class="self-full-bar-fill" style="width: ${selfTone.fillPct}%; background: ${barBg}; box-shadow: ${glowShadow};"></div>
+              <div class="self-rider-label">
+                <span>${name}${attackBadgeHtml}</span>
+              </div>
+              ${resizerFor(0)}
+            </td>
+          `;
+        } else {
+          const rivalTone = getHrToneMetrics(hr, MIN_HR_BPM, maxHr);
+          const rivalBarBg = getSpectrumBarBackground(rivalTone.colorIdx, 0.95);
+          const z5TickPct = Math.max(0, Math.min(100, Math.round(((z567ThresholdBpm - MIN_HR_BPM) / Math.max(10, maxHr - MIN_HR_BPM)) * 100)));
+          const pctOfMax = hrZoneInfo.pctMax;
+
+          riderCellHtml = `
+            <td class="col-rider other-rider-cell" style="border-left: 3px solid ${hr !== null ? rivalTone.rgbCss : 'transparent'};" title="${name} | Age: ${ageDisplay} -> Max HR: ${maxHr} bpm (${pctOfMax ?? '—'}% Max, ${hrZoneInfo.zoneLabel}) | Z5/6/7 Trigger: >=${z567ThresholdBpm} bpm">
+              <div class="other-rider-label">
+                <span>${name}${attackBadgeHtml}</span>
+              </div>
+              <div class="other-hr-track">
+                <div class="other-hr-fill" style="width: ${rivalTone.fillPct}%; background: ${rivalBarBg};"></div>
+                <div class="other-hr-z3-tick" style="left: ${z5TickPct}%;" title="Zone 5/6/7 Redline Threshold (${z567ThresholdBpm} bpm)"></div>
+              </div>
+              ${resizerFor(0)}
+            </td>
+          `;
+        }
+
+        const redBoxClass = isInZone567
+          ? 'red-timer-box flashing-z45'
+          : (redSecondsInt > 0 ? 'red-timer-box cooling-down' : 'red-timer-box');
+
+        const activeRedZoneBadge = isInZone567
+          ? `<span class="red-zone-tag">${hrZoneInfo.zoneLabel}</span>`
+          : '';
+
+        const redCellHtml = `
+          <td class="col-red-cell" title="Time in Zone 5/6/7 Redline (>= ${z567ThresholdBpm} bpm for Age ${ageDisplay}, Max HR ${maxHr} bpm | Current: ${hrZoneInfo.zoneLabel}): ${redSecondsInt}s / 120s">
+            <div class="${redBoxClass}">
+              <div class="red-timer-fill" style="width: ${redFillPct}%;"></div>
+              <span class="red-timer-label">${activeRedZoneBadge}${redSecondsInt}s</span>
+            </div>
+            ${resizerFor(3)}
+          </td>
+        `;
+
+        return `
+          <tr class="${rowClasses}" title="${attackInfo.isAttacking ? attackInfo.attackReason : ''}">
+            ${riderCellHtml}
+            <td title="${wkg != null ? `${wkg.toFixed(2)} W/kg (${power}W)` : `${power}W`}">
+              ${wkg != null ? `<span class="wkg-badge ${zoneClass}">${wkg.toFixed(2)}</span>` : '—'}
+              ${resizerFor(1)}
+            </td>
+            <td title="Age ${ageDisplay} Formula Max HR: ${maxHr} bpm (${hrZoneInfo.zoneLabel}) | Zone 5/6/7 Redline: >=${z567ThresholdBpm} bpm">
+              ${hr !== null
+                ? `<span class="${isInZone567 ? 'hr-surge-badge' : ''}">${hr}</span><span class="sub-unit">bpm</span>`
+                : '—'}
+              ${resizerFor(2)}
+            </td>
+            ${redCellHtml}
+            <td>${ageDisplay}${resizerFor(4)}</td>
+            <td>${weight ? weight.toFixed(1) : '—'}<span class="sub-unit">kg</span>${resizerFor(5)}</td>
+            <td class="${draft > 0 ? 'draft-active' : ''}">
+              ${draft}<span class="sub-unit">W</span>${resizerFor(6)}
+            </td>
+            <td>${formatClimbHtml(climbPct)}${resizerFor(7)}</td>
+            <td class="${gapCellClasses}" title="${gapTrend.tooltip}">
+              <span>${formatGapText(gap, isSelf)}</span>${gapTrend.arrowHtml}${resizerFor(8)}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      updatePersonalPowerGauges(selfLiveWkg, nowMs);
+      const ridersAhead = sorted.filter(r => !r.watching && (r.gap ?? 0) < 0);
+      updateClimbWheelSitAdvisor(watchedEntry, ridersAhead, nearestElasticSlipGap);
+
+      tbody.innerHTML = rowsHtml;
+    }
+
+    // 1. Primary Connection: Sauce Native Common Module
+    async function initSauceConnection() {
+      try {
+        const common = await import('/pages/src/common.mjs');
+
+        if (common.rpc && typeof common.rpc.getAthlete === 'function') {
+          try {
+            const selfData = await common.rpc.getAthlete('watching') || await common.rpc.getAthlete('self');
+            if (selfData) updateDetectedSelfAthlete(selfData);
+          } catch (e) {}
+        }
+
+        try {
+          common.subscribe('athlete/watching', (data) => {
+            if (data && data.athlete) updateDetectedSelfAthlete(data.athlete);
+            else if (data) updateDetectedSelfAthlete(data);
+          });
+        } catch (e) {}
+
+        common.subscribe('nearby', (data) => {
+          if (demoMode) return;
+          liveConnected = true;
+          statusDot.className = 'status-dot live';
+          statusText.textContent = `Live (${data.length})`;
+          renderRiders(data);
+        });
+        statusDot.className = 'status-dot live';
+        statusText.textContent = 'Connected';
+        return;
+      } catch (err) {
+        connectDirectWebSocket();
+      }
+    }
+
+    // 2. Fallback Connection: Direct Sauce WebSocket on localhost:1080
+    function connectDirectWebSocket() {
+      const wsHost = location.host || 'localhost:1080';
+      const wsUrl = `ws://${wsHost}/api/ws/events`;
+      let ws;
+
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch (e) {
+        return;
+      }
+
+      ws.addEventListener('open', () => {
+        statusDot.className = 'status-dot live';
+        statusText.textContent = 'WS Live';
+        ws.send(JSON.stringify({
+          type: 'request',
+          uid: 'nearby-sub',
+          data: { method: 'subscribe', arg: { event: 'nearby' } }
+        }));
+        ws.send(JSON.stringify({
+          type: 'request',
+          uid: 'watching-sub',
+          data: { method: 'subscribe', arg: { event: 'athlete/watching' } }
+        }));
+      });
+
+      ws.addEventListener('message', (msg) => {
+        if (demoMode) return;
+        try {
+          const payload = JSON.parse(msg.data);
+          if (payload.type === 'event' && payload.data) {
+            if (Array.isArray(payload.data.data)) {
+              liveConnected = true;
+              statusDot.className = 'status-dot live';
+              statusText.textContent = `Live (${payload.data.data.length})`;
+              renderRiders(payload.data.data);
+            } else if (payload.data.data && payload.data.data.athlete) {
+              updateDetectedSelfAthlete(payload.data.data.athlete);
+            }
+          }
+        } catch (err) {}
+      });
+
+      ws.addEventListener('close', () => {
+        if (!demoMode) {
+          statusDot.className = 'status-dot';
+          statusText.textContent = 'Sauce Offline';
+          setTimeout(connectDirectWebSocket, 4000);
+        }
+      });
+    }
+
+    // 3. Simulated Demo Feed (Showcases Orange Attack Row, WKG-only, 5m 3.40 FTP Tank, 1m TTT Pull, and Z5/6/7 Redline)
+    const sampleRiders = [
+      // Attacking at ~5.20 W/kg & Zone 5 HR -> showcases Orange Full-Row Attack Alert with reversed dark text!
+      { id: 1, name: 'M. Van Der Poel', weight: 75.0, age: 31, baseGap: -2.3, gapAmp: 0.75, gapPhase: 0.0, basePwr: 390, baseHr: 172, baseDraft: 35, gradeOffset: 0.012 },
+      // Zone 4 HR (~158 bpm for Age 29) & ~3.65 W/kg -> stays calm (no red flash in Zone 4!)
+      { id: 2, name: 'J. Vingegaard', weight: 60.0, age: 29, baseGap: -1.7, gapAmp: 0.65, gapPhase: 1.5, basePwr: 220, baseHr: 158, baseDraft: 75, gradeOffset: 0.006 },
+      // High Zone 6 HR (~178 bpm for Age 28) at ~4.15 W/kg -> showcases Zone 5/6/7 Redline Flash!
+      { id: 3, name: 'T. Pogacar', weight: 66.0, age: 28, baseGap: -0.7, gapAmp: 0.35, gapPhase: 3.1, basePwr: 274, baseHr: 178, baseDraft: 95, gradeOffset: 0.003 },
+      // Active Rider (58.0 kg, Age 68 -> 3.40 W/kg = 197W) -> sweeps across 3.40 W/kg in Demo to test 5m FTP & 1m TTT Pull!
+      { id: 4, name: 'YOU (Active Rider)', weight: 58.0, age: 68, baseGap: 0.0, gapAmp: 0.0, gapPhase: 0.0, basePwr: 199, baseHr: 134, baseDraft: 115, gradeOffset: 0.0, watching: true },
+      // Normal Zone 4 race effort (~155 bpm) -> no red flash
+      { id: 5, name: 'W. van Aert', weight: 78.0, age: 32, baseGap: 0.5, gapAmp: 0.30, gapPhase: 0.8, basePwr: 295, baseHr: 155, baseDraft: 120, gradeOffset: -0.002 },
+      // Attacking from behind at ~4.85 W/kg -> showcases Orange Attack Row from chaser!
+      { id: 6, name: 'R. Evenepoel', weight: 61.5, age: 26, baseGap: 1.4, gapAmp: 0.55, gapPhase: 2.2, basePwr: 298, baseHr: 164, baseDraft: 85, gradeOffset: -0.005 },
+      // Pack tempo in Zone 3/4
+      { id: 7, name: 'P. Pidcock', weight: 58.0, age: 27, baseGap: 2.7, gapAmp: 0.60, gapPhase: 4.0, basePwr: 195, baseHr: 146, baseDraft: 55, gradeOffset: -0.008 }
+    ];
+
+    function toggleDemoMode() {
+      demoMode = !demoMode;
+      if (demoMode) {
+        riderRedlineTimers.clear();
+        riderGapTrackers.clear();
+        demoTickCount = 0;
+        demoSelfHr = 112;
+        demoSelfHrDir = 3;
+        demoClimbGrade = 0.035;
+        demoClimbDir = 0.005;
+        statusDot.className = 'status-dot demo';
+        statusText.textContent = 'Demo';
+        demoBtn.style.background = '#f97316';
+        updateDemoTick();
+        demoTimer = setInterval(updateDemoTick, 1000);
+      } else {
+        clearInterval(demoTimer);
+        demoBtn.style.background = '';
+        statusDot.className = liveConnected ? 'status-dot live' : 'status-dot';
+        statusText.textContent = liveConnected ? 'Live' : 'Waiting...';
+        renderRiders([]);
+      }
+    }
+
+    function updateDemoTick() {
+      demoTickCount += 1;
+      const selfDemoAge = detectedSelfAthlete.age || 68;
+      const selfDemoMaxHr = getRiderAgeComputedMaxHr(selfDemoAge, true);
+
+      demoSelfHr += demoSelfHrDir;
+      if (demoSelfHr >= selfDemoMaxHr) {
+        demoSelfHr = selfDemoMaxHr;
+        demoSelfHrDir = -3;
+      } else if (demoSelfHr <= 75) {
+        demoSelfHr = 75;
+        demoSelfHrDir = 3;
+      }
+
+      demoClimbGrade += demoClimbDir;
+      if (demoClimbGrade >= 0.095) {
+        demoClimbGrade = 0.095;
+        demoClimbDir = -0.005;
+      } else if (demoClimbGrade <= -0.02) {
+        demoClimbGrade = -0.02;
+        demoClimbDir = 0.005;
+      }
+
+      const simulated = sampleRiders.map(r => {
+        const wave = Math.sin((demoTickCount * 0.45) + r.gapPhase) * r.gapAmp;
+        const rawGap = r.watching ? 0 : (r.baseGap < 0 ? Math.min(-0.2, r.baseGap + wave) : Math.max(0.2, r.baseGap + wave));
+        return {
+          athleteId: r.id,
+          watching: !!r.watching,
+          gap: r.watching ? 0 : +rawGap.toFixed(2),
+          athlete: {
+            sanitizedFullname: r.watching ? (detectedSelfAthlete.name || r.name) : r.name,
+            weight: r.watching ? (detectedSelfAthlete.weight || r.weight) : r.weight,
+            age: r.watching ? selfDemoAge : r.age
+          },
+          state: {
+            power: Math.max(120, Math.round(r.basePwr + (Math.random() * 36 - 18))),
+            heartrate: r.watching ? demoSelfHr : Math.round(r.baseHr + (Math.random() * 6 - 3)),
+            draft: Math.max(0, Math.round(r.baseDraft + (Math.random() * 24 - 12))),
+            grade: demoClimbGrade + (r.gradeOffset || 0)
+          }
+        };
+      });
+      renderRiders(simulated);
+    }
+
+    demoBtn.addEventListener('click', toggleDemoMode);
+    initSauceConnection();
+  </script>
+</body>
+</html>
