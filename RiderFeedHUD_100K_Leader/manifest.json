@@ -3,13 +3,13 @@
   "name": "WOW 100K Leader & Sweeper Telemetry HUD",
   "description": "Nearby Athletes Light Blue Screenshot-Style HUD (v15) for D WOW 100K (2.00 W/kg & 37 kph): Settings Cogwheel (Font Size, Scale, Opacity, Pantone), 2-Second Auto-Closing Black Top Bar, Full Scrollable Riders, Yellow Lead Riders (LDR), and Red Sweep Riders (SWP).",
   "author": "Custom Zwift HUD",
-  "version": "15.0.0",
+  "version": "16.0.0",
   "web_root": "pages",
   "windows": [
     {
       "id": "wow-100k-leader-telemetry-hud",
-      "name": "WOW 100K Leader HUD v15 (Light Blue Screenshot | ⚙️ Settings | 2.0 • 37kph)",
-      "description": "Light Blue Nearby Athletes overlay for 100K TTT with ⚙️ Settings Cogwheel, Sizable Font, Scrollable Event Riders, Yellow Leaders (LDR), and Red Sweeps (SWP)",
+      "name": "WOW 100K Leader HUD v16 (Light Blue Screenshot | \u2699\ufe0f Settings | 2.0 \u2022 37kph)",
+      "description": "Light Blue Nearby Athletes overlay for 100K TTT with \u2699\ufe0f Settings Cogwheel, Sizable Font, Scrollable Event Riders, Yellow Leaders (LDR), and Red Sweeps (SWP)",
       "file": "pages/hud.html",
       "overlay": true,
       "frame": false,

@@ -3,13 +3,13 @@
   "name": "WOW 40K Recovery Leader & Sweeper HUD",
   "description": "Nearby Athletes Light Blue Screenshot-Style HUD (v15) for D WOW 40K Recovery (Max 2.40 W/kg): Settings Cogwheel (Font Size, Scale, Opacity, Pantone), 2-Second Auto-Closing Black Top Bar, Full Scrollable Riders, Yellow Lead Riders (LDR), and Red Sweep Riders (SWP).",
   "author": "Custom Zwift HUD",
-  "version": "15.0.0",
+  "version": "16.0.0",
   "web_root": "pages",
   "windows": [
     {
       "id": "wow-40k-recovery-telemetry-hud",
-      "name": "WOW 40K Recovery HUD v15 (Light Blue Screenshot | ⚙️ Settings | Max 2.4)",
-      "description": "Light Blue Nearby Athletes overlay for 40K Recovery with ⚙️ Settings Cogwheel, Sizable Font, Scrollable Event Riders, Yellow Leaders (LDR), and Red Sweeps (SWP)",
+      "name": "WOW 40K Recovery HUD v16 (Light Blue Screenshot | \u2699\ufe0f Settings | Max 2.4)",
+      "description": "Light Blue Nearby Athletes overlay for 40K Recovery with \u2699\ufe0f Settings Cogwheel, Sizable Font, Scrollable Event Riders, Yellow Leaders (LDR), and Red Sweeps (SWP)",
       "file": "pages/hud.html",
       "overlay": true,
       "frame": false,

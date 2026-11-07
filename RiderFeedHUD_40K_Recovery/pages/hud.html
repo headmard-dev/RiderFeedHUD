@@ -1972,7 +1972,7 @@
           <span id="leaderRadarName" class="radar-detail">YOU (Main)</span>
         </div>
         <div class="radar-right">
-          <span id="leaderRadarGap" class="radar-badge">2.00w/kg</span>
+          <span id="leaderRadarGap" class="radar-badge">2.40w/kg</span>
           <span id="leaderRadarRole" class="radar-badge" style="color:#facc15;">🟡 BEACON</span>
         </div>
       </div>
@@ -3293,7 +3293,7 @@
         ftp5mStatus.style.color = '#bbf7d0';
       }
 
-      // 2. Update Top-Right Banner: D WOW 100K Event Leader Pacer (2.00 W/kg Front Cap & 37 kph Group Speed)
+      // 2. Update Top-Right Banner: D WOW 40K Recovery Leader Pacer (Max 2.40 W/kg Front Cap & 35 kph Group Speed)
       const groupKph = metrics100k.groupSpeedKph ?? 0;
       const frontWkg = metrics100k.frontWkg ?? curWkg;
       const isLeaderOnFront = Boolean(metrics100k.isLeaderOnFront);
@@ -3708,7 +3708,7 @@
           sweepRadarAction.style.color = '#fde047';
         } else {
           sweepRadarCard.className = 'radar-card radar-ok';
-          sweepRadarAction.textContent = 'HOLD 2.0';
+          sweepRadarAction.textContent = 'HOLD 2.4';
           sweepRadarAction.style.color = '#4ade80';
         }
       } else if (sweepRadarCard) {
@@ -4124,10 +4124,10 @@
 
         const ldrBtnHtml = !isSelf
           ? `<button type="button" class="ldr-pin-btn ${leaderInfo.isLeader ? 'active-ldr' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a Yellow Beacon Leader / Co-Leader (highlights their row in BEACON YELLOW & pins them at the top)">${leaderInfo.isLeader ? (leaderInfo.isOfficialBeacon ? '🟡LDR' : '👑CO') : 'LDR'}</button>`
-          : `<span class="self-beacon-badge" title="${leaderInfo.isOfficialBeacon ? 'Zwift Official Yellow Beacon Active on YOU' : 'Main 100K Event Leader (YOU)'}">${leaderInfo.isOfficialBeacon ? '🟡👑 LDR' : '👑 LDR'}</span>`;
+          : `<span class="self-beacon-badge" title="${leaderInfo.isOfficialBeacon ? 'Zwift Official Yellow Beacon Active on YOU' : 'Main 40K Recovery Leader (YOU)'}">${leaderInfo.isOfficialBeacon ? '🟡👑 LDR' : '👑 LDR'}</span>`;
 
         const swpBtnHtml = !isSelf
-          ? `<button type="button" class="swp-pin-btn ${sweepInfo.isSweep ? 'active-swp' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a WOW 100K Sweep (highlights their row in ORANGE & pins them at the bottom)">${sweepInfo.isSweep ? '🧹SWP' : 'SWP'}</button>`
+          ? `<button type="button" class="swp-pin-btn ${sweepInfo.isSweep ? 'active-swp' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a WOW 40K Sweep (highlights their row in RED & pins them at the bottom)">${sweepInfo.isSweep ? '🧹SWP' : 'SWP'}</button>`
           : '';
 
         const rowClasses = [

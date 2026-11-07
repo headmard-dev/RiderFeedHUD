@@ -2030,8 +2030,7 @@
             <input id="inputRaceElev" class="pwr-num-input" type="number" step="5" min="0" max="5000" value="209" title="Race Elevation Gain in metres (Tonight: 209 m)" />
             <span style="font-size:0.80em;">m</span>
             <button id="presetRaceBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;">22.5K Race</button>
-            <button id="preset40kBtn" class="btn-toggle" type="button">40K Rec</button>
-            <button id="preset100kBtn" class="btn-toggle" type="button">100K TTT</button>
+            
           </div>
         </div>
 
@@ -2041,7 +2040,7 @@
           <div class="settings-control">
             <input id="riderFilterInput" class="rider-filter-input" type="text" placeholder="Filter name/cat…" title="Filter riders by name or category (e.g. Cat B, Cat C)" />
             <button id="pagedModeBtn" class="btn-toggle" type="button" title="Toggle between Full Scrollable Rider List and Paged View">📄 Paged: OFF</button>
-            <button id="toggleBannersBtn" class="btn-toggle" type="button" style="background: rgba(56, 189, 248, 0.35); border-color: #38bdf8;" title="Show or Hide the Top Pacer & Sweep Radar Banners">Banners: ON</button>
+            <button id="toggleBannersBtn" class="btn-toggle" type="button" style="background: rgba(56, 189, 248, 0.35); border-color: #38bdf8;" title="Show or Hide the Top Power Curve & Course Cards">Banners: ON</button>
             <button id="pinRibbonBtn" class="btn-toggle" type="button" title="Pin the top black bar open permanently or auto-hide after 2 seconds">📌 Top Bar: Pin</button>
             <span id="ribbonTimerBadge" class="ribbon-timer-badge" style="display:none;">2s</span>
           </div>
@@ -2287,7 +2286,7 @@
         <button id="nextPageBtn" class="btn-win" type="button" title="Next Page (PageDown)">Next ▶</button>
       </div>
       <div class="paged-nav-controls">
-        <button id="autoFlipPageBtn" class="btn-win" type="button" title="Automatically flip between Page 1 (Front Pack) and Page 2 (Back & Sweeps) every 6 seconds">⟳ Auto-Flip: OFF</button>
+        <button id="autoFlipPageBtn" class="btn-win" type="button" title="Automatically flip between Page 1 (Front Pack) and Page 2 (Chasers & Pack) every 6 seconds">⟳ Auto-Flip: OFF</button>
         <button id="rowsPerPageBtn" class="btn-win" type="button" title="Change number of riders shown per page (6 / 8 / 10)">8 / Page</button>
       </div>
     </div>
@@ -2458,7 +2457,7 @@
     const autoFlipPageBtn = document.getElementById('autoFlipPageBtn');
     const rowsPerPageBtn = document.getElementById('rowsPerPageBtn');
 
-    let pagedModeEnabled = localStorage.getItem('zwift_40k_hud_paged_mode') === '1';
+    let pagedModeEnabled = localStorage.getItem('zwift_race_hud_paged_mode') === '1';
     let currentPageIdx = 0;
     let totalPagesCount = 1;
     const PAGE_SIZE_OPTIONS = [6, 8, 10];
@@ -2485,7 +2484,7 @@
       pagedModeBtn.addEventListener('click', () => {
         pagedModeEnabled = !pagedModeEnabled;
         currentPageIdx = 0;
-        localStorage.setItem('zwift_40k_hud_paged_mode', pagedModeEnabled ? '1' : '0');
+        localStorage.setItem('zwift_race_hud_paged_mode', pagedModeEnabled ? '1' : '0');
         updatePagedModeUI();
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
@@ -2614,7 +2613,7 @@
         hudContainer.classList.toggle('hud-minimized', isHudMinimized);
         minimizeHudBtn.classList.toggle('active-mode', isHudMinimized);
         minimizeHudBtn.textContent = isHudMinimized ? '▢ Expand' : '—';
-        minimizeHudBtn.title = isHudMinimized ? 'Expand Rider Table' : 'Minimize / Collapse Rider Table (Shows only Top 40K Banners)';
+        minimizeHudBtn.title = isHudMinimized ? 'Expand Rider Table' : 'Minimize / Collapse Rider Table (Shows only Top Race Cards)';
       });
     }
 
@@ -2665,7 +2664,7 @@
 
     let colWidths = [...DEFAULT_COL_WIDTHS];
     let prevColWidthsBeforeFold = [...DEFAULT_COL_WIDTHS];
-    let autoResizeEnabled = localStorage.getItem('zwift_40k_hud_auto_resize') !== '0';
+    let autoResizeEnabled = localStorage.getItem('zwift_race_hud_auto_resize') !== '0';
     let currentWinScale = 1.0;
     let currentMonScale = 1.0;
 
@@ -2683,7 +2682,7 @@
 
     autoScaleBtn.addEventListener('click', () => {
       autoResizeEnabled = !autoResizeEnabled;
-      localStorage.setItem('zwift_40k_hud_auto_resize', autoResizeEnabled ? '1' : '0');
+      localStorage.setItem('zwift_race_hud_auto_resize', autoResizeEnabled ? '1' : '0');
       updateAutoResizeButtonUI();
       recalcWindowAndTextScale();
       applyColWidths(false);
@@ -2848,7 +2847,7 @@
           winWidth: window.outerWidth,
           winHeight: window.outerHeight
         };
-        localStorage.setItem(`zwift_40k_hud_mon_pref_${activeMonitorKey}`, JSON.stringify(payload));
+        localStorage.setItem(`zwift_race_hud_mon_pref_${activeMonitorKey}`, JSON.stringify(payload));
       } catch (e) {}
     }
 
@@ -2865,7 +2864,7 @@
 
       // Check if user has a saved scale/size preference specifically for this monitor (e.g. 4K vs Laptop)
       try {
-        const savedMonRaw = localStorage.getItem(`zwift_40k_hud_mon_pref_${profile.key}`);
+        const savedMonRaw = localStorage.getItem(`zwift_race_hud_mon_pref_${profile.key}`);
         if (savedMonRaw) {
           const savedMon = JSON.parse(savedMonRaw);
           if (savedMon && savedMon.uiScale) {
@@ -3046,7 +3045,7 @@
       });
 
       if (save) {
-        localStorage.setItem('zwift_40k_hud_pantone_idx', String(swatch.index));
+        localStorage.setItem('zwift_race_hud_pantone_idx', String(swatch.index));
       }
     }
 
@@ -3213,13 +3212,13 @@
     let threshPulseMode = localStorage.getItem('zwift_race_pulse_mode') || '20m';
 
     // Pinned Leaders/Co-Leaders (Beacon Yellow) & Pinned Sweeps (Red) + Subgroup Category Cache
-    const pinnedLeaders = new Set(JSON.parse(localStorage.getItem('zwift_40k_pinned_leaders') || '[]'));
+    const pinnedLeaders = new Set(JSON.parse(localStorage.getItem('zwift_race_pinned_leaders') || '[]'));
     const unpinnedAutoLeaders = new Set();
-    let customLeaderNameFilter = localStorage.getItem('zwift_40k_leader_name_filter') || '';
+    let customLeaderNameFilter = localStorage.getItem('zwift_race_leader_name_filter') || '';
 
-    const pinnedSweeps = new Set(JSON.parse(localStorage.getItem('zwift_40k_pinned_sweeps') || '[]'));
+    const pinnedSweeps = new Set(JSON.parse(localStorage.getItem('zwift_race_pinned_sweeps') || '[]'));
     const unpinnedAutoSweeps = new Set();
-    let customSweepNameFilter = localStorage.getItem('zwift_40k_sweep_name_filter') || '';
+    let customSweepNameFilter = localStorage.getItem('zwift_race_sweep_name_filter') || '';
     let lastRenderedNearbyList = [];
     const subgroupCategoryCache = new Map();
     let sauceRpcRef = null;
@@ -3296,7 +3295,7 @@
       leaderNameInput.value = customLeaderNameFilter;
       leaderNameInput.addEventListener('input', (e) => {
         customLeaderNameFilter = String(e.target.value || '').trim();
-        localStorage.setItem('zwift_40k_leader_name_filter', customLeaderNameFilter);
+        localStorage.setItem('zwift_race_leader_name_filter', customLeaderNameFilter);
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
     }
@@ -3305,20 +3304,20 @@
       sweepNameInput.value = customSweepNameFilter;
       sweepNameInput.addEventListener('input', (e) => {
         customSweepNameFilter = String(e.target.value || '').trim();
-        localStorage.setItem('zwift_40k_sweep_name_filter', customSweepNameFilter);
+        localStorage.setItem('zwift_race_sweep_name_filter', customSweepNameFilter);
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
     }
 
     function savePinnedLeaders() {
       try {
-        localStorage.setItem('zwift_40k_pinned_leaders', JSON.stringify([...pinnedLeaders]));
+        localStorage.setItem('zwift_race_pinned_leaders', JSON.stringify([...pinnedLeaders]));
       } catch (e) {}
     }
 
     function savePinnedSweeps() {
       try {
-        localStorage.setItem('zwift_40k_pinned_sweeps', JSON.stringify([...pinnedSweeps]));
+        localStorage.setItem('zwift_race_pinned_sweeps', JSON.stringify([...pinnedSweeps]));
       } catch (e) {}
     }
 
@@ -3328,14 +3327,14 @@
         unpinnedAutoLeaders.clear();
         customLeaderNameFilter = '';
         if (leaderNameInput) leaderNameInput.value = '';
-        localStorage.setItem('zwift_40k_leader_name_filter', '');
+        localStorage.setItem('zwift_race_leader_name_filter', '');
         savePinnedLeaders();
 
         pinnedSweeps.clear();
         unpinnedAutoSweeps.clear();
         customSweepNameFilter = '';
         if (sweepNameInput) sweepNameInput.value = '';
-        localStorage.setItem('zwift_40k_sweep_name_filter', '');
+        localStorage.setItem('zwift_race_sweep_name_filter', '');
         savePinnedSweeps();
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
@@ -3548,7 +3547,7 @@
     function setGroupTargetKph(val) {
       groupTargetKph = Math.max(20, Math.min(55, Math.round(Number(val))));
       if (kphTargetText) kphTargetText.textContent = `${groupTargetKph}kph`;
-      localStorage.setItem('zwift_40k_hud_target_kph', String(groupTargetKph));
+      localStorage.setItem('zwift_race_hud_target_kph', String(groupTargetKph));
     }
 
     function updateRibbonDriverBtnUI() {
@@ -4355,7 +4354,7 @@
     const riderFilterInput = document.getElementById('riderFilterInput');
 
     let riderSearchFilterText = '';
-    let showTacticalBanners = localStorage.getItem('zwift_40k_hud_show_banners') !== '0';
+    let showTacticalBanners = localStorage.getItem('zwift_race_hud_show_banners') !== '0';
 
     function updateBannersVisibilityUI() {
       hudContainer.classList.toggle('hide-tactical-banners', !showTacticalBanners);
@@ -4369,7 +4368,7 @@
     if (toggleBannersBtn) {
       toggleBannersBtn.addEventListener('click', () => {
         showTacticalBanners = !showTacticalBanners;
-        localStorage.setItem('zwift_40k_hud_show_banners', showTacticalBanners ? '1' : '0');
+        localStorage.setItem('zwift_race_hud_show_banners', showTacticalBanners ? '1' : '0');
         updateBannersVisibilityUI();
       });
     }
@@ -4411,7 +4410,7 @@
       const px = Math.max(10, Math.min(24, Number(val) || 14));
       document.documentElement.style.setProperty('--base-font-px', `${px}px`);
       if (fontSizeVal) fontSizeVal.textContent = `${px.toFixed(1)}px`;
-      localStorage.setItem('zwift_40k_hud_font_px', String(px));
+      localStorage.setItem('zwift_race_hud_font_px', String(px));
     }
 
 // Top black banner defaults to 2-second auto-close (can be pinned inside ⚙️ Settings)
@@ -4419,7 +4418,7 @@
     // Restore saved settings
     renderPantoneGrid();
     loadSavedColWidths();
-    const savedFontPx = localStorage.getItem('zwift_40k_hud_font_px') || '14';
+    const savedFontPx = localStorage.getItem('zwift_race_hud_font_px') || '14';
     const savedOpacity = localStorage.getItem('zwift_race_hud_opacity') || '0.90';
     const savedScale = localStorage.getItem('zwift_race_hud_scale') || '1';
     const savedZ567Pct = localStorage.getItem('zwift_race_hud_z567_pct') || '90';
@@ -4459,26 +4458,26 @@
     function setOpacity(val) {
       document.documentElement.style.setProperty('--bg-opacity', val);
       opacityVal.textContent = `${Math.round(val * 100)}%`;
-      localStorage.setItem('zwift_40k_hud_opacity', val);
+      localStorage.setItem('zwift_race_hud_opacity', val);
     }
 
     function setScale(val) {
       document.documentElement.style.setProperty('--ui-scale', val);
       if (scaleVal) scaleVal.textContent = `${Math.round(Number(val) * 100)}%`;
-      localStorage.setItem('zwift_40k_hud_scale', val);
+      localStorage.setItem('zwift_race_hud_scale', val);
       savePerMonitorPreferences();
     }
 
     function setZ567Pct(val) {
       z567TriggerPct = Number(val);
       z3Val.textContent = `${z567TriggerPct}%`;
-      localStorage.setItem('zwift_40k_hud_z567_pct', val);
+      localStorage.setItem('zwift_race_hud_z567_pct', val);
     }
 
     function setAtkWkg(val) {
       attackWkgThreshold = Number(val);
       atkVal.textContent = `${attackWkgThreshold.toFixed(1)}w/kg`;
-      localStorage.setItem('zwift_40k_hud_atk_wkg', val);
+      localStorage.setItem('zwift_race_hud_atk_wkg', val);
     }
 
     function getWkgZoneClass(wkg) {
@@ -4542,7 +4541,7 @@
         visibleRiders = filteredSorted.slice(pStart, pStart + pageSize);
 
         if (pageIndicatorPill) {
-          const pageDesc = currentPageIdx === 0 ? 'Front & Main Pack' : (currentPageIdx === totalPagesCount - 1 ? 'Tail, Sweeps & Chasers' : 'Mid Pack');
+          const pageDesc = currentPageIdx === 0 ? 'Front & Lead Group' : (currentPageIdx === totalPagesCount - 1 ? 'Chasers & Tail' : 'Mid Pack');
           pageIndicatorPill.textContent = `Page ${currentPageIdx + 1} / ${totalPagesCount} • ${pageDesc} (${filteredSorted.length} riders)`;
         }
         if (pagedModeBtn) {

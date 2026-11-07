@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zwift 22.5K Race & 209m Climb HUD (1m: 4.23 | 5m: 3.40 | 20m: 2.98 W/kg)</title>
+  <title>WOW 100K Leader & Sweeper HUD (2.00 W/kg Front • 37 kph)</title>
   <style>
     :root {
       --bg-opacity: 0.90;
@@ -160,104 +160,20 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
     }
 
-    /* Dedicated 'My Position' Box in Top Bar (Matches Green Prototype Box in Screenshot) */
-    .my-position-top-box {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 2px 11px;
-      border-radius: 5px;
-      background: linear-gradient(90deg, #09131c 0%, #0f291e 100%);
-      border: 2px solid #22c55e;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.55), inset 0 0 4px rgba(34, 197, 94, 0.35);
-      font-family: var(--font-num);
-      font-size: 0.92em;
-      font-weight: 900;
-      color: #ffffff;
-      white-space: nowrap;
-      -webkit-app-region: no-drag;
-    }
-
-    .my-pos-label {
-      font-family: var(--font-ui);
-      font-size: 0.82em;
-      font-weight: 900;
-      color: #4ade80;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .my-pos-overall {
-      font-size: 1.08em;
-      font-weight: 900;
-      color: #fde047;
-      letter-spacing: 0.3px;
-    }
-
-    .my-pos-divider {
-      color: rgba(255, 255, 255, 0.35);
-      font-weight: 400;
-    }
-
-    .my-pos-cat {
-      padding: 0 5px;
-      border-radius: 3px;
-      background: #2563eb;
-      color: #ffffff;
-      font-size: 0.88em;
-      font-weight: 900;
-      border: 1px solid rgba(255, 255, 255, 0.45);
-    }
-
-    .my-pos-bwheel {
-      font-size: 0.84em;
-      font-weight: 800;
-      color: #86efac;
-    }
-
-    /* Per-Row Road Position Number Badge (1, 2, 3... down the list) */
-    .rider-pos-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 1.75em;
-      height: 1.38em;
-      margin-right: 5px;
-      padding: 0 3px;
-      border-radius: 3px;
-      background: rgba(9, 13, 22, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #e2e8f0;
-      font-family: var(--font-num);
-      font-size: 0.84em;
-      font-weight: 900;
-      text-shadow: none !important;
-      vertical-align: middle;
-    }
-
-    .rider-pos-num.pos-1 { background: #facc15; color: #090d16 !important; border-color: #ffffff; }
-    .rider-pos-num.pos-2 { background: #e2e8f0; color: #090d16 !important; border-color: #ffffff; }
-    .rider-pos-num.pos-3 { background: #fb923c; color: #090d16 !important; border-color: #ffffff; }
-    .rider-pos-num.pos-self {
-      background: #090d16;
-      color: #4ade80 !important;
-      border: 1.5px solid #22c55e;
-      padding: 0 5px;
-      box-shadow: 0 0 6px rgba(34, 197, 94, 0.65);
-    }
-
     .rider-filter-input {
       background: #0d0f12;
       color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 5px;
       padding: 3px 9px;
       font-family: var(--font-ui);
       font-size: 0.88em;
       font-weight: 600;
-      width: 135px;
+      width: 145px;
+      max-width: 32vw;
       outline: none;
       -webkit-app-region: no-drag;
+      transition: border-color 0.15s ease, width 0.15s ease;
     }
 
     .rider-filter-input::placeholder {
@@ -876,37 +792,9 @@
       background: rgba(255, 255, 255, 0.12);
     }
 
-    /* =========================================================================
-       ACTIVE RIDER (YOU) FULL-ROW SCALABLE RIBBON (GREEN Z1 -> ORANGE Z3/4 -> RED Z5/6/7)
-       + GENTLE RED PULSE AT THRESHOLD ALL THE WAY ACROSS THE ROW
-       ========================================================================= */
-    @keyframes selfThresholdRedPulse {
-      0%, 100% {
-        box-shadow: inset 0 0 0 1.5px rgba(254, 202, 202, 0.65), 0 0 8px rgba(220, 38, 38, 0.45);
-        filter: brightness(0.97) saturate(1.0);
-      }
-      50% {
-        box-shadow: inset 0 0 0 2.5px #fecaca, 0 0 20px rgba(239, 68, 68, 0.92);
-        filter: brightness(1.15) saturate(1.18);
-      }
-    }
-
     tbody tr.watching {
-      font-weight: 900;
-      border-top: 2px solid rgba(255, 255, 255, 0.90) !important;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.90) !important;
-      transition: background 0.22s ease, box-shadow 0.22s ease;
-    }
-
-    tbody tr.watching td {
-      background: transparent !important;
-      color: #ffffff !important;
-      font-weight: 900 !important;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.98), 0 0 8px rgba(0, 0, 0, 0.92) !important;
-    }
-
-    tbody tr.watching.self-threshold-pulse {
-      animation: selfThresholdRedPulse 2.0s infinite ease-in-out !important;
+      background: rgba(var(--bg-r), var(--bg-g), var(--bg-b), calc(var(--bg-opacity) * 0.9));
+      font-weight: 800;
     }
 
     /* Upgraded Crisp Telemetry Fonts Across All Table Cells & Numeric Badges */
@@ -1096,8 +984,8 @@
       vertical-align: middle;
       overflow: hidden;
       border-radius: 4px 0 0 4px;
-      background: transparent !important;
-      border-right: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(10, 14, 22, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .self-full-bar-fill {
@@ -1194,26 +1082,12 @@
        ========================================================================= */
     .personal-tactical-bar {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1.15fr;
-      gap: 5px;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
       padding: 4px 8px 3px 8px;
-      background: rgba(8, 78, 128, 0.94);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+      background: rgba(8, 78, 128, 0.92);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.24);
       user-select: none;
-    }
-
-    .pwr-num-input {
-      width: 52px;
-      background: rgba(9, 13, 22, 0.9);
-      color: #fde047;
-      border: 1px solid rgba(56, 189, 248, 0.65);
-      border-radius: 4px;
-      padding: 2px 4px;
-      font-family: var(--font-num);
-      font-size: 0.92em;
-      font-weight: 900;
-      text-align: center;
-      outline: none;
     }
 
     /* Row 2B: Official Yellow Leader/Co-Leader + Red Sweep + Chasing B/C Groups Radar Bar */
@@ -1443,35 +1317,22 @@
       box-shadow: 0 0 6px rgba(249, 115, 22, 0.85);
     }
 
-    thead th.col-cat,
-    tbody td.col-cat-cell {
-      text-align: center !important;
-      padding-left: 3px !important;
-      padding-right: 3px !important;
-    }
-
     .cat-tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 1.65em;
-      height: 1.45em;
-      padding: 0 0.35em;
-      border-radius: 4px;
-      font-family: var(--font-ui);
-      font-size: 0.88em;
+      display: inline-block;
+      margin-right: 3px;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-size: 0.70em;
       font-weight: 900;
       color: #ffffff !important;
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      text-shadow: none !important;
       vertical-align: middle;
     }
-    .cat-A { background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); }
-    .cat-B { background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%); }
-    .cat-C { background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%); }
-    .cat-D { background: linear-gradient(180deg, #facc15 0%, #ca8a04 100%); color: #090d16 !important; text-shadow: none !important; }
-    .cat-E { background: linear-gradient(180deg, #a855f7 0%, #7c3aed 100%); }
+    .cat-A { background: #dc2626; }
+    .cat-B { background: #16a34a; }
+    .cat-C { background: #2563eb; }
+    .cat-D { background: #ca8a04; color: #090d16 !important; }
+    .cat-E { background: #7c3aed; }
 
     .tactical-card {
       position: relative;
@@ -1918,14 +1779,7 @@
       <div class="top-bar-left">
         <span class="sauce-bottle-icon" title="Drag anywhere on this black bar to move the HUD window">🌶️</span>
         <span class="window-main-title">Nearby Athletes</span>
-        <!-- MY POSITION BOX (Placed in the exact green prototype box location from your screenshot) -->
-        <div id="myRacePositionBox" class="my-position-top-box" title="Your Live Race Position: Overall Open Road Position (#1 is top rider on road), Your Category Position, and Nearest Cat B Wheel Ahead">
-          <span class="my-pos-label">POS</span>
-          <span id="myPosOverallText" class="my-pos-overall">7 / 22</span>
-          <span class="my-pos-divider">|</span>
-          <span id="myPosCatBadge" class="my-pos-cat" title="Your Position within Your Category">C #5</span>
-          <span id="myPosBWheelText" class="my-pos-bwheel" title="Time gap to nearest Category B wheel ahead">B: -0.9s</span>
-        </div>
+        <input id="riderFilterInput" class="rider-filter-input" type="text" placeholder="filter" title="Filter scrollable riders by name or category (e.g. Robertson, Cat C, LDR, SWP)" />
         <span id="statusDot" class="status-dot" title="Sauce Telemetry Status"></span>
         <span id="statusText" style="font-size: 0.78em; font-weight: 800; color: #cbd5e1;">Connecting...</span>
         <span id="climbCoachPill" class="climb-coach-pill" title="Live Climb, Draft & Elastic Snap Pacing Advisor">PACE OK</span>
@@ -1999,47 +1853,19 @@
           </div>
         </div>
 
-        <!-- 5A. Personal Power Profile (1m / 5m / 20m W/kg from ZwiftPower Screenshot) -->
-        <div class="settings-row" title="Enter your 1-Minute, 5-Minute, and 20-Minute W/kg Power Targets (Pre-loaded from your ZwiftPower profile: 4.23 / 3.40 / 2.98 W/kg)">
-          <span class="settings-label">⚡ My 1m / 5m / 20m W/kg</span>
+        <!-- 5B. Event Preset (40K Recovery Max 2.4 W/kg vs 100K TTT 2.0 W/kg • 37 kph) -->
+        <div class="settings-row" title="Switch Event Pacer Preset between 40K Recovery (Max 2.40 W/kg) and 100K TTT (2.00 W/kg & 37 kph)">
+          <span class="settings-label">🏁 Event Mode Preset</span>
           <div class="settings-control">
-            <span style="font-size:0.82em; color:#cbd5e1;">1m:</span>
-            <input id="input1mWkg" class="pwr-num-input" type="number" step="0.01" min="1.5" max="12.0" value="4.23" title="1-Minute W/kg (Screenshot: 4.23 W/kg = 244W)" />
-            <span style="font-size:0.82em; color:#cbd5e1;">5m:</span>
-            <input id="input5mWkg" class="pwr-num-input" type="number" step="0.01" min="1.5" max="8.0" value="3.40" title="5-Minute W/kg (Screenshot: 3.40 W/kg = 196W)" />
-            <span style="font-size:0.82em; color:#cbd5e1;">20m:</span>
-            <input id="input20mWkg" class="pwr-num-input" type="number" step="0.01" min="1.2" max="6.5" value="2.98" title="20-Minute Threshold W/kg (Screenshot: 2.98 W/kg = 172W)" />
+            <button id="preset100kBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;">100K TTT (2.0 • 37kph)</button>
+            <button id="preset40kBtn" class="btn-toggle" type="button">40K Recovery (Max 2.4)</button>
           </div>
         </div>
 
-        <!-- 5B. Full-Row Ribbon Colour & Threshold Gentle Red Pulse Mode -->
-        <div class="settings-row" title="Configure your Full-Row Ribbon (Green Z1 -> Orange Z3/4 -> Red Z5/6/7) and when it gently pulses Red">
-          <span class="settings-label">🌈 My Row Ribbon & Pulse</span>
+        <!-- 6. Rider List Scrolling, Paged View & Tactical Banner Visibility -->
+        <div class="settings-row" title="Switch between Full Scrollable Event List and Paged View, or show/hide top banners">
+          <span class="settings-label">📜 List View & Banners</span>
           <div class="settings-control">
-            <button id="ribbonDriverBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;" title="Cycle what drives your Full-Row Ribbon colour (W/kg Power [Option A], W/kg + HR Combined, or HR Only)">Driver: W/kg Power</button>
-            <button id="threshPulseModeBtn" class="btn-toggle" type="button" style="background: rgba(239, 68, 68, 0.45); border-color: #f87171;" title="Cycle when your row gently pulses Red (At 20m Threshold >=2.98 W/kg, At 5m >=3.40 W/kg, or Off)">Pulse: >=20m (2.98)</button>
-          </div>
-        </div>
-
-        <!-- 5C. Race Course Distance (22.5 km) & Climbing (209 m) + Presets -->
-        <div class="settings-row" title="Set Race Distance (km) and Total Climbing (m), or switch event presets">
-          <span class="settings-label">🏔️ Course (22.5K / 209m)</span>
-          <div class="settings-control">
-            <input id="inputRaceKm" class="pwr-num-input" type="number" step="0.5" min="1" max="250" value="22.5" title="Race Distance in km (Tonight: 22.5 km)" />
-            <span style="font-size:0.80em;">km</span>
-            <input id="inputRaceElev" class="pwr-num-input" type="number" step="5" min="0" max="5000" value="209" title="Race Elevation Gain in metres (Tonight: 209 m)" />
-            <span style="font-size:0.80em;">m</span>
-            <button id="presetRaceBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;">22.5K Race</button>
-            <button id="preset40kBtn" class="btn-toggle" type="button">40K Rec</button>
-            <button id="preset100kBtn" class="btn-toggle" type="button">100K TTT</button>
-          </div>
-        </div>
-
-        <!-- 6. Rider List Scrolling, Filter, Paged View & Tactical Banner Visibility -->
-        <div class="settings-row" title="Filter riders, switch between Full Scrollable Event List and Paged View, or show/hide top banners">
-          <span class="settings-label">📜 List, Filter & Banners</span>
-          <div class="settings-control">
-            <input id="riderFilterInput" class="rider-filter-input" type="text" placeholder="Filter name/cat…" title="Filter riders by name or category (e.g. Cat B, Cat C)" />
             <button id="pagedModeBtn" class="btn-toggle" type="button" title="Toggle between Full Scrollable Rider List and Paged View">📄 Paged: OFF</button>
             <button id="toggleBannersBtn" class="btn-toggle" type="button" style="background: rgba(56, 189, 248, 0.35); border-color: #38bdf8;" title="Show or Hide the Top Pacer & Sweep Radar Banners">Banners: ON</button>
             <button id="pinRibbonBtn" class="btn-toggle" type="button" title="Pin the top black bar open permanently or auto-hide after 2 seconds">📌 Top Bar: Pin</button>
@@ -2051,8 +1877,8 @@
         <div class="settings-row" title="Orange Full-Row Attack Trigger (W/kg)">
           <span class="settings-label">⚡ Attack Trigger (Atk)</span>
           <div class="settings-control">
-            <input id="atkSlider" type="range" min="2.2" max="6.5" step="0.1" value="3.0" />
-            <span id="atkVal" class="settings-val-badge">3.0w/kg</span>
+            <input id="atkSlider" type="range" min="2.2" max="6.5" step="0.1" value="2.8" />
+            <span id="atkVal" class="settings-val-badge">2.8w/kg</span>
           </div>
         </div>
 
@@ -2088,93 +1914,56 @@
       </div>
     </div>
 
-    <!-- Row 2A: 1m (4.23 W/kg) | 5m (3.40 W/kg) | 20m (2.98 W/kg) Power Curve Tanks + 22.5 KM & 209m Climbing Advantage -->
+    <!-- Row 2A: Whole-100K Event W/kg Pacer (Top-Left) & 100K Front Max 2.00 W/kg + 37 kph Pacer (Top-Right) -->
     <div class="personal-tactical-bar">
-      <!-- Card 1: 1-Minute Anaerobic Power Tank (Default 4.23 W/kg = 244W @ 57.6kg) -->
-      <div id="pwr1mCard" class="tactical-card state-ttt-good" title="1-Minute W/kg Tank (ZwiftPower: 4.23 W/kg / 244W). Counts down from 1:00 (60s) whenever your live W/kg reaches or exceeds 4.23 W/kg. Recharges below threshold.">
-        <div id="pwr1mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.72));"></div>
+      <!-- Left Banner: Whole-100K Event W/kg Target & Ride Average Pacer (Default Max 2.00 W/kg) -->
+      <div id="ftp5mCard" class="tactical-card state-ttt-good" title="Whole-100K Event W/kg Pacer. Pre-set to 2.00 W/kg for the D WOW 100K TTT ride: tracks both your Live W/kg and Whole-100K Ride Average W/kg from 0 km to 100 km!">
+        <div id="ftp5mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.50), rgba(16, 185, 129, 0.78));"></div>
         <div class="tactical-content">
           <div class="tactical-left">
-            <span class="tactical-title">1m</span>
-            <div class="tactical-target-ctrl" title="1-Minute W/kg Target (Default: 4.23 W/kg from ZwiftPower)">
-              <button id="pwr1mMinus" class="tactical-step-btn" type="button">−</button>
-              <span id="pwr1mTargetText" class="tactical-target-val">4.23</span>
-              <button id="pwr1mPlus" class="tactical-step-btn" type="button">+</button>
-            </div>
-          </div>
-          <div class="tactical-right">
-            <span id="pwr1mStatus" class="tactical-status-pill">SAFE</span>
-            <span id="pwr1mTimer" class="tactical-timer">1:00</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 2: 5-Minute VO2 Max Power Tank (Default 3.40 W/kg = 196W @ 57.6kg) -->
-      <div id="ftp5mCard" class="tactical-card state-ttt-good" title="5-Minute W/kg Tank (ZwiftPower: 3.40 W/kg / 196W). Counts down from 5:00 (300s) whenever your live W/kg reaches or exceeds 3.40 W/kg. Recharges below threshold.">
-        <div id="ftp5mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.72));"></div>
-        <div class="tactical-content">
-          <div class="tactical-left">
-            <span class="tactical-title">5m</span>
-            <div class="tactical-target-ctrl" title="5-Minute W/kg Target (Default: 3.40 W/kg from ZwiftPower)">
+            <span class="tactical-title">100K WKG</span>
+            <div class="tactical-target-ctrl" title="Set Max Target W/kg for the 100K TTT Event (Default: 2.00 W/kg)">
               <button id="ftp5mMinus" class="tactical-step-btn" type="button">−</button>
-              <span id="ftp5mTargetText" class="tactical-target-val">3.40</span>
+              <span id="ftp5mTargetText" class="tactical-target-val">2.00</span>
               <button id="ftp5mPlus" class="tactical-step-btn" type="button">+</button>
             </div>
           </div>
           <div class="tactical-right">
-            <span id="ftp5mStatus" class="tactical-status-pill">SAFE</span>
-            <span id="ftp5mTimer" class="tactical-timer">5:00</span>
+            <span id="ftp5mStatus" class="tactical-status-pill" title="Live W/kg vs 100K Target (Max 2.00 W/kg)">100K OK</span>
+            <span id="ftp5mTimer" class="tactical-timer" title="Whole-100K Ride Average W/kg">Avg 1.98</span>
+            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Reset Whole-100K Average W/kg counter">Rst</button>
           </div>
         </div>
       </div>
 
-      <!-- Card 3: 20-Minute Threshold Power Tank (Default 2.98 W/kg = 172W @ 57.6kg) -->
-      <div id="pwr20mCard" class="tactical-card state-ttt-good" title="20-Minute Threshold W/kg Tank (ZwiftPower: 2.98 W/kg / 172W). Counts down from 20:00 whenever your live W/kg reaches or exceeds 2.98 W/kg (and triggers Gentle Red Threshold Row Pulse!).">
-        <div id="pwr20mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.72));"></div>
+      <!-- Right Banner: D Group 100K Leader Front Cap (Max 2.00 W/kg on Front) & 37 kph Group Speed -->
+      <div id="ttt1mCard" class="tactical-card state-ttt-good" title="D WOW 100K Leader Pacer: Colours Emerald Green when front holds <= 2.00 W/kg & ~37 kph; Flashes Red if you exceed 2.00 W/kg on the front; turns Amber if another front rider surges above 2.20 W/kg.">
+        <div id="ttt1mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.55), rgba(16, 185, 129, 0.82));"></div>
         <div class="tactical-content">
           <div class="tactical-left">
-            <span class="tactical-title">20m</span>
-            <div class="tactical-target-ctrl" title="20-Minute Threshold W/kg Target (Default: 2.98 W/kg from ZwiftPower)">
-              <button id="pwr20mMinus" class="tactical-step-btn" type="button">−</button>
-              <span id="pwr20mTargetText" class="tactical-target-val">2.98</span>
-              <button id="pwr20mPlus" class="tactical-step-btn" type="button">+</button>
+            <span id="event100kTitle" class="tactical-title" title="100K Event Progress (Tracks live distance up to 100.0 km)">100K</span>
+            <div class="tactical-target-ctrl" title="Maximum Front W/kg Ceiling for D Group (Default: 2.00 W/kg)">
+              <button id="ttt1mMinus" class="tactical-step-btn" type="button">−</button>
+              <span id="ttt1mTargetText" class="tactical-target-val">2.00</span>
+              <button id="ttt1mPlus" class="tactical-step-btn" type="button">+</button>
+            </div>
+            <div class="tactical-target-ctrl" title="Target Group Speed in kph (Adjustable for course profile)">
+              <button id="kphMinus" class="tactical-step-btn" type="button">−</button>
+              <span id="kphTargetText" class="tactical-target-val">37kph</span>
+              <button id="kphPlus" class="tactical-step-btn" type="button">+</button>
             </div>
           </div>
           <div class="tactical-right">
-            <span id="pwr20mStatus" class="tactical-status-pill">SAFE</span>
-            <span id="pwr20mTimer" class="tactical-timer">20:00</span>
-            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Reset 1m, 5m, and 20m countdown tanks to full">Rst</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 4: 22.5 KM & 209m Climbing Progress + 57.6kg Lightweight Advantage -->
-      <div id="ttt1mCard" class="tactical-card state-ttt-good" title="Tonight's Race Tracker (22.5 KM & 209m Climbing) + Your 57.6kg Lightweight Climb Advantage vs heavier pack riders!">
-        <div id="ttt1mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(14, 116, 144, 0.60), rgba(2, 132, 199, 0.82));"></div>
-        <div class="tactical-content">
-          <div class="tactical-left">
-            <span id="event100kTitle" class="tactical-title" title="Race Distance Progress (Target: 22.5 KM)">0.0/22.5K</span>
-            <span id="elevClimbBadge" class="tactical-status-pill" style="color:#fde047;" title="Elevation Climbed toward 209m target">⛰️ 0/209m</span>
-            <span style="display:none;">
-              <button id="ttt1mMinus" type="button"></button>
-              <span id="ttt1mTargetText">2.98</span>
-              <button id="ttt1mPlus" type="button"></button>
-              <button id="kphMinus" type="button"></button>
-              <span id="kphTargetText">38kph</span>
-              <button id="kphPlus" type="button"></button>
-            </span>
-          </div>
-          <div class="tactical-right">
-            <span id="ttt1mStatus" class="tactical-status-pill" title="Lightweight Advantage on Climbs (57.6kg vs Pack Average Weight)">WT ADV READY</span>
-            <span id="ttt1mTimer" class="tactical-timer" title="Remaining Race Distance">22.5K</span>
-            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Zero/Reset Race Distance & 209m Climbing Counter at Start Banner">0K</button>
+            <span id="ttt1mStatus" class="tactical-status-pill"><=2.0w/kg OK</span>
+            <span id="ttt1mTimer" class="tactical-timer" title="Live Group / Blob Speed (kph)">37.0kph</span>
+            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Reset 100K distance counter to 0.0 km">100K</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Row 2B: Official Zwift Yellow Beacon Leader/Co-Leader (Left) | Orange Sweep Tracker (Mid) | Chasing B/C Radar (Right) -->
-    <div class="sweep-bc-radar-bar" style="display:none !important;">
+    <div class="sweep-bc-radar-bar">
       <!-- Left Radar: Official Zwift Yellow Beacon Leader & Co-Leader Tracker -->
       <div id="leaderRadarCard" class="radar-card radar-leader" title="Official Zwift Yellow Beacon Leader & Co-Leader Tracker: Automatically picks up Zwift's Yellow Beacon (eventLeader) + any Co-Leader tagged via the 'LDR' button or 'Co-Ldr…' name box. Highlights Leader/Co-Leader rows in BEACON YELLOW!">
         <div class="radar-left">
@@ -2229,7 +2018,6 @@
           <col id="col-6" />
           <col id="col-7" />
           <col id="col-8" />
-          <col id="col-9" />
         </colgroup>
         <thead>
           <tr id="headerRow2">
@@ -2237,41 +2025,37 @@
               <span class="th-label">Rider</span>
               <div class="col-resizer" data-col="0" title="Drag left/right to expand or concertina Rider column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-cat" data-col="1" title="Zwift Race Category / Pace Group (A = Red, B = Green, C = Blue, D = Yellow, E = Purple)">
-              <span class="th-label">CAT</span>
-              <div class="col-resizer" data-col="1" title="Drag left/right to expand or concertina CAT column • Double-click to toggle tight/collapsed"></div>
-            </th>
-            <th class="col-pwr" data-col="2" title="Rider Power-to-Weight Ratio (W/kg only)">
+            <th class="col-pwr" data-col="1" title="Rider Power-to-Weight Ratio (W/kg only)">
               <span class="th-label">WKG</span>
-              <div class="col-resizer" data-col="2" title="Drag left/right to expand or concertina WKG column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="1" title="Drag left/right to expand or concertina WKG column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-hr" data-col="3">
+            <th class="col-hr" data-col="2">
               <span class="th-label">HR</span>
-              <div class="col-resizer" data-col="3" title="Drag left/right to expand or concertina HR column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="2" title="Drag left/right to expand or concertina HR column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-red" data-col="4" title="Zone 5/6/7 Redline Timer (0 to 120s). Flashes red ONLY when a rider enters Heart Rate Zone 5, 6, or 7 (>=90% Age Max HR).">
+            <th class="col-red" data-col="3" title="Zone 5/6/7 Redline Timer (0 to 120s). Flashes red ONLY when a rider enters Heart Rate Zone 5, 6, or 7 (>=90% Age Max HR).">
               <span class="th-label">RED 0-120s</span>
-              <div class="col-resizer" data-col="4" title="Drag left/right to expand or concertina RED 0-120s column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="3" title="Drag left/right to expand or concertina RED 0-120s column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-age" data-col="5">
+            <th class="col-age" data-col="4">
               <span class="th-label">AGE</span>
-              <div class="col-resizer" data-col="5" title="Drag left/right to expand or concertina AGE column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="4" title="Drag left/right to expand or concertina AGE column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-wt" data-col="6">
+            <th class="col-wt" data-col="5">
               <span class="th-label">Weight</span>
-              <div class="col-resizer" data-col="6" title="Drag left/right to expand or concertina Weight column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="5" title="Drag left/right to expand or concertina Weight column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-draft" data-col="7">
+            <th class="col-draft" data-col="6">
               <span class="th-label">Draft</span>
-              <div class="col-resizer" data-col="7" title="Drag left/right to expand or concertina Draft column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="6" title="Drag left/right to expand or concertina Draft column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-climb" data-col="8">
+            <th class="col-climb" data-col="7">
               <span class="th-label">Climb %</span>
-              <div class="col-resizer" data-col="8" title="Drag left/right to expand or concertina Climb % column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="7" title="Drag left/right to expand or concertina Climb % column • Double-click to toggle tight/collapsed"></div>
             </th>
-            <th class="col-gap" data-col="9" title="Time Gap + Live Velocity Arrow (▲ Closing / ▼ Opening). Flashes Amber when the draft elastic (-1.4s to -3.2s ahead) is about to snap!">
+            <th class="col-gap" data-col="8" title="Time Gap + Live Velocity Arrow (▲ Closing / ▼ Opening). Flashes Amber when the draft elastic (-1.4s to -3.2s ahead) is about to snap!">
               <span class="th-label">Gap</span>
-              <div class="col-resizer" data-col="9" title="Drag left/right to expand or concertina Gap column • Double-click to toggle tight/collapsed"></div>
+              <div class="col-resizer" data-col="8" title="Drag left/right to expand or concertina Gap column • Double-click to toggle tight/collapsed"></div>
             </th>
           </tr>
         </thead>
@@ -2292,7 +2076,7 @@
       </div>
     </div>
   </div>
-  <button id="reopenHudPill" class="reopen-hud-pill" type="button" title="Click to restore Race HUD">🔄 Reopen Race HUD</button>
+  <button id="reopenHudPill" class="reopen-hud-pill" type="button" title="Click to restore WOW 100K Leader HUD">🔄 Reopen 100K HUD</button>
 
   <script type="module">
     const hudContainer = document.getElementById('hudContainer');
@@ -2336,7 +2120,7 @@
     const pinRibbonBtn = document.getElementById('pinRibbonBtn');
     const RIBBON_HOLD_SECONDS = 2.0; // Closes cleanly after 2 seconds as requested!
     let ribbonDeadlineMs = performance.now() + (RIBBON_HOLD_SECONDS * 1000);
-    let ribbonPinned = localStorage.getItem('zwift_race_hud_ribbon_pinned') !== '0'; // Default pinned ON so My Position box in top bar is always visible!
+    let ribbonPinned = localStorage.getItem('zwift_100k_hud_ribbon_pinned') === '1';
     let cursorInsideControlBar = false;
 
     const controlBarEl = document.querySelector('.control-bar');
@@ -2385,7 +2169,7 @@
     if (pinRibbonBtn) {
       pinRibbonBtn.addEventListener('click', () => {
         ribbonPinned = !ribbonPinned;
-        localStorage.setItem('zwift_race_hud_ribbon_pinned', ribbonPinned ? '1' : '0');
+        localStorage.setItem('zwift_100k_hud_ribbon_pinned', ribbonPinned ? '1' : '0');
         if (!ribbonPinned) {
           wakeTopRibbon(RIBBON_HOLD_SECONDS);
         }
@@ -2458,7 +2242,7 @@
     const autoFlipPageBtn = document.getElementById('autoFlipPageBtn');
     const rowsPerPageBtn = document.getElementById('rowsPerPageBtn');
 
-    let pagedModeEnabled = localStorage.getItem('zwift_40k_hud_paged_mode') === '1';
+    let pagedModeEnabled = localStorage.getItem('zwift_100k_hud_paged_mode') === '1';
     let currentPageIdx = 0;
     let totalPagesCount = 1;
     const PAGE_SIZE_OPTIONS = [6, 8, 10];
@@ -2485,7 +2269,7 @@
       pagedModeBtn.addEventListener('click', () => {
         pagedModeEnabled = !pagedModeEnabled;
         currentPageIdx = 0;
-        localStorage.setItem('zwift_40k_hud_paged_mode', pagedModeEnabled ? '1' : '0');
+        localStorage.setItem('zwift_100k_hud_paged_mode', pagedModeEnabled ? '1' : '0');
         updatePagedModeUI();
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
@@ -2614,7 +2398,7 @@
         hudContainer.classList.toggle('hud-minimized', isHudMinimized);
         minimizeHudBtn.classList.toggle('active-mode', isHudMinimized);
         minimizeHudBtn.textContent = isHudMinimized ? '▢ Expand' : '—';
-        minimizeHudBtn.title = isHudMinimized ? 'Expand Rider Table' : 'Minimize / Collapse Rider Table (Shows only Top 40K Banners)';
+        minimizeHudBtn.title = isHudMinimized ? 'Expand Rider Table' : 'Minimize / Collapse Rider Table (Shows only Top 100K Banners)';
       });
     }
 
@@ -2656,16 +2440,16 @@
     // =========================================================================
     // 2. ROW 2 COLUMN RESIZER + DYNAMIC MAIN-FORM TEXT & COLUMN SCALING
     // =========================================================================
-    const BASE_REF_WIDTH = 715;  // Sum of default 10 base column widths (including CAT column)
+    const BASE_REF_WIDTH = 673;  // Sum of default base column widths
     const BASE_REF_HEIGHT = 485; // Reference window height for 16 riders + tactical bar
-    const DEFAULT_COL_WIDTHS = [150, 44, 68, 68, 78, 46, 64, 58, 64, 72];
-    const COMPACT_COL_WIDTHS = [115, 34, 54, 54, 62, 36, 50, 48, 52, 60];
+    const DEFAULT_COL_WIDTHS = [155, 68, 68, 78, 46, 64, 58, 64, 72];
+    const COMPACT_COL_WIDTHS = [118, 54, 54, 62, 36, 50, 48, 52, 60];
     const MIN_COL_WIDTH = 18;
     const MAX_COL_WIDTH = 420;
 
     let colWidths = [...DEFAULT_COL_WIDTHS];
     let prevColWidthsBeforeFold = [...DEFAULT_COL_WIDTHS];
-    let autoResizeEnabled = localStorage.getItem('zwift_40k_hud_auto_resize') !== '0';
+    let autoResizeEnabled = localStorage.getItem('zwift_100k_hud_auto_resize') !== '0';
     let currentWinScale = 1.0;
     let currentMonScale = 1.0;
 
@@ -2683,7 +2467,7 @@
 
     autoScaleBtn.addEventListener('click', () => {
       autoResizeEnabled = !autoResizeEnabled;
-      localStorage.setItem('zwift_40k_hud_auto_resize', autoResizeEnabled ? '1' : '0');
+      localStorage.setItem('zwift_100k_hud_auto_resize', autoResizeEnabled ? '1' : '0');
       updateAutoResizeButtonUI();
       recalcWindowAndTextScale();
       applyColWidths(false);
@@ -2712,7 +2496,7 @@
 
     function loadSavedColWidths() {
       try {
-        const raw = localStorage.getItem('zwift_race_hud_col_widths_10col');
+        const raw = localStorage.getItem('zwift_100k_hud_col_widths_v1');
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length === DEFAULT_COL_WIDTHS.length) {
@@ -2743,7 +2527,7 @@
 
       riderTable.style.width = autoResizeEnabled ? '100%' : `${totalRenderedWidth}px`;
       if (save) {
-        localStorage.setItem('zwift_race_hud_col_widths_10col', JSON.stringify(colWidths));
+        localStorage.setItem('zwift_100k_hud_col_widths_v1', JSON.stringify(colWidths));
       }
     }
 
@@ -2848,7 +2632,7 @@
           winWidth: window.outerWidth,
           winHeight: window.outerHeight
         };
-        localStorage.setItem(`zwift_40k_hud_mon_pref_${activeMonitorKey}`, JSON.stringify(payload));
+        localStorage.setItem(`zwift_100k_hud_mon_pref_${activeMonitorKey}`, JSON.stringify(payload));
       } catch (e) {}
     }
 
@@ -2865,7 +2649,7 @@
 
       // Check if user has a saved scale/size preference specifically for this monitor (e.g. 4K vs Laptop)
       try {
-        const savedMonRaw = localStorage.getItem(`zwift_40k_hud_mon_pref_${profile.key}`);
+        const savedMonRaw = localStorage.getItem(`zwift_100k_hud_mon_pref_${profile.key}`);
         if (savedMonRaw) {
           const savedMon = JSON.parse(savedMonRaw);
           if (savedMon && savedMon.uiScale) {
@@ -3046,7 +2830,7 @@
       });
 
       if (save) {
-        localStorage.setItem('zwift_40k_hud_pantone_idx', String(swatch.index));
+        localStorage.setItem('zwift_100k_hud_pantone_idx', String(swatch.index));
       }
     }
 
@@ -3178,61 +2962,31 @@
     // Personal 5-Minute FTP (Default 3.40 W/kg) Countdown Tank (300s -> 0s)
     // & 1-Minute WTRL TTT Pull Pacer (60s -> 0s)
     // =========================================================================
-    // =========================================================================
-    // PERSONAL 1m (4.23 W/kg), 5m (3.40 W/kg), 20m (2.98 W/kg) POWER TANKS
-    // + 22.5 KM & 209m CLIMBING TRACKER + 57.6kg LIGHTWEIGHT ADVANTAGE
-    // =========================================================================
-    const MAX_1M_SEC = 60;
-    const MAX_5M_SEC = 300;
-    const MAX_20M_SEC = 1200;
-
-    let target1mWkg = 4.23;  // 1-Minute Anaerobic W/kg (ZwiftPower: 4.23 W/kg = 244W @ 57.6kg)
-    let target5mWkg = 3.40;  // 5-Minute VO2 Max W/kg   (ZwiftPower: 3.40 W/kg = 196W @ 57.6kg)
-    let target20mWkg = 2.98; // 20-Minute Threshold W/kg (ZwiftPower: 2.98 W/kg = 172W @ 57.6kg)
-
-    let rem1mSec = MAX_1M_SEC;
-    let rem5mSec = MAX_5M_SEC;
-    let rem20mSec = MAX_20M_SEC;
+    // Whole-100K TTT Event W/kg Target & Cumulative Session Average Tracker
+    let whole100kTargetWkg = 2.00; // Default Max 2.00 W/kg for the D WOW 100K event
+    let whole100kWkgWeightedSum = 0;
+    let whole100kSampleSeconds = 0;
     let ftp5mLastMs = performance.now();
 
-    let raceTotalKm = Number(localStorage.getItem('zwift_race_total_km') || '22.5');
-    let raceTotalElevM = Number(localStorage.getItem('zwift_race_total_elev_m') || '209');
-    const EVENT_TOTAL_KM = 22.5;
-    let whole100kTargetWkg = 2.98;
-    let leaderFrontTargetWkg = 2.98;
-    let groupTargetKph = 38;
+    const EVENT_TOTAL_KM = 100.0;     // 100K TTT Event Distance (100.0 km)
+    let leaderFrontTargetWkg = 2.00; // D WOW 100K Leader front cap: Max 2.00 W/kg
+    let groupTargetKph = 37;         // D WOW 100K speed target: 37 kph (adjustable)
     let distanceOffsetKm = 0;
     let lastRawDistKm = 0;
-    let climbedMetersAccum = 0;
-    let lastAltitudeM = null;
-    let prevDistForClimbM = null;
 
-    // Option A Default: 'wkg' (W/kg Power drives the Full-Row Green->Orange->Red Ribbon)
-    let rowRibbonDriver = localStorage.getItem('zwift_race_ribbon_driver') || 'wkg';
-    // Threshold Gentle Red Pulse Trigger: '20m' (>= 2.98 W/kg), '5m' (>= 3.40 W/kg), or 'off'
-    let threshPulseMode = localStorage.getItem('zwift_race_pulse_mode') || '20m';
-
-    // Pinned Leaders/Co-Leaders (Beacon Yellow) & Pinned Sweeps (Red) + Subgroup Category Cache
-    const pinnedLeaders = new Set(JSON.parse(localStorage.getItem('zwift_40k_pinned_leaders') || '[]'));
+    // Pinned Leaders/Co-Leaders (Beacon Yellow) & Pinned Sweeps (Orange) + Subgroup Category Cache
+    const pinnedLeaders = new Set(JSON.parse(localStorage.getItem('zwift_100k_pinned_leaders') || '[]'));
     const unpinnedAutoLeaders = new Set();
-    let customLeaderNameFilter = localStorage.getItem('zwift_40k_leader_name_filter') || '';
+    let customLeaderNameFilter = localStorage.getItem('zwift_100k_leader_name_filter') || '';
 
-    const pinnedSweeps = new Set(JSON.parse(localStorage.getItem('zwift_40k_pinned_sweeps') || '[]'));
+    const pinnedSweeps = new Set(JSON.parse(localStorage.getItem('zwift_100k_pinned_sweeps') || '[]'));
     const unpinnedAutoSweeps = new Set();
-    let customSweepNameFilter = localStorage.getItem('zwift_40k_sweep_name_filter') || '';
+    let customSweepNameFilter = localStorage.getItem('zwift_100k_sweep_name_filter') || '';
     let lastRenderedNearbyList = [];
-    const subgroupCategoryCache = new Map();
+    const subgroupCategoryCache = new Map(); // subgroupId -> 'A'|'B'|'C'|'D'|'E'
     let sauceRpcRef = null;
-    const STAGGER_OPTIONS_MIN = [5, 10, 15, 0];
+    const STAGGER_OPTIONS_MIN = [5, 10, 15, 0]; // 0 = Live Radar Only
     let staggerIdx = 0;
-
-    const pwr1mCard = document.getElementById('pwr1mCard');
-    const pwr1mFill = document.getElementById('pwr1mFill');
-    const pwr1mTargetText = document.getElementById('pwr1mTargetText');
-    const pwr1mStatus = document.getElementById('pwr1mStatus');
-    const pwr1mTimer = document.getElementById('pwr1mTimer');
-    const pwr1mMinus = document.getElementById('pwr1mMinus');
-    const pwr1mPlus = document.getElementById('pwr1mPlus');
 
     const ftp5mCard = document.getElementById('ftp5mCard');
     const ftp5mFill = document.getElementById('ftp5mFill');
@@ -3243,18 +2997,9 @@
     const ftp5mPlus = document.getElementById('ftp5mPlus');
     const ftp5mResetBtn = document.getElementById('ftp5mResetBtn');
 
-    const pwr20mCard = document.getElementById('pwr20mCard');
-    const pwr20mFill = document.getElementById('pwr20mFill');
-    const pwr20mTargetText = document.getElementById('pwr20mTargetText');
-    const pwr20mStatus = document.getElementById('pwr20mStatus');
-    const pwr20mTimer = document.getElementById('pwr20mTimer');
-    const pwr20mMinus = document.getElementById('pwr20mMinus');
-    const pwr20mPlus = document.getElementById('pwr20mPlus');
-
     const ttt1mCard = document.getElementById('ttt1mCard');
     const ttt1mFill = document.getElementById('ttt1mFill');
     const event100kTitle = document.getElementById('event100kTitle');
-    const elevClimbBadge = document.getElementById('elevClimbBadge');
     const ttt1mTargetText = document.getElementById('ttt1mTargetText');
     const kphTargetText = document.getElementById('kphTargetText');
     const ttt1mStatus = document.getElementById('ttt1mStatus');
@@ -3264,15 +3009,6 @@
     const kphMinus = document.getElementById('kphMinus');
     const kphPlus = document.getElementById('kphPlus');
     const ttt1mToggleBtn = document.getElementById('ttt1mToggleBtn');
-
-    const input1mWkg = document.getElementById('input1mWkg');
-    const input5mWkg = document.getElementById('input5mWkg');
-    const input20mWkg = document.getElementById('input20mWkg');
-    const inputRaceKm = document.getElementById('inputRaceKm');
-    const inputRaceElev = document.getElementById('inputRaceElev');
-    const ribbonDriverBtn = document.getElementById('ribbonDriverBtn');
-    const threshPulseModeBtn = document.getElementById('threshPulseModeBtn');
-    const presetRaceBtn = document.getElementById('presetRaceBtn');
 
     const leaderRadarCard = document.getElementById('leaderRadarCard');
     const leaderNameInput = document.getElementById('leaderNameInput');
@@ -3296,7 +3032,7 @@
       leaderNameInput.value = customLeaderNameFilter;
       leaderNameInput.addEventListener('input', (e) => {
         customLeaderNameFilter = String(e.target.value || '').trim();
-        localStorage.setItem('zwift_40k_leader_name_filter', customLeaderNameFilter);
+        localStorage.setItem('zwift_100k_leader_name_filter', customLeaderNameFilter);
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
     }
@@ -3305,20 +3041,20 @@
       sweepNameInput.value = customSweepNameFilter;
       sweepNameInput.addEventListener('input', (e) => {
         customSweepNameFilter = String(e.target.value || '').trim();
-        localStorage.setItem('zwift_40k_sweep_name_filter', customSweepNameFilter);
+        localStorage.setItem('zwift_100k_sweep_name_filter', customSweepNameFilter);
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
     }
 
     function savePinnedLeaders() {
       try {
-        localStorage.setItem('zwift_40k_pinned_leaders', JSON.stringify([...pinnedLeaders]));
+        localStorage.setItem('zwift_100k_pinned_leaders', JSON.stringify([...pinnedLeaders]));
       } catch (e) {}
     }
 
     function savePinnedSweeps() {
       try {
-        localStorage.setItem('zwift_40k_pinned_sweeps', JSON.stringify([...pinnedSweeps]));
+        localStorage.setItem('zwift_100k_pinned_sweeps', JSON.stringify([...pinnedSweeps]));
       } catch (e) {}
     }
 
@@ -3328,14 +3064,14 @@
         unpinnedAutoLeaders.clear();
         customLeaderNameFilter = '';
         if (leaderNameInput) leaderNameInput.value = '';
-        localStorage.setItem('zwift_40k_leader_name_filter', '');
+        localStorage.setItem('zwift_100k_leader_name_filter', '');
         savePinnedLeaders();
 
         pinnedSweeps.clear();
         unpinnedAutoSweeps.clear();
         customSweepNameFilter = '';
         if (sweepNameInput) sweepNameInput.value = '';
-        localStorage.setItem('zwift_40k_sweep_name_filter', '');
+        localStorage.setItem('zwift_100k_sweep_name_filter', '');
         savePinnedSweeps();
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
@@ -3401,74 +3137,31 @@
       if (sauceRpcRef && typeof sauceRpcRef.getEventSubgroup === 'function') {
         try {
           const sg = await sauceRpcRef.getEventSubgroup(subgroupId);
-          if (sg) {
-            const rawLbl = sg.subgroupLabel || sg.label || sg.name || '';
-            const matchLbl = String(rawLbl).trim().toUpperCase().match(/^([A-E])\b|\bCAT(?:EGORY)?\s*([A-E])\b/);
-            const label = matchLbl ? (matchLbl[1] || matchLbl[2]) : String(rawLbl).trim().charAt(0).toUpperCase();
-            if (['A', 'B', 'C', 'D', 'E'].includes(label)) {
-              subgroupCategoryCache.set(subgroupId, label);
-              if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
-              return label;
-            }
+          if (sg && sg.subgroupLabel) {
+            const label = String(sg.subgroupLabel).trim().toUpperCase();
+            subgroupCategoryCache.set(subgroupId, label);
+            return label;
           }
         } catch (e) {}
       }
       return null;
     }
 
-    function extractValidCatLetter(val) {
-      if (!val) return null;
-      const s = String(val).trim().toUpperCase();
-      if (['A', 'B', 'C', 'D', 'E'].includes(s)) return s;
-      const m = s.match(/^([A-E])[+-]?$/);
-      return m ? m[1] : null;
-    }
-
     function detectRiderCategory(entry) {
       if (!entry) return null;
-      const athlete = entry.athlete || {};
-      const state = entry.state || {};
-
-      // 1. Check Official Zwift Event Subgroup Pen (A, B, C, D, E)
-      const sgId = state.eventSubgroupId || entry.eventSubgroupId || athlete.eventSubgroupId;
+      if (entry.category && ['A', 'B', 'C', 'D', 'E'].includes(String(entry.category).toUpperCase())) {
+        return String(entry.category).toUpperCase();
+      }
+      const sgId = entry.state?.eventSubgroupId || entry.eventSubgroupId;
       if (sgId) {
         const cached = subgroupCategoryCache.get(sgId);
         if (cached) return cached;
         resolveSubgroupCat(sgId);
       }
-
-      // 2. Check Direct Sauce / Zwift Athlete Category Fields
-      const directCandidates = [
-        entry.category,
-        entry.subgroupLabel,
-        athlete.category,
-        athlete.racingCategory,
-        athlete.paceGroup,
-        athlete.wkgCategory,
-        athlete.categoryWomen
-      ];
-      for (const c of directCandidates) {
-        const letter = extractValidCatLetter(c);
-        if (letter) return letter;
-      }
-
-      // 3. Check Rider Name Tag (e.g. [C], (B), Cat C)
-      const name = String(athlete.sanitizedFullname || athlete.fullname || '');
+      const name = String(entry.athlete?.sanitizedFullname || entry.athlete?.fullname || '');
       const m = name.match(/\b(?:CAT|GROUP|PEN)\s*([A-E])\b|\[([A-E])\]|\(([A-E])\)/i);
       if (m) return (m[1] || m[2] || m[3]).toUpperCase();
-
-      // 4. Fallback: Compute Pace Group Category from Zwift Athlete FTP & Weight (zFTP W/kg)
-      const ftp = Number(athlete.ftp || state.ftp || 0);
-      const weight = Number(athlete.weight || state.weight || (entry.watching ? 57.6 : 0));
-      if (ftp > 40 && weight > 30) {
-        const ftpWkg = ftp / weight;
-        if (ftpWkg >= 4.0) return 'A';
-        if (ftpWkg >= 3.2) return 'B';
-        if (ftpWkg >= 2.5) return 'C';
-        return 'D';
-      }
-
-      return entry.watching ? 'C' : null;
+      return null;
     }
 
     // Detects Official Zwift Yellow Beacon Leader (entry.eventLeader) & Co-Leaders
@@ -3510,176 +3203,42 @@
       return { isSweep: false, mode: '' };
     }
 
-    function formatMinSecClock(sec) {
-      const s = Math.max(0, Math.round(sec));
-      const m = Math.floor(s / 60);
-      const rem = s % 60;
-      return `${m}:${rem < 10 ? '0' : ''}${rem}`;
-    }
-
-    function setTarget1mWkg(val) {
-      target1mWkg = Math.max(1.50, Math.min(12.00, Math.round(Number(val) * 100) / 100));
-      if (pwr1mTargetText) pwr1mTargetText.textContent = target1mWkg.toFixed(2);
-      if (input1mWkg && document.activeElement !== input1mWkg) input1mWkg.value = target1mWkg.toFixed(2);
-      localStorage.setItem('zwift_race_1m_wkg_v5', target1mWkg.toFixed(2));
-    }
-
     function setFtp5mTarget(val) {
-      target5mWkg = Math.max(1.50, Math.min(9.00, Math.round(Number(val) * 100) / 100));
-      whole100kTargetWkg = target5mWkg;
-      if (ftp5mTargetText) ftp5mTargetText.textContent = target5mWkg.toFixed(2);
-      if (input5mWkg && document.activeElement !== input5mWkg) input5mWkg.value = target5mWkg.toFixed(2);
-      localStorage.setItem('zwift_race_5m_wkg_v5', target5mWkg.toFixed(2));
-    }
-
-    function setTarget20mWkg(val) {
-      target20mWkg = Math.max(1.20, Math.min(7.50, Math.round(Number(val) * 100) / 100));
-      leaderFrontTargetWkg = target20mWkg;
-      if (pwr20mTargetText) pwr20mTargetText.textContent = target20mWkg.toFixed(2);
-      if (input20mWkg && document.activeElement !== input20mWkg) input20mWkg.value = target20mWkg.toFixed(2);
-      localStorage.setItem('zwift_race_20m_wkg_v5', target20mWkg.toFixed(2));
-      updatePulseModeBtnUI();
+      whole100kTargetWkg = Math.max(1.20, Math.min(5.50, Math.round(Number(val) * 20) / 20));
+      ftp5mTargetText.textContent = whole100kTargetWkg.toFixed(2);
+      localStorage.setItem('zwift_100k_hud_ftp5m_wkg', whole100kTargetWkg.toFixed(2));
     }
 
     function setTtt1mTarget(val) {
-      setTarget20mWkg(val);
+      leaderFrontTargetWkg = Math.max(1.20, Math.min(5.50, Math.round(Number(val) * 20) / 20));
+      ttt1mTargetText.textContent = leaderFrontTargetWkg.toFixed(2);
+      localStorage.setItem('zwift_100k_hud_front_wkg', leaderFrontTargetWkg.toFixed(2));
     }
 
     function setGroupTargetKph(val) {
       groupTargetKph = Math.max(20, Math.min(55, Math.round(Number(val))));
       if (kphTargetText) kphTargetText.textContent = `${groupTargetKph}kph`;
-      localStorage.setItem('zwift_40k_hud_target_kph', String(groupTargetKph));
+      localStorage.setItem('zwift_100k_hud_target_kph', String(groupTargetKph));
     }
 
-    function updateRibbonDriverBtnUI() {
-      if (!ribbonDriverBtn) return;
-      const labels = {
-        wkg: 'Driver: W/kg Power',
-        combined: 'Driver: W/kg + HR',
-        hr: 'Driver: HR Only'
-      };
-      ribbonDriverBtn.textContent = labels[rowRibbonDriver] || 'Driver: W/kg Power';
-    }
-
-    function updatePulseModeBtnUI() {
-      if (!threshPulseModeBtn) return;
-      if (threshPulseMode === '20m') {
-        threshPulseModeBtn.textContent = `Pulse: >=20m (${target20mWkg.toFixed(2)})`;
-        threshPulseModeBtn.style.background = 'rgba(239, 68, 68, 0.45)';
-      } else if (threshPulseMode === '5m') {
-        threshPulseModeBtn.textContent = `Pulse: >=5m (${target5mWkg.toFixed(2)})`;
-        threshPulseModeBtn.style.background = 'rgba(249, 115, 22, 0.45)';
-      } else {
-        threshPulseModeBtn.textContent = 'Pulse: OFF';
-        threshPulseModeBtn.style.background = 'rgba(255, 255, 255, 0.14)';
-      }
-    }
-
-    // Load saved 1m / 5m / 20m W/kg targets (defaulting to Mark's ZwiftPower screenshot: 4.23 / 3.40 / 2.98)
-    setTarget1mWkg(localStorage.getItem('zwift_race_1m_wkg') || '4.23');
-    setFtp5mTarget(localStorage.getItem('zwift_race_5m_wkg') || '3.40');
-    setTarget20mWkg(localStorage.getItem('zwift_race_20m_wkg') || '2.98');
-
-    if (pwr1mMinus) pwr1mMinus.addEventListener('click', () => setTarget1mWkg(target1mWkg - 0.05));
-    if (pwr1mPlus) pwr1mPlus.addEventListener('click', () => setTarget1mWkg(target1mWkg + 0.05));
-    if (ftp5mMinus) ftp5mMinus.addEventListener('click', () => setFtp5mTarget(target5mWkg - 0.05));
-    if (ftp5mPlus) ftp5mPlus.addEventListener('click', () => setFtp5mTarget(target5mWkg + 0.05));
-    if (pwr20mMinus) pwr20mMinus.addEventListener('click', () => setTarget20mWkg(target20mWkg - 0.05));
-    if (pwr20mPlus) pwr20mPlus.addEventListener('click', () => setTarget20mWkg(target20mWkg + 0.05));
-
-    if (input1mWkg) input1mWkg.addEventListener('input', (e) => setTarget1mWkg(e.target.value));
-    if (input5mWkg) input5mWkg.addEventListener('input', (e) => setFtp5mTarget(e.target.value));
-    if (input20mWkg) input20mWkg.addEventListener('input', (e) => setTarget20mWkg(e.target.value));
-
-    if (inputRaceKm) {
-      inputRaceKm.value = String(raceTotalKm);
-      inputRaceKm.addEventListener('input', (e) => {
-        raceTotalKm = Math.max(1.0, Number(e.target.value) || 22.5);
-        localStorage.setItem('zwift_race_total_km', String(raceTotalKm));
-      });
-    }
-    if (inputRaceElev) {
-      inputRaceElev.value = String(raceTotalElevM);
-      inputRaceElev.addEventListener('input', (e) => {
-        raceTotalElevM = Math.max(0, Number(e.target.value) || 209);
-        localStorage.setItem('zwift_race_total_elev_m', String(raceTotalElevM));
-      });
-    }
-
-    if (ribbonDriverBtn) {
-      ribbonDriverBtn.addEventListener('click', () => {
-        const order = ['wkg', 'combined', 'hr'];
-        rowRibbonDriver = order[(order.indexOf(rowRibbonDriver) + 1) % order.length];
-        localStorage.setItem('zwift_race_ribbon_driver', rowRibbonDriver);
-        updateRibbonDriverBtnUI();
-        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
-      });
-      updateRibbonDriverBtnUI();
-    }
-
-    if (threshPulseModeBtn) {
-      threshPulseModeBtn.addEventListener('click', () => {
-        const order = ['20m', '5m', 'off'];
-        threshPulseMode = order[(order.indexOf(threshPulseMode) + 1) % order.length];
-        localStorage.setItem('zwift_race_pulse_mode', threshPulseMode);
-        updatePulseModeBtnUI();
-        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
-      });
-      updatePulseModeBtnUI();
-    }
-
+    ftp5mMinus.addEventListener('click', () => setFtp5mTarget(whole100kTargetWkg - 0.05));
+    ftp5mPlus.addEventListener('click', () => setFtp5mTarget(whole100kTargetWkg + 0.05));
     ftp5mResetBtn.addEventListener('click', () => {
-      rem1mSec = MAX_1M_SEC;
-      rem5mSec = MAX_5M_SEC;
-      rem20mSec = MAX_20M_SEC;
+      whole100kWkgWeightedSum = 0;
+      whole100kSampleSeconds = 0;
       ftp5mLastMs = performance.now();
     });
 
+    ttt1mMinus.addEventListener('click', () => setTtt1mTarget(leaderFrontTargetWkg - 0.05));
+    ttt1mPlus.addEventListener('click', () => setTtt1mTarget(leaderFrontTargetWkg + 0.05));
+    if (kphMinus) kphMinus.addEventListener('click', () => setGroupTargetKph(groupTargetKph - 1));
+    if (kphPlus) kphPlus.addEventListener('click', () => setGroupTargetKph(groupTargetKph + 1));
+
     ttt1mToggleBtn.addEventListener('click', () => {
       distanceOffsetKm = lastRawDistKm;
-      climbedMetersAccum = 0;
-      lastAltitudeM = null;
-      prevDistForClimbM = null;
+      if (event100kTitle) event100kTitle.textContent = '100K';
+      ttt1mToggleBtn.textContent = '100K';
     });
-
-    function updateSinglePowerTank(curWkg, targetWkg, remSec, maxSec, dt, cardEl, fillEl, statusEl, timerEl, labelPrefix) {
-      if (!cardEl) return remSec;
-      const isAtOrOver = curWkg >= targetWkg;
-      let nextRem = remSec;
-      if (isAtOrOver) {
-        const overFactor = Math.max(1.0, 1.0 + ((curWkg - targetWkg) * 0.65));
-        nextRem = Math.max(0, remSec - (dt * overFactor));
-      } else {
-        nextRem = Math.min(maxSec, remSec + (dt * 0.5));
-      }
-
-      const pct = Math.max(0, Math.min(100, Math.round((nextRem / maxSec) * 100)));
-      if (fillEl) fillEl.style.width = `${pct}%`;
-      if (timerEl) timerEl.textContent = formatMinSecClock(nextRem);
-
-      if (isAtOrOver) {
-        if (pct <= 22) {
-          cardEl.className = 'tactical-card state-danger-blowup';
-          fillEl.style.background = 'linear-gradient(90deg, rgba(220, 38, 38, 0.80), rgba(239, 68, 68, 0.95))';
-          statusEl.textContent = `LIMIT! ${curWkg.toFixed(2)}`;
-          statusEl.style.background = '#7f1d1d';
-          statusEl.style.color = '#fef2f2';
-        } else {
-          cardEl.className = 'tactical-card state-active-drain';
-          fillEl.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.65), rgba(249, 115, 22, 0.88))';
-          statusEl.textContent = `ON ${labelPrefix} (${curWkg.toFixed(2)})`;
-          statusEl.style.background = '#9a3412';
-          statusEl.style.color = '#ffedd5';
-        }
-      } else {
-        cardEl.className = 'tactical-card state-ttt-good';
-        fillEl.style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.72))';
-        statusEl.textContent = curWkg > 0 ? `${curWkg.toFixed(2)} OK` : 'SAFE';
-        statusEl.style.background = '#14532d';
-        statusEl.style.color = '#bbf7d0';
-      }
-      return nextRem;
-    }
 
     function updatePersonalPowerGauges(selfWkg, nowMs, metrics100k = {}) {
       const dt = Math.max(0, Math.min(2.5, (nowMs - ftp5mLastMs) / 1000));
@@ -3687,46 +3246,106 @@
 
       const curWkg = (selfWkg != null && !Number.isNaN(selfWkg)) ? Number(selfWkg) : 0;
 
-      // 1. Update 1-Minute (4.23 W/kg), 5-Minute (3.40 W/kg), and 20-Minute (2.98 W/kg) Countdown Tanks
-      rem1mSec = updateSinglePowerTank(curWkg, target1mWkg, rem1mSec, MAX_1M_SEC, dt, pwr1mCard, pwr1mFill, pwr1mStatus, pwr1mTimer, '1m');
-      rem5mSec = updateSinglePowerTank(curWkg, target5mWkg, rem5mSec, MAX_5M_SEC, dt, ftp5mCard, ftp5mFill, ftp5mStatus, ftp5mTimer, '5m');
-      rem20mSec = updateSinglePowerTank(curWkg, target20mWkg, rem20mSec, MAX_20M_SEC, dt, pwr20mCard, pwr20mFill, pwr20mStatus, pwr20mTimer, '20m');
+      // 1. Update Top-Left Banner: Whole-100K Event W/kg Target & Session Average Pacer
+      if (curWkg > 0.3 && dt > 0) {
+        whole100kWkgWeightedSum += (curWkg * dt);
+        whole100kSampleSeconds += dt;
+      }
+      const avg100kWkg = whole100kSampleSeconds > 0
+        ? (whole100kWkgWeightedSum / whole100kSampleSeconds)
+        : curWkg;
 
-      // 2. Update Card 4: 22.5 KM & 209m Climbing Progress + 57.6kg Lightweight Advantage
       const rawDistKm = metrics100k.distanceKm ?? 0;
-      lastRawDistKm = rawDistKm;
       const eventKm = Math.max(0, rawDistKm - distanceOffsetKm);
-      const pctDist = eventKm > 0.05
-        ? Math.max(8, Math.min(100, Math.round((eventKm / Math.max(1, raceTotalKm)) * 100)))
+      const pct100k = eventKm > 0.1
+        ? Math.max(12, Math.min(100, Math.round((eventKm / EVENT_TOTAL_KM) * 100)))
         : 100;
 
-      const climbedM = Math.round(metrics100k.climbedMeters ?? 0);
-      const myGradePct = metrics100k.myGradePct ?? 0;
-      const myWeightKg = metrics100k.myWeightKg ?? 57.6;
-      const packAvgWeightKg = metrics100k.packAvgWeightKg ?? 75.0;
+      ftp5mFill.style.width = `${pct100k}%`;
+      ftp5mTimer.textContent = `Avg ${avg100kWkg > 0 ? avg100kWkg.toFixed(2) : whole100kTargetWkg.toFixed(2)}`;
 
-      if (ttt1mFill) ttt1mFill.style.width = `${pctDist}%`;
-      if (event100kTitle) event100kTitle.textContent = `${eventKm.toFixed(1)}/${raceTotalKm.toFixed(1)}K`;
-      if (elevClimbBadge) elevClimbBadge.textContent = `⛰️ ${climbedM}/${raceTotalElevM}m`;
-      const remKm = Math.max(0, raceTotalKm - eventKm);
-      if (ttt1mTimer) ttt1mTimer.textContent = `${remKm.toFixed(1)}K left`;
+      const diff100kLive = curWkg - whole100kTargetWkg;
+      const diff100kAvg = avg100kWkg - whole100kTargetWkg;
 
-      // Calculate Lightweight Wattage Advantage on Climbs (e.g. 57.6kg vs ~75kg pack average)
-      const weightSavedKg = Math.max(0, packAvgWeightKg - myWeightKg);
-      const wattsSavedAtCurrentWkg = Math.round(weightSavedKg * Math.max(2.5, curWkg));
-
-      if (myGradePct >= 2.0 && weightSavedKg >= 3.0) {
-        ttt1mCard.className = 'tactical-card state-ttt-good';
-        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(22, 163, 74, 0.72), rgba(16, 185, 129, 0.90))';
-        ttt1mStatus.textContent = `⛰️ +${wattsSavedAtCurrentWkg}W Wt Adv (+${myGradePct.toFixed(1)}%)`;
-        ttt1mStatus.style.background = '#14532d';
-        ttt1mStatus.style.color = '#fde047';
+      if (diff100kLive > 0.12) {
+        ftp5mCard.className = 'tactical-card state-danger-blowup';
+        ftp5mFill.style.background = 'linear-gradient(90deg, rgba(220, 38, 38, 0.78), rgba(239, 68, 68, 0.94))';
+        ftp5mStatus.textContent = `OVER! ${curWkg.toFixed(2)}w/kg`;
+        ftp5mStatus.style.background = '#7f1d1d';
+        ftp5mStatus.style.color = '#fef2f2';
+      } else if (diff100kAvg > 0.08) {
+        ftp5mCard.className = 'tactical-card state-active-drain';
+        ftp5mFill.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.60), rgba(249, 115, 22, 0.85))';
+        ftp5mStatus.textContent = `AVG HIGH (${curWkg.toFixed(2)})`;
+        ftp5mStatus.style.background = '#78350f';
+        ftp5mStatus.style.color = '#fde047';
+      } else if (curWkg > 0 && diff100kLive < -0.35) {
+        ftp5mCard.className = 'tactical-card state-ttt-under';
+        ftp5mFill.style.background = 'linear-gradient(90deg, rgba(56, 189, 248, 0.45), rgba(37, 99, 235, 0.72))';
+        ftp5mStatus.textContent = `LOW ${curWkg.toFixed(2)}w/kg`;
+        ftp5mStatus.style.background = '#1e3a8a';
+        ftp5mStatus.style.color = '#bae6fd';
       } else {
+        ftp5mCard.className = 'tactical-card state-ttt-good';
+        ftp5mFill.style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.55), rgba(16, 185, 129, 0.82))';
+        ftp5mStatus.textContent = curWkg > 0 ? `100K OK (${curWkg.toFixed(2)})` : `100K <=${whole100kTargetWkg.toFixed(2)}`;
+        ftp5mStatus.style.background = '#14532d';
+        ftp5mStatus.style.color = '#bbf7d0';
+      }
+
+      // 2. Update Top-Right Banner: D WOW 100K Event Leader Pacer (2.00 W/kg Front Cap & 37 kph Group Speed)
+      const groupKph = metrics100k.groupSpeedKph ?? 0;
+      const frontWkg = metrics100k.frontWkg ?? curWkg;
+      const isLeaderOnFront = Boolean(metrics100k.isLeaderOnFront);
+      lastRawDistKm = rawDistKm;
+
+      ttt1mFill.style.width = `${pct100k}%`;
+      if (event100kTitle) {
+        event100kTitle.textContent = eventKm > 0.1 ? `${eventKm.toFixed(1)}/100K` : '100K';
+      }
+      ttt1mToggleBtn.textContent = eventKm > 0.1 ? `${Math.max(0, Math.round(EVENT_TOTAL_KM - eventKm))}K left` : '100K';
+      ttt1mTimer.textContent = groupKph > 0 ? `${groupKph.toFixed(1)}kph` : `${groupTargetKph}.0kph`;
+
+      const wkgDiffSelf = curWkg - leaderFrontTargetWkg;
+      const wkgDiffFront = frontWkg - leaderFrontTargetWkg;
+      const kphDiff = groupKph > 0 ? (groupKph - groupTargetKph) : 0;
+
+      if (wkgDiffSelf > 0.08) {
+        // Leader is pushing ABOVE 2.00 W/kg ceiling! Flash Red to warn immediately!
+        ttt1mCard.className = 'tactical-card state-ttt-over';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(220, 38, 38, 0.82), rgba(249, 115, 22, 0.94))';
+        ttt1mStatus.textContent = `EASE! ${curWkg.toFixed(2)}w/kg (> ${leaderFrontTargetWkg.toFixed(1)})`;
+        ttt1mStatus.style.background = '#7f1d1d';
+        ttt1mStatus.style.color = '#fef2f2';
+      } else if (wkgDiffFront > 0.20) {
+        // Front puller of the group is pushing > 2.20 W/kg -> Amber Warning!
+        ttt1mCard.className = 'tactical-card state-ttt-warn';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.65), rgba(234, 88, 12, 0.85))';
+        ttt1mStatus.textContent = `FRONT HOT ${frontWkg.toFixed(2)}w/kg`;
+        ttt1mStatus.style.background = '#78350f';
+        ttt1mStatus.style.color = '#fde047';
+      } else if (groupKph > 0 && kphDiff > 2.0) {
+        // Group speed is > 39.0 kph (2+ kph over 37 kph target) -> Amber/Red Warning!
+        ttt1mCard.className = 'tactical-card state-ttt-warn';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.65), rgba(249, 115, 22, 0.85))';
+        ttt1mStatus.textContent = `FAST +${kphDiff.toFixed(1)}kph (${curWkg.toFixed(2)}w/kg)`;
+        ttt1mStatus.style.background = '#78350f';
+        ttt1mStatus.style.color = '#ffedd5';
+      } else if (groupKph > 0 && kphDiff < -1.8) {
+        // Group speed has dipped below 35.2 kph -> Sky Blue prompt to bring pace up to 2.00 W/kg / 37 kph
+        ttt1mCard.className = 'tactical-card state-ttt-under';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(56, 189, 248, 0.50), rgba(37, 99, 235, 0.78))';
+        ttt1mStatus.textContent = `LOW ${kphDiff.toFixed(1)}kph • HOLD ${leaderFrontTargetWkg.toFixed(1)}`;
+        ttt1mStatus.style.background = '#1e3a8a';
+        ttt1mStatus.style.color = '#bae6fd';
+      } else {
+        // Spot-on 100K D-Group Pace (<= 2.00 W/kg & ~37 kph)! Solid Emerald Green!
         ttt1mCard.className = 'tactical-card state-ttt-good';
-        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(14, 116, 144, 0.60), rgba(2, 132, 199, 0.82))';
-        ttt1mStatus.textContent = `${myWeightKg.toFixed(1)}kg (-${weightSavedKg.toFixed(0)}kg vs Pack)`;
-        ttt1mStatus.style.background = 'rgba(15, 23, 42, 0.80)';
-        ttt1mStatus.style.color = '#7dd3fc';
+        ttt1mFill.style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.60), rgba(16, 185, 129, 0.85))';
+        const posLabel = isLeaderOnFront ? 'FRONT OK' : 'GROUP OK';
+        ttt1mStatus.textContent = curWkg > 0 ? `${posLabel} ${curWkg.toFixed(2)}w/kg` : `${posLabel} <=${leaderFrontTargetWkg.toFixed(1)}`;
+        ttt1mStatus.style.background = '#14532d';
+        ttt1mStatus.style.color = '#bbf7d0';
       }
     }
 
@@ -3845,109 +3464,6 @@
     // =========================================================================
     const MIN_HR_BPM = 55;
     const HR_SPECTRUM_256 = build256ColourSpectrum();
-    const ROW_RIBBON_SPECTRUM_256 = buildGreenOrangeRedRibbonSpectrum();
-
-    // Builds a 256-step lookup table specifically calibrated for Mark's Full-Row Ribbon:
-    // - Zone 1 / Zone 2 (0.00 to 0.38): Vibrant Emerald Green (rgb(16, 185, 129) -> rgb(34, 197, 94))
-    // - Zone 3 / Zone 4 (0.38 to 0.70): Warm Golden Amber -> Deep Vivid Orange (rgb(245, 158, 11) -> rgb(249, 115, 22))
-    // - Zone 5 / Zone 6 / Zone 7 (0.70 to 1.00): Bright Red-Orange -> Deep Crimson Red (rgb(239, 68, 68) -> rgb(185, 28, 28))
-    function buildGreenOrangeRedRibbonSpectrum() {
-      const stops = [
-        { pos: 0.00, r: 16,  g: 175, b: 105 }, // Zone 1 Deep Emerald Green
-        { pos: 0.32, r: 34,  g: 197, b: 94  }, // Zone 2 Bright Green
-        { pos: 0.50, r: 245, g: 158, b: 11  }, // Zone 3 Warm Golden Amber-Orange
-        { pos: 0.68, r: 249, g: 115, b: 22  }, // Zone 4 Vivid Orange (Approaching 20m Threshold)
-        { pos: 0.82, r: 239, g: 68,  b: 45  }, // Zone 5 Redline Entry (>= 20m / 5m Threshold)
-        { pos: 1.00, r: 185, g: 20,  b: 20  }  // Zone 6/7 Deep Crimson Red (>= 1m 4.23 W/kg)
-      ];
-      const palette = new Array(256);
-      for (let i = 0; i < 256; i++) {
-        const t = i / 255;
-        let s0 = stops[0];
-        let s1 = stops[stops.length - 1];
-        for (let j = 0; j < stops.length - 1; j++) {
-          if (t >= stops[j].pos && t <= stops[j + 1].pos) {
-            s0 = stops[j];
-            s1 = stops[j + 1];
-            break;
-          }
-        }
-        const localT = (s1.pos === s0.pos) ? 0 : (t - s0.pos) / (s1.pos - s0.pos);
-        const r = Math.round(s0.r + (s1.r - s0.r) * localT);
-        const g = Math.round(s0.g + (s1.g - s0.g) * localT);
-        const b = Math.round(s0.b + (s1.b - s0.b) * localT);
-        palette[i] = { r, g, b, css: `rgb(${r}, ${g}, ${b})` };
-      }
-      return palette;
-    }
-
-    // Computes the Full-Row Scalable Ribbon CSS & Gentle Red Threshold Pulse for YOU (tr.watching)
-    // Option A Default ('wkg'): Driven by live W/kg relative to your 20m (2.98), 5m (3.40), and 1m (4.23) targets!
-    function getSelfFullRowRibbonMetrics(wkg, hr, maxHr) {
-      const curWkg = (wkg != null && !Number.isNaN(wkg)) ? Number(wkg) : 0;
-      const t20 = Math.max(1.5, target20mWkg || 2.98);
-      const t5  = Math.max(t20 + 0.1, target5mWkg || 3.40);
-      const t1  = Math.max(t5 + 0.2, target1mWkg || 4.23);
-
-      // Compute W/kg effort ratio (0.0 -> 1.0):
-      // - 0.00 to 0.36: Zone 1/2 (< 75% of 20m W/kg, i.e. < 2.24 W/kg -> Green)
-      // - 0.36 to 0.70: Zone 3/4 (75% to 100% of 20m W/kg, i.e. 2.24 to 2.98 W/kg -> Orange)
-      // - 0.70 to 1.00: Zone 5/6/7 (>= 2.98 W/kg through 3.40 W/kg and 4.23 W/kg -> Red)
-      let wkgRatio = 0;
-      const z2Limit = t20 * 0.75;
-      if (curWkg <= z2Limit) {
-        wkgRatio = Math.max(0.05, (curWkg / Math.max(0.8, z2Limit)) * 0.36);
-      } else if (curWkg < t20) {
-        wkgRatio = 0.36 + (((curWkg - z2Limit) / Math.max(0.2, t20 - z2Limit)) * 0.34);
-      } else {
-        wkgRatio = 0.70 + (Math.min(1.0, (curWkg - t20) / Math.max(0.4, t1 - t20)) * 0.30);
-      }
-      wkgRatio = Math.max(0.05, Math.min(1.0, wkgRatio));
-
-      // Compute HR effort ratio (0.0 -> 1.0)
-      const numHr = (hr != null && hr > 0) ? Number(hr) : MIN_HR_BPM;
-      const hrRatio = Math.max(0.05, Math.min(1.0, (numHr - MIN_HR_BPM) / Math.max(15, (maxHr || 160) - MIN_HR_BPM)));
-
-      let activeRatio = wkgRatio; // Option A: W/kg Power Only
-      if (rowRibbonDriver === 'hr') {
-        activeRatio = hrRatio;
-      } else if (rowRibbonDriver === 'combined') {
-        activeRatio = Math.max(wkgRatio, hrRatio);
-      }
-
-      const colorIdx = Math.min(255, Math.max(0, Math.round(activeRatio * 255)));
-      const cEnd = ROW_RIBBON_SPECTRUM_256[colorIdx];
-      const cMid = ROW_RIBBON_SPECTRUM_256[Math.floor(colorIdx * 0.65)];
-      const cStart = ROW_RIBBON_SPECTRUM_256[Math.floor(colorIdx * 0.30)];
-
-      // Scalable fill percentage across the entire 9-column row (14% minimum up to 100% full width)
-      const fillPct = Math.max(14, Math.min(100, Math.round(activeRatio * 100)));
-
-      // Build a full-row scalable progress ribbon gradient across all 9 columns:
-      // The filled portion (0% -> fillPct%) glows brightly in the current Zone colour (Green -> Orange -> Red),
-      // while the remaining portion (fillPct% -> 100%) has a rich translucent tint of the same zone colour so the whole row shifts colour!
-      const rowBgCss = `linear-gradient(90deg, rgba(${cStart.r},${cStart.g},${cStart.b},0.94) 0%, rgba(${cMid.r},${cMid.g},${cMid.b},0.95) ${Math.round(fillPct * 0.55)}%, rgba(${cEnd.r},${cEnd.g},${cEnd.b},0.97) ${fillPct}%, rgba(${cEnd.r},${cEnd.g},${cEnd.b},0.42) ${Math.min(100, fillPct + 2)}%, rgba(${cEnd.r},${cEnd.g},${cEnd.b},0.28) 100%)`;
-
-      // Determine if Gentle Red Threshold Pulse is active
-      let isThresholdPulse = false;
-      if (threshPulseMode === '20m') {
-        isThresholdPulse = curWkg >= t20;
-      } else if (threshPulseMode === '5m') {
-        isThresholdPulse = curWkg >= t5;
-      }
-
-      let zoneText = 'Z1/Z2 GREEN';
-      if (activeRatio >= 0.70) zoneText = 'Z5/6/7 RED THRESHOLD';
-      else if (activeRatio >= 0.36) zoneText = 'Z3/Z4 ORANGE TEMPO';
-
-      return {
-        colorIdx,
-        fillPct,
-        rowBgCss,
-        isThresholdPulse,
-        zoneText
-      };
-    }
 
     function build256ColourSpectrum() {
       const stops = [
@@ -4125,7 +3641,7 @@
           const myName = detectedSelfAthlete.name || selfEntry?.athlete?.sanitizedFullname || 'YOU (Main)';
           const shortMyName = myName.length > 13 ? myName.slice(0, 12) + '…' : myName;
           leaderRadarName.textContent = shortMyName;
-          leaderRadarGap.textContent = `${selfWkg > 0 ? selfWkg.toFixed(2) : '2.40'}w/kg`;
+          leaderRadarGap.textContent = `${selfWkg > 0 ? selfWkg.toFixed(2) : '2.00'}w/kg`;
           leaderRadarRole.textContent = selfLdrInfo.isOfficialBeacon ? '🟡 BEACON ON' : '👑 MAIN LDR';
           leaderRadarRole.style.color = '#facc15';
         }
@@ -4355,7 +3871,7 @@
     const riderFilterInput = document.getElementById('riderFilterInput');
 
     let riderSearchFilterText = '';
-    let showTacticalBanners = localStorage.getItem('zwift_40k_hud_show_banners') !== '0';
+    let showTacticalBanners = localStorage.getItem('zwift_100k_hud_show_banners') !== '0';
 
     function updateBannersVisibilityUI() {
       hudContainer.classList.toggle('hide-tactical-banners', !showTacticalBanners);
@@ -4369,7 +3885,7 @@
     if (toggleBannersBtn) {
       toggleBannersBtn.addEventListener('click', () => {
         showTacticalBanners = !showTacticalBanners;
-        localStorage.setItem('zwift_40k_hud_show_banners', showTacticalBanners ? '1' : '0');
+        localStorage.setItem('zwift_100k_hud_show_banners', showTacticalBanners ? '1' : '0');
         updateBannersVisibilityUI();
       });
     }
@@ -4411,7 +3927,7 @@
       const px = Math.max(10, Math.min(24, Number(val) || 14));
       document.documentElement.style.setProperty('--base-font-px', `${px}px`);
       if (fontSizeVal) fontSizeVal.textContent = `${px.toFixed(1)}px`;
-      localStorage.setItem('zwift_40k_hud_font_px', String(px));
+      localStorage.setItem('zwift_100k_hud_font_px', String(px));
     }
 
 // Top black banner defaults to 2-second auto-close (can be pinned inside ⚙️ Settings)
@@ -4419,16 +3935,15 @@
     // Restore saved settings
     renderPantoneGrid();
     loadSavedColWidths();
-    const savedFontPx = localStorage.getItem('zwift_40k_hud_font_px') || '14';
-    const savedOpacity = localStorage.getItem('zwift_race_hud_opacity') || '0.90';
-    const savedScale = localStorage.getItem('zwift_race_hud_scale') || '1';
-    const savedZ567Pct = localStorage.getItem('zwift_race_hud_z567_pct') || '90';
-    const savedAtkWkg = localStorage.getItem('zwift_race_hud_atk_wkg') || '4.2';
-    const saved1m = localStorage.getItem('zwift_race_1m_wkg_v5') || '4.23';
-    const saved5m = localStorage.getItem('zwift_race_5m_wkg_v5') || '3.40';
-    const saved20m = localStorage.getItem('zwift_race_20m_wkg_v5') || '2.98';
-    const savedTargetKph = localStorage.getItem('zwift_race_hud_target_kph') || '38';
-    const savedPantoneIdx = Number(localStorage.getItem('zwift_race_hud_pantone_idx') || '0');
+    const savedFontPx = localStorage.getItem('zwift_100k_hud_font_px') || '14';
+    const savedOpacity = localStorage.getItem('zwift_100k_hud_opacity_v2') || '0.90';
+    const savedScale = localStorage.getItem('zwift_100k_hud_scale') || '1';
+    const savedZ567Pct = localStorage.getItem('zwift_100k_hud_z567_pct') || '90';
+    const savedAtkWkg = localStorage.getItem('zwift_100k_hud_atk_wkg') || '2.8';
+    const savedFtp5m = localStorage.getItem('zwift_100k_hud_ftp5m_wkg') || '2.00';
+    const savedTtt1m = localStorage.getItem('zwift_100k_hud_front_wkg') || '2.00';
+    const savedTargetKph = localStorage.getItem('zwift_100k_hud_target_kph') || '37';
+    const savedPantoneIdx = Number(localStorage.getItem('zwift_100k_hud_pantone_idx_v2') || '0');
 
     setFontSizePx(savedFontPx);
     if (fontSizeSlider) {
@@ -4440,9 +3955,8 @@
     setScale(savedScale);
     setZ567Pct(savedZ567Pct);
     setAtkWkg(savedAtkWkg);
-    setTarget1mWkg(saved1m);
-    setFtp5mTarget(saved5m);
-    setTarget20mWkg(saved20m);
+    setFtp5mTarget(savedFtp5m);
+    setTtt1mTarget(savedTtt1m);
     setGroupTargetKph(savedTargetKph);
     applyPantoneColor(PANTONE_256_CHART[savedPantoneIdx] || PANTONE_256_CHART[0], false);
 
@@ -4459,26 +3973,26 @@
     function setOpacity(val) {
       document.documentElement.style.setProperty('--bg-opacity', val);
       opacityVal.textContent = `${Math.round(val * 100)}%`;
-      localStorage.setItem('zwift_40k_hud_opacity', val);
+      localStorage.setItem('zwift_100k_hud_opacity', val);
     }
 
     function setScale(val) {
       document.documentElement.style.setProperty('--ui-scale', val);
       if (scaleVal) scaleVal.textContent = `${Math.round(Number(val) * 100)}%`;
-      localStorage.setItem('zwift_40k_hud_scale', val);
+      localStorage.setItem('zwift_100k_hud_scale', val);
       savePerMonitorPreferences();
     }
 
     function setZ567Pct(val) {
       z567TriggerPct = Number(val);
       z3Val.textContent = `${z567TriggerPct}%`;
-      localStorage.setItem('zwift_40k_hud_z567_pct', val);
+      localStorage.setItem('zwift_100k_hud_z567_pct', val);
     }
 
     function setAtkWkg(val) {
       attackWkgThreshold = Number(val);
       atkVal.textContent = `${attackWkgThreshold.toFixed(1)}w/kg`;
-      localStorage.setItem('zwift_40k_hud_atk_wkg', val);
+      localStorage.setItem('zwift_100k_hud_atk_wkg', val);
     }
 
     function getWkgZoneClass(wkg) {
@@ -4503,7 +4017,7 @@
         lastRenderedNearbyList = nearbyList;
       }
       if (!Array.isArray(nearbyList) || nearbyList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 18px; color:#ffffff; font-weight:700;">Waiting for nearby riders in Zwift...</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 18px; color:#ffffff; font-weight:700;">Waiting for nearby riders in Zwift...</td></tr>`;
         return;
       }
 
@@ -4551,58 +4065,6 @@
       } else {
         // FULL SCROLLABLE EVENT RIDER LIST (Allows scrolling through all riders in the event!)
         visibleRiders = filteredSorted;
-      }
-
-      // Compute Overall Open Road Position (1, 2, 3... from top rider #1 down the list)
-      // and Category Position (A #1, B #1, C #1...) + Nearest Cat B Wheel Ahead
-      const catCounts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
-      const riderPosLookup = new Map();
-      let myOverallPos = null;
-      let myCatLetter = 'C';
-      let myCatPos = null;
-      const totalRidersInList = sorted.length;
-
-      sorted.forEach((r, idx) => {
-        const rName = r.athlete?.sanitizedFullname || r.athlete?.fullname || `Rider #${r.athleteId || idx}`;
-        const rKey = String(r.athleteId ?? rName);
-        const officialEventPos = Number(r.eventPosition || r.state?.eventPosition || r.position || 0);
-        const roadPos = officialEventPos > 0 ? officialEventPos : (idx + 1);
-        const cLetter = detectRiderCategory(r) || 'C';
-        if (catCounts[cLetter] != null) catCounts[cLetter] += 1;
-        const cPos = catCounts[cLetter] || (idx + 1);
-
-        riderPosLookup.set(rKey, { roadPos, cLetter, cPos });
-        if (r.watching) {
-          myOverallPos = roadPos;
-          myCatLetter = cLetter;
-          myCatPos = cPos;
-        }
-      });
-
-      // Find nearest Category B (or A) wheel ahead of YOU so you can hold Cat B wheels in the Open race
-      const bRidersAhead = sorted.filter(r => !r.watching && (r.gap ?? 0) < 0 && detectRiderCategory(r) === 'B');
-      const nearestBRider = bRidersAhead.length > 0 ? bRidersAhead[bRidersAhead.length - 1] : null;
-
-      const myPosOverallEl = document.getElementById('myPosOverallText');
-      const myPosCatEl = document.getElementById('myPosCatBadge');
-      const myPosBWheelEl = document.getElementById('myPosBWheelText');
-
-      if (myOverallPos !== null) {
-        if (myPosOverallEl) myPosOverallEl.textContent = `${myOverallPos} / ${totalRidersInList}`;
-        if (myPosCatEl) {
-          myPosCatEl.textContent = `${myCatLetter} #${myCatPos}`;
-          myPosCatEl.className = `my-pos-cat cat-${myCatLetter}`;
-        }
-      }
-      if (myPosBWheelEl) {
-        if (nearestBRider) {
-          const bGap = Number(nearestBRider.gap ?? 0);
-          myPosBWheelEl.textContent = `B Wheel: ${bGap.toFixed(1)}s`;
-          myPosBWheelEl.style.color = Math.abs(bGap) <= 2.2 ? '#4ade80' : '#fde047';
-        } else {
-          myPosBWheelEl.textContent = 'Top of B/C';
-          myPosBWheelEl.style.color = '#4ade80';
-        }
       }
 
       let nearestElasticSlipGap = null;
@@ -4655,37 +4117,43 @@
 
         const gapCellClasses = [gapBaseClass, gapTrend.cellDangerClass].filter(Boolean).join(' ');
 
+        const leaderInfo = isEntryLeader(entry, riderKey);
+        const sweepInfo = isEntrySweep(entry, riderKey);
         const catLabel = detectRiderCategory(entry);
         const catBadgeHtml = catLabel ? `<span class="cat-tag cat-${catLabel}" title="Category ${catLabel}">${catLabel}</span>` : '';
-        const ldrBtnHtml = '';
-        const swpBtnHtml = '';
 
-        const selfRibbon = isSelf ? getSelfFullRowRibbonMetrics(wkg, hr, maxHr) : null;
+        const ldrBtnHtml = !isSelf
+          ? `<button type="button" class="ldr-pin-btn ${leaderInfo.isLeader ? 'active-ldr' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a Yellow Beacon Leader / Co-Leader (highlights their row in BEACON YELLOW & pins them at the top)">${leaderInfo.isLeader ? (leaderInfo.isOfficialBeacon ? '🟡LDR' : '👑CO') : 'LDR'}</button>`
+          : `<span class="self-beacon-badge" title="${leaderInfo.isOfficialBeacon ? 'Zwift Official Yellow Beacon Active on YOU' : 'Main 100K Event Leader (YOU)'}">${leaderInfo.isOfficialBeacon ? '🟡👑 LDR' : '👑 LDR'}</span>`;
+
+        const swpBtnHtml = !isSelf
+          ? `<button type="button" class="swp-pin-btn ${sweepInfo.isSweep ? 'active-swp' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a WOW 100K Sweep (highlights their row in ORANGE & pins them at the bottom)">${sweepInfo.isSweep ? '🧹SWP' : 'SWP'}</button>`
+          : '';
 
         const rowClasses = [
           isSelf ? 'watching' : '',
-          (isSelf && selfRibbon && selfRibbon.isThresholdPulse) ? 'self-threshold-pulse' : '',
-          (!isSelf && attackInfo.isAttacking) ? 'rider-attack-row' : ((!isSelf && isInZone567) ? 'hr-surge-row' : '')
+          (!isSelf && leaderInfo.isLeader) ? 'pinned-leader-row' : '',
+          (!isSelf && !leaderInfo.isLeader && sweepInfo.isSweep) ? 'pinned-sweep-row' : '',
+          (!leaderInfo.isLeader && !sweepInfo.isSweep && attackInfo.isAttacking) ? 'rider-attack-row' : (isInZone567 ? 'hr-surge-row' : '')
         ].filter(Boolean).join(' ');
-
-        const rowInlineStyle = (isSelf && selfRibbon)
-          ? `style="background: ${selfRibbon.rowBgCss};"`
-          : '';
 
         const resizerFor = (colIdx) => rowIdx < 2 ? `<div class="row-col-resizer" data-col="${colIdx}" title="Drag to resize/concertina column"></div>` : '';
         const attackBadgeHtml = attackInfo.isAttacking ? `<span class="attack-tag">ATK</span>` : '';
 
         let riderCellHtml = '';
 
-        const pInfo = riderPosLookup.get(riderKey) || { roadPos: rowIdx + 1, cLetter: catLabel || 'C', cPos: rowIdx + 1 };
-        const posCls = isSelf ? 'pos-self' : (pInfo.roadPos === 1 ? 'pos-1' : (pInfo.roadPos === 2 ? 'pos-2' : (pInfo.roadPos === 3 ? 'pos-3' : '')));
-        const posNumBadge = `<span class="rider-pos-num ${posCls}" title="Overall Open Position: #${pInfo.roadPos} (${pInfo.cLetter} #${pInfo.cPos})">${pInfo.roadPos}</span>`;
-
         if (isSelf) {
+          const selfTone = getHrToneMetrics(hr, MIN_HR_BPM, maxHr);
+          const barBg = getSpectrumBarBackground(selfTone.colorIdx, 0.94);
+          const ambientBg = `linear-gradient(90deg, rgba(${selfTone.r},${selfTone.g},${selfTone.b},0.65) 0%, rgba(${selfTone.r},${selfTone.g},${selfTone.b},0.2) 100%)`;
+          const glowShadow = `0 0 12px rgba(${selfTone.r},${selfTone.g},${selfTone.b},0.75)`;
+
           riderCellHtml = `
-            <td class="col-rider self-full-bar-cell" title="Pos #${pInfo.roadPos} (${pInfo.cLetter} #${pInfo.cPos}) | ${name} | ${selfRibbon.zoneText} (Scale ${selfRibbon.fillPct}%) | 20m: ${target20mWkg.toFixed(2)} | 5m: ${target5mWkg.toFixed(2)} | 1m: ${target1mWkg.toFixed(2)} W/kg">
+            <td class="col-rider self-full-bar-cell" title="${name} | Age: ${ageDisplay} -> Max HR: ${maxHr} bpm (${hrZoneInfo.zoneLabel}) | Z5/6/7 Redline: >=${z567ThresholdBpm} bpm | Colour ${selfTone.colorIdx + 1}/256">
+              <div class="self-full-bar-ambient" style="background: ${ambientBg};"></div>
+              <div class="self-full-bar-fill" style="width: ${selfTone.fillPct}%; background: ${barBg}; box-shadow: ${glowShadow};"></div>
               <div class="self-rider-label">
-                <span>${posNumBadge}${name}${attackBadgeHtml}</span>
+                <span>${ldrBtnHtml}${swpBtnHtml}${catBadgeHtml}${name}${attackBadgeHtml}</span>
               </div>
               ${resizerFor(0)}
             </td>
@@ -4697,9 +4165,9 @@
           const pctOfMax = hrZoneInfo.pctMax;
 
           riderCellHtml = `
-            <td class="col-rider other-rider-cell" style="border-left: 3px solid ${hr !== null ? rivalTone.rgbCss : 'transparent'};" title="Pos #${pInfo.roadPos} (${pInfo.cLetter} #${pInfo.cPos}) | ${name} | Age: ${ageDisplay} -> Max HR: ${maxHr} bpm">
+            <td class="col-rider other-rider-cell" style="border-left: 3px solid ${hr !== null ? rivalTone.rgbCss : 'transparent'};" title="${name} | Age: ${ageDisplay} -> Max HR: ${maxHr} bpm (${pctOfMax ?? '—'}% Max, ${hrZoneInfo.zoneLabel}) | Z5/6/7 Trigger: >=${z567ThresholdBpm} bpm">
               <div class="other-rider-label">
-                <span>${posNumBadge}${name}${attackBadgeHtml}</span>
+                <span>${ldrBtnHtml}${swpBtnHtml}${catBadgeHtml}${name}${attackBadgeHtml}</span>
               </div>
               <div class="other-hr-track">
                 <div class="other-hr-fill" style="width: ${rivalTone.fillPct}%; background: ${rivalBarBg};"></div>
@@ -4709,13 +4177,6 @@
             </td>
           `;
         }
-
-        const catCellHtml = `
-          <td class="col-cat-cell" title="Zwift Race Category: ${catLabel || 'Unassigned'}">
-            ${catBadgeHtml || '—'}
-            ${resizerFor(1)}
-          </td>
-        `;
 
         const redBoxClass = isInZone567
           ? 'red-timer-box flashing-z45'
@@ -4731,33 +4192,32 @@
               <div class="red-timer-fill" style="width: ${redFillPct}%;"></div>
               <span class="red-timer-label">${activeRedZoneBadge}${redSecondsInt}s</span>
             </div>
-            ${resizerFor(4)}
+            ${resizerFor(3)}
           </td>
         `;
 
         return `
-          <tr class="${rowClasses}" ${rowInlineStyle} title="${attackInfo.isAttacking ? attackInfo.attackReason : ''}">
+          <tr class="${rowClasses}" title="${attackInfo.isAttacking ? attackInfo.attackReason : ''}">
             ${riderCellHtml}
-            ${catCellHtml}
             <td title="${wkg != null ? `${wkg.toFixed(2)} W/kg (${power}W)` : `${power}W`}">
               ${wkg != null ? `<span class="wkg-badge ${zoneClass}">${wkg.toFixed(2)}</span>` : '—'}
-              ${resizerFor(2)}
+              ${resizerFor(1)}
             </td>
             <td title="Age ${ageDisplay} Formula Max HR: ${maxHr} bpm (${hrZoneInfo.zoneLabel}) | Zone 5/6/7 Redline: >=${z567ThresholdBpm} bpm">
               ${hr !== null
                 ? `<span class="${isInZone567 ? 'hr-surge-badge' : ''}">${hr}</span><span class="sub-unit">bpm</span>`
                 : '—'}
-              ${resizerFor(3)}
+              ${resizerFor(2)}
             </td>
             ${redCellHtml}
-            <td>${ageDisplay}${resizerFor(5)}</td>
-            <td>${weight ? weight.toFixed(1) : '—'}<span class="sub-unit">kg</span>${resizerFor(6)}</td>
+            <td>${ageDisplay}${resizerFor(4)}</td>
+            <td>${weight ? weight.toFixed(1) : '—'}<span class="sub-unit">kg</span>${resizerFor(5)}</td>
             <td class="${draft > 0 ? 'draft-active' : ''}">
-              ${draft}<span class="sub-unit">W</span>${resizerFor(7)}
+              ${draft}<span class="sub-unit">W</span>${resizerFor(6)}
             </td>
-            <td>${formatClimbHtml(climbPct)}${resizerFor(8)}</td>
+            <td>${formatClimbHtml(climbPct)}${resizerFor(7)}</td>
             <td class="${gapCellClasses}" title="${gapTrend.tooltip}">
-              <span>${formatGapText(gap, isSelf)}</span>${gapTrend.arrowHtml}${resizerFor(9)}
+              <span>${formatGapText(gap, isSelf)}</span>${gapTrend.arrowHtml}${resizerFor(8)}
             </td>
           </tr>
         `;
@@ -4791,40 +4251,11 @@
       const rawDistMeters = Number(watchedEntry?.state?.distance ?? 0);
       const distanceKm = rawDistMeters > 0 ? (rawDistMeters / 1000) : 0;
 
-      // Track cumulative elevation climbed (m) from live altitude or road grade * distance delta
-      const curAltM = watchedEntry?.state?.altitude ?? watchedEntry?.state?.elevation ?? null;
-      const myGradePct = parseClimbGradePct(watchedEntry?.state?.grade);
-      if (watchedEntry?.state?.climbed != null && Number(watchedEntry.state.climbed) > 0) {
-        climbedMetersAccum = Number(watchedEntry.state.climbed);
-      } else if (curAltM != null && Number(curAltM) > 0) {
-        if (lastAltitudeM !== null && Number(curAltM) > lastAltitudeM) {
-          climbedMetersAccum += (Number(curAltM) - lastAltitudeM);
-        }
-        lastAltitudeM = Number(curAltM);
-      } else if (rawDistMeters > 0) {
-        if (prevDistForClimbM !== null && rawDistMeters > prevDistForClimbM && myGradePct > 0.1) {
-          climbedMetersAccum += ((rawDistMeters - prevDistForClimbM) * (myGradePct / 100));
-        }
-        prevDistForClimbM = rawDistMeters;
-      }
-
-      const myWeightKg = Number(watchedEntry?.athlete?.weight ?? detectedSelfAthlete.weight ?? 57.6);
-      const rivalWeights = sorted
-        .filter(r => !r.watching && r.athlete?.weight > 35)
-        .map(r => Number(r.athlete.weight));
-      const packAvgWeightKg = rivalWeights.length > 0
-        ? (rivalWeights.reduce((a, b) => a + b, 0) / rivalWeights.length)
-        : 75.5;
-
       updatePersonalPowerGauges(selfLiveWkg, nowMs, {
         groupSpeedKph,
         frontWkg,
         isLeaderOnFront,
-        distanceKm,
-        climbedMeters: climbedMetersAccum,
-        myGradePct,
-        myWeightKg,
-        packAvgWeightKg
+        distanceKm
       });
 
       // Update Row 2B: Live Sweep Tracker & Chasing Cat B / Cat C Groups Radar
@@ -4927,30 +4358,30 @@
       });
     }
 
-    // 3. Simulated Demo Feed for 22.5 KM & 209m Climbing Race (22 Scrollable Riders, Full-Row Green->Orange->Red Ribbon & Gentle Red Threshold Pulse)
+    // 3. Simulated Demo Feed for D WOW 100K TTT Ride (Max 2.00 W/kg on Front, ~37 kph Blob, Yellow Leader, Red Sweep, & Paged View)
     const sampleRiders = [
-      { id: 1,  name: 'E. Brauns (Attacking)', cat: 'B', weight: 75.0, age: 44, baseGap: -6.4, gapAmp: 0.65, gapPhase: 0.0, basePwr: 255, baseHr: 166, baseDraft: 20, baseSpeed: 39.2, gradeOffset: 0.005 },
-      { id: 2,  name: 'T. Buchanan TTNW', cat: 'A', weight: 78.0, age: 51, baseGap: -4.2, gapAmp: 0.35, gapPhase: 0.4, basePwr: 215, baseHr: 148, baseDraft: 65, baseSpeed: 38.2, gradeOffset: 0.004 },
-      { id: 3,  name: 'C. Fandango', cat: 'C', weight: 64.0, age: 47, baseGap: -3.1, gapAmp: 0.30, gapPhase: 0.9, basePwr: 185, baseHr: 142, baseDraft: 85, baseSpeed: 38.1, gradeOffset: 0.003 },
-      { id: 4,  name: 'J. Lindqvist', cat: 'B', weight: 72.0, age: 54, baseGap: -1.4, gapAmp: 0.22, gapPhase: 1.5, basePwr: 205, baseHr: 144, baseDraft: 75, baseSpeed: 38.0, gradeOffset: 0.002 },
-      { id: 5,  name: 'T. Mertens', cat: 'B', weight: 76.0, age: 49, baseGap: -0.9, gapAmp: 0.25, gapPhase: 2.1, basePwr: 218, baseHr: 151, baseDraft: 90, baseSpeed: 38.0, gradeOffset: 0.001 },
-      { id: 6,  name: 'C. MacLeod', cat: 'C', weight: 68.0, age: 52, baseGap: -0.4, gapAmp: 0.18, gapPhase: 3.1, basePwr: 198, baseHr: 162, baseDraft: 95, baseSpeed: 38.0, gradeOffset: 0.001 },
-      { id: 7,  name: 'M. Heady (YOU)', cat: 'C', weight: 57.6, age: 68, baseGap: 0.0, gapAmp: 0.0, gapPhase: 0.0, basePwr: 168, baseHr: 136, baseDraft: 85, baseSpeed: 38.0, gradeOffset: 0.0, watching: true },
-      { id: 8,  name: 'J. Campbell', cat: 'C', weight: 78.0, age: 61, baseGap: 0.5, gapAmp: 0.25, gapPhase: 0.8, basePwr: 210, baseHr: 138, baseDraft: 125, baseSpeed: 38.0, gradeOffset: -0.001 },
-      { id: 9,  name: 'A. Stewart', cat: 'C', weight: 64.0, age: 58, baseGap: 1.1, gapAmp: 0.30, gapPhase: 2.2, basePwr: 178, baseHr: 139, baseDraft: 115, baseSpeed: 38.0, gradeOffset: -0.002 },
-      { id: 10, name: 'M. Fraser', cat: 'C', weight: 71.0, age: 63, baseGap: 1.8, gapAmp: 0.35, gapPhase: 1.9, basePwr: 192, baseHr: 134, baseDraft: 110, baseSpeed: 38.0, gradeOffset: -0.002 },
-      { id: 11, name: 'I. Henderson', cat: 'C', weight: 74.0, age: 57, baseGap: 2.5, gapAmp: 0.40, gapPhase: 2.7, basePwr: 199, baseHr: 141, baseDraft: 105, baseSpeed: 38.0, gradeOffset: -0.003 },
-      { id: 12, name: 'D. Weller', cat: 'C', weight: 77.0, age: 50, baseGap: 3.2, gapAmp: 0.40, gapPhase: 3.2, basePwr: 208, baseHr: 145, baseDraft: 100, baseSpeed: 38.0, gradeOffset: -0.003 },
-      { id: 13, name: 'P. Peters', cat: 'C', weight: 88.0, age: 55, baseGap: 4.0, gapAmp: 0.45, gapPhase: 0.6, basePwr: 228, baseHr: 136, baseDraft: 110, baseSpeed: 38.0, gradeOffset: -0.003 },
-      { id: 14, name: 'K. Robb', cat: 'C', weight: 84.0, age: 60, baseGap: 4.9, gapAmp: 0.50, gapPhase: 1.4, basePwr: 218, baseHr: 140, baseDraft: 95, baseSpeed: 37.9, gradeOffset: -0.003 },
-      { id: 15, name: 'R. Barnett', cat: 'C', weight: 79.0, age: 62, baseGap: 5.8, gapAmp: 0.50, gapPhase: 2.0, basePwr: 202, baseHr: 132, baseDraft: 90, baseSpeed: 37.9, gradeOffset: -0.004 },
-      { id: 16, name: 'B. Goodreau', cat: 'C', weight: 81.0, age: 48, baseGap: 6.7, gapAmp: 0.55, gapPhase: 2.9, basePwr: 225, baseHr: 158, baseDraft: 85, baseSpeed: 37.8, gradeOffset: -0.004 },
-      { id: 17, name: 'R. Wallace', cat: 'C', weight: 70.0, age: 49, baseGap: 11.4, gapAmp: 1.6, gapPhase: 1.2, basePwr: 192, baseHr: 148, baseDraft: 85, baseSpeed: 37.5, gradeOffset: -0.004 },
-      { id: 18, name: 'G. Robertson', cat: 'C', weight: 75.0, age: 55, baseGap: 12.0, gapAmp: 1.6, gapPhase: 1.2, basePwr: 210, baseHr: 144, baseDraft: 40, baseSpeed: 37.6, gradeOffset: -0.004 },
-      { id: 19, name: 'T. Tyler', cat: 'D', weight: 68.0, age: 59, baseGap: 18.5, gapAmp: 1.2, gapPhase: 0.7, basePwr: 168, baseHr: 129, baseDraft: 50, baseSpeed: 36.8, gradeOffset: -0.005 },
-      { id: 20, name: 'L. Riquelme', cat: 'D', weight: 69.0, age: 45, baseGap: 19.2, gapAmp: 1.2, gapPhase: 0.7, basePwr: 185, baseHr: 142, baseDraft: 30, baseSpeed: 36.9, gradeOffset: -0.005 },
-      { id: 21, name: 'S. Karlsson', cat: 'C', weight: 74.0, age: 46, baseGap: 28.0, gapAmp: 3.0, gapPhase: 0.5, basePwr: 195, baseHr: 146, baseDraft: 65, baseSpeed: 37.2, gradeOffset: -0.005 },
-      { id: 22, name: 'K. Trok', cat: 'C', weight: 73.0, age: 39, baseGap: 34.0, gapAmp: 4.0, gapPhase: 1.0, basePwr: 205, baseHr: 151, baseDraft: 75, baseSpeed: 37.4, gradeOffset: -0.006 }
+      { id: 1,  name: 'E. Brauns (Surging)', cat: 'D', weight: 75.0, age: 44, baseGap: -6.4, gapAmp: 0.65, gapPhase: 0.0, basePwr: 244, baseHr: 164, baseDraft: 20, baseSpeed: 36.8, gradeOffset: 0.005 },
+      { id: 2,  name: 'T. Buchanan TTNW', cat: 'D', weight: 78.0, age: 51, baseGap: -4.2, gapAmp: 0.35, gapPhase: 0.4, basePwr: 165, baseHr: 134, baseDraft: 65, baseSpeed: 37.2, gradeOffset: 0.004 },
+      { id: 3,  name: 'C. Fandango', cat: 'D', weight: 64.0, age: 47, baseGap: -3.1, gapAmp: 0.30, gapPhase: 0.9, basePwr: 142, baseHr: 126, baseDraft: 85, baseSpeed: 37.1, gradeOffset: 0.003 },
+      { id: 4,  name: 'WOW Co-Leader', cat: 'D', leader: true, weight: 72.0, age: 54, baseGap: -1.4, gapAmp: 0.22, gapPhase: 1.5, basePwr: 162, baseHr: 128, baseDraft: 45, baseSpeed: 37.0, gradeOffset: 0.002 },
+      { id: 5,  name: 'T. Mertens', cat: 'D', weight: 76.0, age: 49, baseGap: -0.9, gapAmp: 0.25, gapPhase: 2.1, basePwr: 168, baseHr: 138, baseDraft: 90, baseSpeed: 37.0, gradeOffset: 0.001 },
+      { id: 6,  name: 'C. MacLeod', cat: 'D', weight: 68.0, age: 52, baseGap: -0.4, gapAmp: 0.18, gapPhase: 3.1, basePwr: 148, baseHr: 162, baseDraft: 95, baseSpeed: 37.0, gradeOffset: 0.001 },
+      { id: 7,  name: 'M. Heady (YOU)', cat: 'D', leader: true, weight: 58.0, age: 68, baseGap: 0.0, gapAmp: 0.0, gapPhase: 0.0, basePwr: 114, baseHr: 121, baseDraft: 85, baseSpeed: 37.0, gradeOffset: 0.0, watching: true },
+      { id: 8,  name: 'J. Campbell', cat: 'D', weight: 78.0, age: 61, baseGap: 0.5, gapAmp: 0.25, gapPhase: 0.8, basePwr: 160, baseHr: 122, baseDraft: 125, baseSpeed: 37.0, gradeOffset: -0.001 },
+      { id: 9,  name: 'A. Stewart', cat: 'D', weight: 64.0, age: 58, baseGap: 1.1, gapAmp: 0.30, gapPhase: 2.2, basePwr: 128, baseHr: 124, baseDraft: 115, baseSpeed: 37.0, gradeOffset: -0.002 },
+      { id: 10, name: 'M. Fraser', cat: 'D', weight: 71.0, age: 63, baseGap: 1.8, gapAmp: 0.35, gapPhase: 1.9, basePwr: 142, baseHr: 119, baseDraft: 110, baseSpeed: 37.0, gradeOffset: -0.002 },
+      { id: 11, name: 'I. Henderson', cat: 'D', weight: 74.0, age: 57, baseGap: 2.5, gapAmp: 0.40, gapPhase: 2.7, basePwr: 149, baseHr: 125, baseDraft: 105, baseSpeed: 37.0, gradeOffset: -0.003 },
+      { id: 12, name: 'D. Weller', cat: 'D', weight: 77.0, age: 50, baseGap: 3.2, gapAmp: 0.40, gapPhase: 3.2, basePwr: 158, baseHr: 133, baseDraft: 100, baseSpeed: 37.0, gradeOffset: -0.003 },
+      { id: 13, name: 'P. Peters', cat: 'D', weight: 88.0, age: 55, baseGap: 4.0, gapAmp: 0.45, gapPhase: 0.6, basePwr: 162, baseHr: 120, baseDraft: 110, baseSpeed: 37.0, gradeOffset: -0.003 },
+      { id: 14, name: 'K. Robb', cat: 'D', weight: 84.0, age: 60, baseGap: 4.9, gapAmp: 0.50, gapPhase: 1.4, basePwr: 158, baseHr: 127, baseDraft: 95, baseSpeed: 36.9, gradeOffset: -0.003 },
+      { id: 15, name: 'R. Barnett', cat: 'D', weight: 79.0, age: 62, baseGap: 5.8, gapAmp: 0.50, gapPhase: 2.0, basePwr: 152, baseHr: 118, baseDraft: 90, baseSpeed: 36.9, gradeOffset: -0.004 },
+      { id: 16, name: 'B. Goodreau', cat: 'D', weight: 81.0, age: 48, baseGap: 6.7, gapAmp: 0.55, gapPhase: 2.9, basePwr: 170, baseHr: 158, baseDraft: 85, baseSpeed: 36.8, gradeOffset: -0.004 },
+      { id: 17, name: 'R. Wallace (Dropped)', cat: 'D', weight: 70.0, age: 49, baseGap: 11.4, gapAmp: 1.6, gapPhase: 1.2, basePwr: 152, baseHr: 144, baseDraft: 85, baseSpeed: 35.8, gradeOffset: -0.004 },
+      { id: 18, name: 'G. Robertson [SWP]', cat: 'D', sweeper: true, weight: 75.0, age: 55, baseGap: 12.0, gapAmp: 1.6, gapPhase: 1.2, basePwr: 176, baseHr: 140, baseDraft: 40, baseSpeed: 36.0, gradeOffset: -0.004 },
+      { id: 19, name: 'T. Tyler', cat: 'D', weight: 68.0, age: 59, baseGap: 18.5, gapAmp: 1.2, gapPhase: 0.7, basePwr: 128, baseHr: 115, baseDraft: 50, baseSpeed: 34.2, gradeOffset: -0.005 },
+      { id: 20, name: 'L. Riquelme [SWP 2]', cat: 'D', sweeper: true, weight: 69.0, age: 45, baseGap: 19.2, gapAmp: 1.2, gapPhase: 0.7, basePwr: 165, baseHr: 139, baseDraft: 30, baseSpeed: 34.5, gradeOffset: -0.005 },
+      { id: 21, name: 'WOW Cat C Leader', cat: 'C', weight: 74.0, age: 46, baseGap: 38.0, gapAmp: 3.0, gapPhase: 0.5, basePwr: 185, baseHr: 146, baseDraft: 65, baseSpeed: 38.2, gradeOffset: -0.005 },
+      { id: 22, name: 'WOW Cat B Leader', cat: 'B', weight: 73.0, age: 39, baseGap: 84.0, gapAmp: 4.0, gapPhase: 1.0, basePwr: 225, baseHr: 154, baseDraft: 75, baseSpeed: 40.8, gradeOffset: -0.006 }
     ];
 
     function toggleDemoMode() {
@@ -5018,15 +4449,11 @@
             age: r.watching ? selfDemoAge : r.age
           },
           state: {
-            // Sweep YOU across Green (1.85 W/kg = 107W) -> Orange (2.65 W/kg = 153W) -> Red Threshold Gentle Pulse (3.15-4.30 W/kg = 181W-248W)
-            power: r.watching
-              ? Math.round(57.6 * (2.95 + Math.sin(demoTickCount * 0.32) * 1.25))
-              : Math.max(85, Math.round(r.basePwr + Math.sin(demoTickCount * 0.35) * 8 + (Math.random() * 6 - 3))),
+            power: Math.max(85, Math.round(r.basePwr + Math.sin(demoTickCount * 0.35) * 8 + (Math.random() * 6 - 3))),
             heartrate: r.watching ? demoSelfHr : Math.round(r.baseHr + (Math.random() * 6 - 3)),
             draft: Math.max(0, Math.round(r.baseDraft + (Math.random() * 24 - 12))),
-            speed: +((r.baseSpeed || 38.0) + Math.sin(demoTickCount * 0.25) * 0.8 + (Math.random() * 0.3 - 0.15)).toFixed(1),
-            distance: (8500 + (demoTickCount * 75)) % 22500,
-            climbed: Math.min(209, Math.round(104 + (demoTickCount * 1.2))),
+            speed: +((r.baseSpeed || 37.0) + Math.sin(demoTickCount * 0.25) * 0.8 + (Math.random() * 0.3 - 0.15)).toFixed(1),
+            distance: 18500 + (demoTickCount * 95),
             grade: demoClimbGrade + (r.gradeOffset || 0)
           }
         };
@@ -5036,21 +4463,6 @@
 
     const preset40kBtn = document.getElementById('preset40kBtn');
     const preset100kBtn = document.getElementById('preset100kBtn');
-
-    if (presetRaceBtn) {
-      presetRaceBtn.addEventListener('click', () => {
-        raceTotalKm = 22.5;
-        raceTotalElevM = 209;
-        if (inputRaceKm) inputRaceKm.value = '22.5';
-        if (inputRaceElev) inputRaceElev.value = '209';
-        localStorage.setItem('zwift_race_total_km', '22.5');
-        localStorage.setItem('zwift_race_total_elev_m', '209');
-        setTarget1mWkg(4.23);
-        setFtp5mTarget(3.40);
-        setTarget20mWkg(2.98);
-        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
-      });
-    }
 
     function applyEventPreset(modeStr) {
       if (modeStr === '40K') {

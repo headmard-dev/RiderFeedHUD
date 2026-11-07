@@ -1857,8 +1857,8 @@
         <div class="settings-row" title="Switch Event Pacer Preset between 40K Recovery (Max 2.40 W/kg) and 100K TTT (2.00 W/kg & 37 kph)">
           <span class="settings-label">🏁 Event Mode Preset</span>
           <div class="settings-control">
-            <button id="preset40kBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;">40K Recovery (Max 2.4)</button>
-            <button id="preset100kBtn" class="btn-toggle" type="button">100K TTT (2.0 • 37kph)</button>
+            <button id="preset100kBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;">100K TTT (2.0 • 37kph)</button>
+            <button id="preset40kBtn" class="btn-toggle" type="button">40K Recovery (Max 2.4)</button>
           </div>
         </div>
 
@@ -1914,35 +1914,35 @@
       </div>
     </div>
 
-    <!-- Row 2A: Whole-40K Recovery W/kg Pacer (Top-Left) & 40K Front Max 2.40 W/kg Pacer (Top-Right) -->
+    <!-- Row 2A: Whole-100K Event W/kg Pacer (Top-Left) & 100K Front Max 2.00 W/kg + 37 kph Pacer (Top-Right) -->
     <div class="personal-tactical-bar">
-      <!-- Left Banner: Whole-40K Recovery W/kg Target & Ride Average Pacer (Default Max 2.40 W/kg) -->
-      <div id="ftp5mCard" class="tactical-card state-ttt-good" title="Whole-40K Recovery W/kg Pacer. Pre-set to Max 2.40 W/kg for the D Group 40K Recovery ride: tracks both your Live W/kg and Whole-40K Ride Average W/kg from 0 km to 40 km!">
+      <!-- Left Banner: Whole-100K Event W/kg Target & Ride Average Pacer (Default Max 2.00 W/kg) -->
+      <div id="ftp5mCard" class="tactical-card state-ttt-good" title="Whole-100K Event W/kg Pacer. Pre-set to 2.00 W/kg for the D WOW 100K TTT ride: tracks both your Live W/kg and Whole-100K Ride Average W/kg from 0 km to 100 km!">
         <div id="ftp5mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.50), rgba(16, 185, 129, 0.78));"></div>
         <div class="tactical-content">
           <div class="tactical-left">
             <span class="tactical-title">100K WKG</span>
-            <div class="tactical-target-ctrl" title="Set Max Target W/kg for the 40K Recovery Event (Default: 2.40 W/kg)">
+            <div class="tactical-target-ctrl" title="Set Max Target W/kg for the 100K TTT Event (Default: 2.00 W/kg)">
               <button id="ftp5mMinus" class="tactical-step-btn" type="button">−</button>
               <span id="ftp5mTargetText" class="tactical-target-val">2.00</span>
               <button id="ftp5mPlus" class="tactical-step-btn" type="button">+</button>
             </div>
           </div>
           <div class="tactical-right">
-            <span id="ftp5mStatus" class="tactical-status-pill" title="Live W/kg vs 40K Recovery Target (Max 2.40 W/kg)">100K OK</span>
-            <span id="ftp5mTimer" class="tactical-timer" title="Whole-40K Ride Average W/kg">Avg 2.15</span>
-            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Reset Whole-40K Average W/kg counter">Rst</button>
+            <span id="ftp5mStatus" class="tactical-status-pill" title="Live W/kg vs 100K Target (Max 2.00 W/kg)">100K OK</span>
+            <span id="ftp5mTimer" class="tactical-timer" title="Whole-100K Ride Average W/kg">Avg 1.98</span>
+            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Reset Whole-100K Average W/kg counter">Rst</button>
           </div>
         </div>
       </div>
 
-      <!-- Right Banner: D Group 40K Recovery Front Cap (Max 2.40 W/kg on Front) & Group Speed -->
-      <div id="ttt1mCard" class="tactical-card state-ttt-good" title="D WOW 40K Recovery Leader Pacer: Colours Emerald Green when front holds <= 2.40 W/kg; Flashes Red if you exceed 2.40 W/kg on the front; turns Amber if another front rider surges above 2.55 W/kg.">
+      <!-- Right Banner: D Group 100K Leader Front Cap (Max 2.00 W/kg on Front) & 37 kph Group Speed -->
+      <div id="ttt1mCard" class="tactical-card state-ttt-good" title="D WOW 100K Leader Pacer: Colours Emerald Green when front holds <= 2.00 W/kg & ~37 kph; Flashes Red if you exceed 2.00 W/kg on the front; turns Amber if another front rider surges above 2.20 W/kg.">
         <div id="ttt1mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.55), rgba(16, 185, 129, 0.82));"></div>
         <div class="tactical-content">
           <div class="tactical-left">
-            <span id="event100kTitle" class="tactical-title" title="40K Recovery Progress (Tracks live distance up to 40.0 km)">100K</span>
-            <div class="tactical-target-ctrl" title="Maximum Front W/kg Ceiling for D Group (Default: 2.40 W/kg)">
+            <span id="event100kTitle" class="tactical-title" title="100K Event Progress (Tracks live distance up to 100.0 km)">100K</span>
+            <div class="tactical-target-ctrl" title="Maximum Front W/kg Ceiling for D Group (Default: 2.00 W/kg)">
               <button id="ttt1mMinus" class="tactical-step-btn" type="button">−</button>
               <span id="ttt1mTargetText" class="tactical-target-val">2.00</span>
               <button id="ttt1mPlus" class="tactical-step-btn" type="button">+</button>
@@ -1954,9 +1954,9 @@
             </div>
           </div>
           <div class="tactical-right">
-            <span id="ttt1mStatus" class="tactical-status-pill"><=2.4w/kg OK</span>
-            <span id="ttt1mTimer" class="tactical-timer" title="Live Group / Blob Speed (kph)">35.0kph</span>
-            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Reset 40K distance counter to 0.0 km">100K</button>
+            <span id="ttt1mStatus" class="tactical-status-pill"><=2.0w/kg OK</span>
+            <span id="ttt1mTimer" class="tactical-timer" title="Live Group / Blob Speed (kph)">37.0kph</span>
+            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Reset 100K distance counter to 0.0 km">100K</button>
           </div>
         </div>
       </div>
@@ -2076,7 +2076,7 @@
       </div>
     </div>
   </div>
-  <button id="reopenHudPill" class="reopen-hud-pill" type="button" title="Click to restore WOW 40K Recovery HUD">🔄 Reopen 40K HUD</button>
+  <button id="reopenHudPill" class="reopen-hud-pill" type="button" title="Click to restore WOW 100K Leader HUD">🔄 Reopen 100K HUD</button>
 
   <script type="module">
     const hudContainer = document.getElementById('hudContainer');
@@ -2398,7 +2398,7 @@
         hudContainer.classList.toggle('hud-minimized', isHudMinimized);
         minimizeHudBtn.classList.toggle('active-mode', isHudMinimized);
         minimizeHudBtn.textContent = isHudMinimized ? '▢ Expand' : '—';
-        minimizeHudBtn.title = isHudMinimized ? 'Expand Rider Table' : 'Minimize / Collapse Rider Table (Shows only Top 40K Banners)';
+        minimizeHudBtn.title = isHudMinimized ? 'Expand Rider Table' : 'Minimize / Collapse Rider Table (Shows only Top 100K Banners)';
       });
     }
 
@@ -2962,15 +2962,15 @@
     // Personal 5-Minute FTP (Default 3.40 W/kg) Countdown Tank (300s -> 0s)
     // & 1-Minute WTRL TTT Pull Pacer (60s -> 0s)
     // =========================================================================
-    // Whole-40K Recovery Event W/kg Target & Cumulative Session Average Tracker
-    let whole100kTargetWkg = 2.00; // Default Max 2.40 W/kg for the D Group 40K Recovery event
+    // Whole-100K TTT Event W/kg Target & Cumulative Session Average Tracker
+    let whole100kTargetWkg = 2.00; // Default Max 2.00 W/kg for the D WOW 100K event
     let whole100kWkgWeightedSum = 0;
     let whole100kSampleSeconds = 0;
     let ftp5mLastMs = performance.now();
 
-    const EVENT_TOTAL_KM = 100.0;     // 40K Recovery Event Distance (40.0 km)
-    let leaderFrontTargetWkg = 2.00; // D Group 40K Recovery Leader front cap: Max 2.40 W/kg
-    let groupTargetKph = 37;         // D Group 40K Recovery speed target: 35 kph (adjustable)
+    const EVENT_TOTAL_KM = 100.0;     // 100K TTT Event Distance (100.0 km)
+    let leaderFrontTargetWkg = 2.00; // D WOW 100K Leader front cap: Max 2.00 W/kg
+    let groupTargetKph = 37;         // D WOW 100K speed target: 37 kph (adjustable)
     let distanceOffsetKm = 0;
     let lastRawDistKm = 0;
 
@@ -3236,8 +3236,8 @@
 
     ttt1mToggleBtn.addEventListener('click', () => {
       distanceOffsetKm = lastRawDistKm;
-      if (event100kTitle) event100kTitle.textContent = '40K';
-      ttt1mToggleBtn.textContent = '40K';
+      if (event100kTitle) event100kTitle.textContent = '100K';
+      ttt1mToggleBtn.textContent = '100K';
     });
 
     function updatePersonalPowerGauges(selfWkg, nowMs, metrics100k = {}) {
@@ -3301,9 +3301,9 @@
 
       ttt1mFill.style.width = `${pct100k}%`;
       if (event100kTitle) {
-        event100kTitle.textContent = eventKm > 0.1 ? `${eventKm.toFixed(1)}/100K` : '40K';
+        event100kTitle.textContent = eventKm > 0.1 ? `${eventKm.toFixed(1)}/100K` : '100K';
       }
-      ttt1mToggleBtn.textContent = eventKm > 0.1 ? `${Math.max(0, Math.round(EVENT_TOTAL_KM - eventKm))}K left` : '40K';
+      ttt1mToggleBtn.textContent = eventKm > 0.1 ? `${Math.max(0, Math.round(EVENT_TOTAL_KM - eventKm))}K left` : '100K';
       ttt1mTimer.textContent = groupKph > 0 ? `${groupKph.toFixed(1)}kph` : `${groupTargetKph}.0kph`;
 
       const wkgDiffSelf = curWkg - leaderFrontTargetWkg;
@@ -3641,7 +3641,7 @@
           const myName = detectedSelfAthlete.name || selfEntry?.athlete?.sanitizedFullname || 'YOU (Main)';
           const shortMyName = myName.length > 13 ? myName.slice(0, 12) + '…' : myName;
           leaderRadarName.textContent = shortMyName;
-          leaderRadarGap.textContent = `${selfWkg > 0 ? selfWkg.toFixed(2) : '2.40'}w/kg`;
+          leaderRadarGap.textContent = `${selfWkg > 0 ? selfWkg.toFixed(2) : '2.00'}w/kg`;
           leaderRadarRole.textContent = selfLdrInfo.isOfficialBeacon ? '🟡 BEACON ON' : '👑 MAIN LDR';
           leaderRadarRole.style.color = '#facc15';
         }
@@ -4358,24 +4358,24 @@
       });
     }
 
-    // 3. Simulated Demo Feed for D WOW 40K Recovery Ride (Max 2.40 W/kg on Front, ~35 kph Blob, Yellow Leader, Orange Sweep, & Paged View)
+    // 3. Simulated Demo Feed for D WOW 100K TTT Ride (Max 2.00 W/kg on Front, ~37 kph Blob, Yellow Leader, Red Sweep, & Paged View)
     const sampleRiders = [
       { id: 1,  name: 'E. Brauns (Surging)', cat: 'D', weight: 75.0, age: 44, baseGap: -6.4, gapAmp: 0.65, gapPhase: 0.0, basePwr: 244, baseHr: 164, baseDraft: 20, baseSpeed: 36.8, gradeOffset: 0.005 },
-      { id: 2,  name: 'T. Buchanan TTNW', cat: 'D', weight: 78.0, age: 51, baseGap: -4.2, gapAmp: 0.35, gapPhase: 0.4, basePwr: 165, baseHr: 134, baseDraft: 65, baseSpeed: 35.2, gradeOffset: 0.004 },
-      { id: 3,  name: 'C. Fandango', cat: 'D', weight: 64.0, age: 47, baseGap: -3.1, gapAmp: 0.30, gapPhase: 0.9, basePwr: 142, baseHr: 126, baseDraft: 85, baseSpeed: 35.1, gradeOffset: 0.003 },
-      { id: 4,  name: 'WOW Co-Leader', cat: 'D', leader: true, weight: 72.0, age: 54, baseGap: -1.4, gapAmp: 0.22, gapPhase: 1.5, basePwr: 162, baseHr: 128, baseDraft: 45, baseSpeed: 35.0, gradeOffset: 0.002 },
-      { id: 5,  name: 'T. Mertens', cat: 'D', weight: 76.0, age: 49, baseGap: -0.9, gapAmp: 0.25, gapPhase: 2.1, basePwr: 168, baseHr: 138, baseDraft: 90, baseSpeed: 35.0, gradeOffset: 0.001 },
-      { id: 6,  name: 'C. MacLeod', cat: 'D', weight: 68.0, age: 52, baseGap: -0.4, gapAmp: 0.18, gapPhase: 3.1, basePwr: 148, baseHr: 162, baseDraft: 95, baseSpeed: 35.0, gradeOffset: 0.001 },
-      { id: 7,  name: 'M. Heady (YOU)', cat: 'D', leader: true, weight: 58.0, age: 68, baseGap: 0.0, gapAmp: 0.0, gapPhase: 0.0, basePwr: 131, baseHr: 121, baseDraft: 85, baseSpeed: 35.0, gradeOffset: 0.0, watching: true },
-      { id: 8,  name: 'J. Campbell', cat: 'D', weight: 78.0, age: 61, baseGap: 0.5, gapAmp: 0.25, gapPhase: 0.8, basePwr: 160, baseHr: 122, baseDraft: 125, baseSpeed: 35.0, gradeOffset: -0.001 },
-      { id: 9,  name: 'A. Stewart', cat: 'D', weight: 64.0, age: 58, baseGap: 1.1, gapAmp: 0.30, gapPhase: 2.2, basePwr: 128, baseHr: 124, baseDraft: 115, baseSpeed: 35.0, gradeOffset: -0.002 },
-      { id: 10, name: 'M. Fraser', cat: 'D', weight: 71.0, age: 63, baseGap: 1.8, gapAmp: 0.35, gapPhase: 1.9, basePwr: 142, baseHr: 119, baseDraft: 110, baseSpeed: 35.0, gradeOffset: -0.002 },
-      { id: 11, name: 'I. Henderson', cat: 'D', weight: 74.0, age: 57, baseGap: 2.5, gapAmp: 0.40, gapPhase: 2.7, basePwr: 149, baseHr: 125, baseDraft: 105, baseSpeed: 35.0, gradeOffset: -0.003 },
-      { id: 12, name: 'D. Weller', cat: 'D', weight: 77.0, age: 50, baseGap: 3.2, gapAmp: 0.40, gapPhase: 3.2, basePwr: 158, baseHr: 133, baseDraft: 100, baseSpeed: 35.0, gradeOffset: -0.003 },
-      { id: 13, name: 'P. Peters', cat: 'D', weight: 88.0, age: 55, baseGap: 4.0, gapAmp: 0.45, gapPhase: 0.6, basePwr: 162, baseHr: 120, baseDraft: 110, baseSpeed: 35.0, gradeOffset: -0.003 },
-      { id: 14, name: 'K. Robb', cat: 'D', weight: 84.0, age: 60, baseGap: 4.9, gapAmp: 0.50, gapPhase: 1.4, basePwr: 158, baseHr: 127, baseDraft: 95, baseSpeed: 34.9, gradeOffset: -0.003 },
-      { id: 15, name: 'R. Barnett', cat: 'D', weight: 79.0, age: 62, baseGap: 5.8, gapAmp: 0.50, gapPhase: 2.0, basePwr: 152, baseHr: 118, baseDraft: 90, baseSpeed: 34.9, gradeOffset: -0.004 },
-      { id: 16, name: 'B. Goodreau', cat: 'D', weight: 81.0, age: 48, baseGap: 6.7, gapAmp: 0.55, gapPhase: 2.9, basePwr: 170, baseHr: 158, baseDraft: 85, baseSpeed: 34.8, gradeOffset: -0.004 },
+      { id: 2,  name: 'T. Buchanan TTNW', cat: 'D', weight: 78.0, age: 51, baseGap: -4.2, gapAmp: 0.35, gapPhase: 0.4, basePwr: 165, baseHr: 134, baseDraft: 65, baseSpeed: 37.2, gradeOffset: 0.004 },
+      { id: 3,  name: 'C. Fandango', cat: 'D', weight: 64.0, age: 47, baseGap: -3.1, gapAmp: 0.30, gapPhase: 0.9, basePwr: 142, baseHr: 126, baseDraft: 85, baseSpeed: 37.1, gradeOffset: 0.003 },
+      { id: 4,  name: 'WOW Co-Leader', cat: 'D', leader: true, weight: 72.0, age: 54, baseGap: -1.4, gapAmp: 0.22, gapPhase: 1.5, basePwr: 162, baseHr: 128, baseDraft: 45, baseSpeed: 37.0, gradeOffset: 0.002 },
+      { id: 5,  name: 'T. Mertens', cat: 'D', weight: 76.0, age: 49, baseGap: -0.9, gapAmp: 0.25, gapPhase: 2.1, basePwr: 168, baseHr: 138, baseDraft: 90, baseSpeed: 37.0, gradeOffset: 0.001 },
+      { id: 6,  name: 'C. MacLeod', cat: 'D', weight: 68.0, age: 52, baseGap: -0.4, gapAmp: 0.18, gapPhase: 3.1, basePwr: 148, baseHr: 162, baseDraft: 95, baseSpeed: 37.0, gradeOffset: 0.001 },
+      { id: 7,  name: 'M. Heady (YOU)', cat: 'D', leader: true, weight: 58.0, age: 68, baseGap: 0.0, gapAmp: 0.0, gapPhase: 0.0, basePwr: 114, baseHr: 121, baseDraft: 85, baseSpeed: 37.0, gradeOffset: 0.0, watching: true },
+      { id: 8,  name: 'J. Campbell', cat: 'D', weight: 78.0, age: 61, baseGap: 0.5, gapAmp: 0.25, gapPhase: 0.8, basePwr: 160, baseHr: 122, baseDraft: 125, baseSpeed: 37.0, gradeOffset: -0.001 },
+      { id: 9,  name: 'A. Stewart', cat: 'D', weight: 64.0, age: 58, baseGap: 1.1, gapAmp: 0.30, gapPhase: 2.2, basePwr: 128, baseHr: 124, baseDraft: 115, baseSpeed: 37.0, gradeOffset: -0.002 },
+      { id: 10, name: 'M. Fraser', cat: 'D', weight: 71.0, age: 63, baseGap: 1.8, gapAmp: 0.35, gapPhase: 1.9, basePwr: 142, baseHr: 119, baseDraft: 110, baseSpeed: 37.0, gradeOffset: -0.002 },
+      { id: 11, name: 'I. Henderson', cat: 'D', weight: 74.0, age: 57, baseGap: 2.5, gapAmp: 0.40, gapPhase: 2.7, basePwr: 149, baseHr: 125, baseDraft: 105, baseSpeed: 37.0, gradeOffset: -0.003 },
+      { id: 12, name: 'D. Weller', cat: 'D', weight: 77.0, age: 50, baseGap: 3.2, gapAmp: 0.40, gapPhase: 3.2, basePwr: 158, baseHr: 133, baseDraft: 100, baseSpeed: 37.0, gradeOffset: -0.003 },
+      { id: 13, name: 'P. Peters', cat: 'D', weight: 88.0, age: 55, baseGap: 4.0, gapAmp: 0.45, gapPhase: 0.6, basePwr: 162, baseHr: 120, baseDraft: 110, baseSpeed: 37.0, gradeOffset: -0.003 },
+      { id: 14, name: 'K. Robb', cat: 'D', weight: 84.0, age: 60, baseGap: 4.9, gapAmp: 0.50, gapPhase: 1.4, basePwr: 158, baseHr: 127, baseDraft: 95, baseSpeed: 36.9, gradeOffset: -0.003 },
+      { id: 15, name: 'R. Barnett', cat: 'D', weight: 79.0, age: 62, baseGap: 5.8, gapAmp: 0.50, gapPhase: 2.0, basePwr: 152, baseHr: 118, baseDraft: 90, baseSpeed: 36.9, gradeOffset: -0.004 },
+      { id: 16, name: 'B. Goodreau', cat: 'D', weight: 81.0, age: 48, baseGap: 6.7, gapAmp: 0.55, gapPhase: 2.9, basePwr: 170, baseHr: 158, baseDraft: 85, baseSpeed: 36.8, gradeOffset: -0.004 },
       { id: 17, name: 'R. Wallace (Dropped)', cat: 'D', weight: 70.0, age: 49, baseGap: 11.4, gapAmp: 1.6, gapPhase: 1.2, basePwr: 152, baseHr: 144, baseDraft: 85, baseSpeed: 35.8, gradeOffset: -0.004 },
       { id: 18, name: 'G. Robertson [SWP]', cat: 'D', sweeper: true, weight: 75.0, age: 55, baseGap: 12.0, gapAmp: 1.6, gapPhase: 1.2, basePwr: 176, baseHr: 140, baseDraft: 40, baseSpeed: 36.0, gradeOffset: -0.004 },
       { id: 19, name: 'T. Tyler', cat: 'D', weight: 68.0, age: 59, baseGap: 18.5, gapAmp: 1.2, gapPhase: 0.7, basePwr: 128, baseHr: 115, baseDraft: 50, baseSpeed: 34.2, gradeOffset: -0.005 },
@@ -4452,7 +4452,7 @@
             power: Math.max(85, Math.round(r.basePwr + Math.sin(demoTickCount * 0.35) * 8 + (Math.random() * 6 - 3))),
             heartrate: r.watching ? demoSelfHr : Math.round(r.baseHr + (Math.random() * 6 - 3)),
             draft: Math.max(0, Math.round(r.baseDraft + (Math.random() * 24 - 12))),
-            speed: +((r.baseSpeed || 35.0) + Math.sin(demoTickCount * 0.25) * 0.8 + (Math.random() * 0.3 - 0.15)).toFixed(1),
+            speed: +((r.baseSpeed || 37.0) + Math.sin(demoTickCount * 0.25) * 0.8 + (Math.random() * 0.3 - 0.15)).toFixed(1),
             distance: 18500 + (demoTickCount * 95),
             grade: demoClimbGrade + (r.gradeOffset || 0)
           }
