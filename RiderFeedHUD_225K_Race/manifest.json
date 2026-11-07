@@ -1,0 +1,24 @@
+{
+  "manifest_version": 1,
+  "name": "Zwift 22.5K Open Race HUD (Top Position Box + CAT + 1m/5m/20m)",
+  "description": "Dedicated 22.5 KM & 209m Climbing Open Race HUD (v5.0): Green-Bordered My Position Box in Top Bar (Overall Pos + Cat C Pos + Nearest Cat B Wheel), Row Position Numbers (1, 2, 3...), Dedicated CAT Column, Fixed 1m (4.23), 5m (3.40), 20m (2.98) W/kg Tanks, and Full-Row Scalable Green->Orange->Red Ribbon.",
+  "author": "Custom Zwift HUD",
+  "version": "5.0.0",
+  "web_root": "pages",
+  "windows": [
+    {
+      "id": "zwift-225k-race-climb-hud",
+      "name": "Zwift 22.5K Race HUD v5 (Top POS Box | CAT | 4.23 / 3.40 / 2.98 W/kg)",
+      "description": "22.5K & 209m Open Race overlay with Top-Bar Position Box, Row Position Numbers, Dedicated CAT Column, 4.23/3.40/2.98 W/kg tanks, and Full-Row Ribbon",
+      "file": "pages/hud.html",
+      "overlay": true,
+      "frame": false,
+      "default_bounds": {
+        "width": 875,
+        "height": 575,
+        "x": 50,
+        "y": 75
+      }
+    }
+  ]
+}

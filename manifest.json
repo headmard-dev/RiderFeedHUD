@@ -1,22 +1,22 @@
 {
   "manifest_version": 1,
-  "name": "Custom Rider Telemetry HUD",
-  "description": "Universal transparent HUD overlay for Sauce for Zwift (v12): Orange Full-Row Attack Alert, WKG-Only Column, 5m FTP (3.40 W/kg) Countdown Tank, 1m WTRL TTT Pull Pacer, Zone 5/6/7 Redline 0-120s Timer, Gap Velocity Arrows, and 256 Pantone BG Chart.",
+  "name": "Custom Rider Telemetry HUD (Light Blue Screenshot Edition)",
+  "description": "Nearby Athletes Light Blue Screenshot-Style HUD (v15): Settings Cogwheel (Font Size, Scale, Opacity, Pantone, 40K/100K Presets), 2-Second Auto-Closing Black Top Bar, Full Scrollable Riders, Yellow Lead Riders (LDR), and Red Sweep Riders (SWP).",
   "author": "Custom Zwift HUD",
-  "version": "2.2.0",
+  "version": "15.0.0",
   "web_root": "pages",
   "windows": [
     {
       "id": "custom-rider-telemetry-hud",
-      "name": "Rider Telemetry HUD v12 (WKG/Attack Row/5m FTP/1m TTT/Z5-7 Redline)",
-      "description": "Transparent overlay with Orange Attack Rows, WKG-only display, 5m 3.40 W/kg FTP tank, 1m WTRL TTT Pull Pacer, Zone 5/6/7 Redline timer, and Gap Elastic Snap arrows",
+      "name": "Rider Telemetry HUD v15 (Light Blue Screenshot | ⚙️ Settings | Scrollable)",
+      "description": "Light Blue Nearby Athletes overlay with ⚙️ Settings Cogwheel, Sizable Font, Scrollable Event Riders, Yellow Leaders (LDR), Red Sweeps (SWP), and 40K/100K Pacer",
       "file": "pages/hud.html",
       "overlay": true,
       "frame": false,
       "default_bounds": {
-        "width": 755,
-        "height": 505,
-        "x": 40,
+        "width": 820,
+        "height": 580,
+        "x": 60,
         "y": 80
       }
     }
