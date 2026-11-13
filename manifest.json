@@ -1,23 +1,51 @@
 {
   "manifest_version": 1,
-  "name": "Custom Rider Telemetry HUD (Light Blue Screenshot Edition)",
-  "description": "Nearby Athletes Light Blue Screenshot-Style HUD (v15): Settings Cogwheel (Font Size, Scale, Opacity, Pantone, 40K/100K Presets), 2-Second Auto-Closing Black Top Bar, Full Scrollable Riders, Yellow Lead Riders (LDR), and Red Sweep Riders (SWP).",
-  "author": "Custom Zwift HUD",
-  "version": "16.0.0",
+  "name": "RiderFeedHUD v22.1 (Clean Master - 5-Group Names + Steady No-Pulse Ribbon)",
+  "description": "Single Clean Master Sauce Mod (v22.1): Main 9-Column HUD + Detachable 0-100 All-Categories Ribbon with Editable 5-Group Leader Names (E, D, C, B, A), True Pixel Juxtaposition, D->E Fence Off, and Steady Non-Pulsing Boxes.",
+  "author": "WOW Ride Leaders",
+  "version": "22.1.0",
   "web_root": "pages",
   "windows": [
     {
       "id": "custom-rider-telemetry-hud",
-      "name": "Rider Telemetry HUD v16 (Light Blue Screenshot | \u2699\ufe0f Settings | Scrollable)",
-      "description": "Light Blue Nearby Athletes overlay with \u2699\ufe0f Settings Cogwheel, Sizable Font, Scrollable Event Riders, Yellow Leaders (LDR), Red Sweeps (SWP), and 40K/100K Pacer",
+      "name": "1. Main RiderFeedHUD v22.1 (Table + Ribbon | Steady No-Pulse)",
+      "description": "Full 9-Column Telemetry Table + Built-In 0-100 Ribbon + Side-by-Side C&B Catch Radar (v22.1)",
       "file": "pages/hud.html",
       "overlay": true,
       "frame": false,
       "default_bounds": {
-        "width": 820,
-        "height": 580,
+        "width": 860,
+        "height": 640,
         "x": 60,
         "y": 80
+      }
+    },
+    {
+      "id": "custom-rider-telemetry-hud-map",
+      "name": "2. WOW 0-100 Ribbon Only v22.1 (5-Group Names | Steady No-Pulse)",
+      "description": "Standalone-Size 0 to 100 All-Categories (E, D, C, B, A) Ribbon with Editable 5-Group Names, Steady Callout Boxes & Simulator (v22.1)",
+      "file": "pages/map.html",
+      "overlay": true,
+      "frame": false,
+      "default_bounds": {
+        "width": 860,
+        "height": 300,
+        "x": 930,
+        "y": 80
+      }
+    },
+    {
+      "id": "custom-rider-telemetry-hud-help",
+      "name": "3. Help & WOW Leader Guide (v22.1)",
+      "description": "4-Tab Visual Callout Guide & WOW 100K/100M Leader Manual",
+      "file": "pages/help.html",
+      "overlay": false,
+      "frame": true,
+      "default_bounds": {
+        "width": 900,
+        "height": 680,
+        "x": 120,
+        "y": 90
       }
     }
   ]

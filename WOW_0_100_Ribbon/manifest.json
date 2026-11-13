@@ -1,0 +1,24 @@
+{
+  "manifest_version": 1,
+  "name": "WOW 0-100 Vertical-Stem Ribbon Addon (v22.1 Steady No-Pulse)",
+  "description": "Standalone Sauce window (wow-0-100-group-ribbon) featuring the 0->100 5-Category (E, D, C, B, A) Vertical-Stem Ribbon with Editable 5-Group Leader Names, True Pixel Juxtaposed Stems, D-catching-E alerts, and Steady Non-Pulsing Callout Boxes.",
+  "author": "WOW Ride Leaders",
+  "version": "22.1.0",
+  "web_root": "pages",
+  "windows": [
+    {
+      "id": "wow-0-100-group-ribbon",
+      "name": "WOW 0-100 All-Categories Ribbon v22.1 (5-Group Names | Steady No-Pulse)",
+      "description": "Standalone 0-100 Ribbon with Editable Names for All 5 Groups (E, D, C, B, A), Steady Non-Pulsing Callout Boxes, and D-catching-E Fence Alerts",
+      "file": "pages/map.html",
+      "overlay": true,
+      "frame": false,
+      "default_bounds": {
+        "width": 860,
+        "height": 300,
+        "x": 60,
+        "y": 80
+      }
+    }
+  ]
+}

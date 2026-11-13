@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📏 0 → 100 All-Categories Vertical-Stem Distance &amp; Time Ribbon — WOW v22.1</title>
+  <style>
+    :root {
+      --rib-opacity: 0.95;
+      --rib-font-px: 15px;
+      --bg-panel: rgba(9, 15, 26, var(--rib-opacity));
+      --cat-e: #c084fc;
+      --cat-d: #facc15;
+      --cat-c: #38bdf8;
+      --cat-b: #22c55e;
+      --cat-a: #f87171;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      color: var(--text-main);
+      font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: var(--rib-font-px);
+      overflow: hidden;
+    }
+
+    .ribbon-window {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-panel);
+      border: 1.5px solid rgba(56, 189, 248, 0.65);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Row 1: Top Drag & Control Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 5px 10px;
+      background: linear-gradient(90deg, #0f172a, #0c4a6e 55%, #0f172a);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      -webkit-app-region: drag;
+      flex-wrap: wrap;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 900;
+      font-size: 0.92em;
+      color: #ffffff;
+    }
+
+    .status-pill {
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 0.76em;
+      font-weight: 900;
+      background: rgba(245, 158, 11, 0.24);
+      border: 1px solid #f59e0b;
+      color: #fde047;
+    }
+
+    .status-pill.live {
+      background: rgba(34, 197, 94, 0.25);
+      border-color: #4ade80;
+      color: #bbf7d0;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      -webkit-app-region: no-drag;
+      flex-wrap: wrap;
+    }
+
+    .cat-btn-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(9, 15, 26, 0.9);
+      padding: 2px 5px;
+      border-radius: 5px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .cat-pick-btn {
+      background: rgba(30, 41, 59, 0.9);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.74em;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cat-pick-btn:hover { border-color: #ffffff; color: #ffffff; }
+    .cat-pick-btn.active-E { background: #c084fc; color: #090d16; border-color: #ffffff; }
+    .cat-pick-btn.active-D { background: #facc15; color: #090d16; border-color: #ffffff; }
+    .cat-pick-btn.active-C { background: #38bdf8; color: #090d16; border-color: #ffffff; }
+    .cat-pick-btn.active-B { background: #22c55e; color: #090d16; border-color: #ffffff; }
+    .cat-pick-btn.active-A { background: #f87171; color: #090d16; border-color: #ffffff; }
+
+    .mini-btn {
+      background: rgba(30, 41, 59, 0.94);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-size: 0.76em;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mini-btn:hover { background: #0284c7; border-color: #ffffff; }
+    .mini-btn.active { background: #eab308; color: #090d16; border-color: #ffffff; }
+    .mini-btn.close-btn { background: #991b1b; border-color: #fca5a5; }
+    .mini-btn.close-btn:hover { background: #dc2626; }
+
+    /* Row 1B: 5-Group Leader Names Bar (Editable Names for E, D, C, B, A) */
+    .group-names-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(15, 23, 42, 0.96);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.32);
+      -webkit-app-region: no-drag;
+      flex-wrap: wrap;
+    }
+
+    .group-name-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      min-width: 115px;
+      background: rgba(9, 15, 26, 0.92);
+      padding: 2px 6px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .group-name-badge {
+      font-size: 0.76em;
+      font-weight: 900;
+      padding: 0 5px;
+      border-radius: 3px;
+      color: #090d16;
+      white-space: nowrap;
+    }
+
+    .group-name-input {
+      width: 100%;
+      min-width: 55px;
+      background: transparent;
+      color: #f8fafc;
+      border: none;
+      outline: none;
+      font-size: 0.80em;
+      font-weight: 800;
+      font-family: inherit;
+    }
+
+    .group-name-input::placeholder {
+      color: rgba(148, 163, 184, 0.65);
+      font-weight: 600;
+    }
+
+    /* Row 2: Live Alert / Fence-Off Banner */
+    .alert-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 4px 12px;
+      font-weight: 900;
+      font-size: 0.86em;
+      background: linear-gradient(90deg, rgba(20, 83, 45, 0.82), rgba(15, 23, 42, 0.96));
+      border-bottom: 1px solid rgba(74, 222, 128, 0.48);
+      color: #dcfce7;
+    }
+
+    .alert-strip.warn {
+      background: linear-gradient(90deg, rgba(146, 64, 14, 0.96), rgba(113, 63, 18, 0.96));
+      border-bottom-color: #fde047;
+      color: #fef9c3;
+    }
+
+    .alert-strip.fence-off {
+      background: linear-gradient(90deg, rgba(185, 28, 28, 0.96), rgba(161, 98, 7, 0.96));
+      border-bottom-color: #fde047;
+      color: #ffffff;
+    }
+
+    /* Row 3: Main 0 -> 100 Horizontal Track Stage with Generous Headroom Above & Below */
+    .track-stage {
+      position: relative;
+      flex: 1;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 44px;
+      background: radial-gradient(circle at 50% 50%, rgba(14, 116, 144, 0.20) 0%, rgba(9, 15, 26, 0.96) 82%);
+      overflow: hidden;
+    }
+
+    .ruler-bar {
+      position: relative;
+      width: 100%;
+      height: 10px;
+      background: rgba(30, 41, 59, 0.98);
+      border: 1.5px solid rgba(148, 163, 184, 0.55);
+      border-radius: 999px;
+    }
+
+    .ruler-d-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(250, 204, 21, 0.28), rgba(250, 204, 21, 0.88));
+      border-radius: 999px;
+
+    }
+
+    .ruler-catch-glow {
+      position: absolute;
+      top: -2px;
+      bottom: -2px;
+      border-radius: 999px;
+      display: none;
+      pointer-events: none;
+    }
+
+    .ruler-tick {
+      position: absolute;
+      top: -5px;
+      width: 1.5px;
+      height: 18px;
+      background: rgba(203, 213, 225, 0.42);
+    }
+
+    .ruler-tick.major {
+      top: -7px;
+      width: 2px;
+      height: 22px;
+      background: rgba(248, 250, 252, 0.78);
+    }
+
+    .ruler-tick-num {
+      position: absolute;
+      top: 19px;
+      transform: translateX(-50%);
+      font-size: 0.74em;
+      font-weight: 900;
+      color: #cbd5e1;
+      white-space: nowrap;
+      background: rgba(9, 15, 26, 0.78);
+      padding: 0 3px;
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    /* Category Dots on the 0 -> 100 Track */
+    .cat-node {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.90em;
+      color: #090d16;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 9px rgba(0, 0, 0, 0.95);
+      z-index: 6;
+    }
+
+    .cat-node.is-me {
+      width: 30px;
+      height: 30px;
+      font-size: 1.0em;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.98);
+      z-index: 10;
+    }
+
+    .cat-node.glowing {
+      border-color: #fde047 !important;
+      border-width: 2.5px;
+      box-shadow: 0 0 10px rgba(253, 224, 71, 0.85);
+      z-index: 11;
+    }
+
+    .cat-node.in-pen {
+      opacity: 0.82;
+      border-style: dashed;
+    }
+
+    /* Colour-Coded Vertical Connector Line (Stem) Above or Below Each Dot */
+    .stem-line {
+      position: absolute;
+      left: 50%;
+      width: 2.5px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 4;
+      border-radius: 2px;
+      transition: height 0.15s ease;
+    }
+
+    .stem-line.above { bottom: 100%; }
+    .stem-line.below { top: 100%; }
+
+    .stem-line::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: inherit;
+      box-shadow: inherit;
+      transform: translateX(-50%);
+    }
+
+    .stem-line.above::after { top: -3px; }
+    .stem-line.below::after { bottom: -3px; }
+
+    /* Horizontal Elbow Bridge when Callout Box is Juxtaposed Left or Right of its Dot */
+    .stem-bridge {
+      position: absolute;
+      height: 2.5px;
+      pointer-events: none;
+      z-index: 4;
+      border-radius: 2px;
+      display: none;
+    }
+
+    /* High-Contrast Callout Box at the End of Each Vertical Line */
+    .node-callout {
+      position: absolute;
+      left: 50%;
+      transform: translateX(calc(-50% + var(--shift-px, 0px)));
+      padding: 3px 8px;
+      border-radius: 7px;
+      background: rgba(9, 15, 26, 0.97);
+      border: 2px solid currentColor;
+      font-size: 0.84em;
+      font-weight: 900;
+      line-height: 1.16;
+      text-align: center;
+      white-space: nowrap;
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.95);
+      pointer-events: none;
+      z-index: 12;
+      transition: bottom 0.14s ease, top 0.14s ease;
+    }
+
+    .node-callout.fence-alert-box {
+      background: linear-gradient(90deg, rgba(185, 28, 28, 0.96), rgba(161, 98, 7, 0.96));
+      border-color: #fde047 !important;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.95);
+    }
+
+    .node-callout .call-ldr {
+      display: block;
+      font-size: 0.88em;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      padding-bottom: 1px;
+      margin-bottom: 1px;
+    }
+
+    .node-callout .call-dist {
+      display: block;
+      font-size: 0.98em;
+      font-weight: 900;
+      letter-spacing: 0.15px;
+      color: #ffffff;
+    }
+
+    .node-callout .call-time {
+      display: block;
+      font-size: 0.92em;
+      color: #fde047;
+      font-weight: 900;
+    }
+
+    /* Row 4: 5-Category Live Summary Cards (E | D | C | B | A) */
+    .cats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      padding: 5px 10px;
+      background: rgba(15, 23, 42, 0.97);
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .cat-summary-card {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 7px;
+      border-radius: 6px;
+      background: rgba(30, 41, 59, 0.86);
+      border: 1.5px solid rgba(255, 255, 255, 0.20);
+      font-size: 0.80em;
+      line-height: 1.24;
+    }
+
+    .cat-summary-card.me-card {
+      background: rgba(113, 63, 18, 0.55);
+      border-color: #facc15;
+    }
+
+    .cat-summary-card.glow-card {
+      background: linear-gradient(90deg, rgba(185, 28, 28, 0.88), rgba(161, 98, 7, 0.88));
+      border-color: #fde047;
+    }
+
+    /* Row 5: Interactive Time-Warp Simulator Bar */
+    .sim-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(9, 13, 22, 0.98);
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      flex-wrap: wrap;
+      -webkit-app-region: no-drag;
+    }
+
+    .scen-btn {
+      background: rgba(30, 41, 59, 0.95);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.75em;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .scen-btn:hover { background: #0369a1; border-color: #ffffff; }
+  </style>
+</head>
+<body>
+  <div class="ribbon-window">
+    <!-- Row 1: Top Header -->
+    <div class="top-bar">
+      <div class="brand-left">
+        <span>📏 0 → 100 All-Categories Ribbon <span style="color:#fde047;">v22.1</span></span>
+        <span id="connPill" class="status-pill">● SIMULATOR (15x)</span>
+      </div>
+      <div class="top-controls">
+        <div class="cat-btn-group" title="Click to choose YOUR active category (moves the 👑 crown and computes all gaps relative to your group)">
+          <span style="font-size:0.72em; font-weight:900; color:#38bdf8; margin-right:2px;">MY CAT:</span>
+          <button class="cat-pick-btn" data-cat="E" type="button">E</button>
+          <button class="cat-pick-btn active-D" data-cat="D" type="button">D</button>
+          <button class="cat-pick-btn" data-cat="C" type="button">C</button>
+          <button class="cat-pick-btn" data-cat="B" type="button">B</button>
+          <button class="cat-pick-btn" data-cat="A" type="button">A</button>
+        </div>
+        <button id="toggleNamesBtn" class="mini-btn active" type="button" title="Show/Hide the 5-Group Leader Names Bar (E, D, C, B, A)">✏️ 5-Group Names</button>
+        <button id="fontMinusBtn" class="mini-btn" type="button" title="Decrease Text Size">A−</button>
+        <button id="fontPlusBtn" class="mini-btn" type="button" title="Increase Text Size">A+</button>
+        <button id="scaleModeBtn" class="mini-btn active" type="button" title="Switch Ribbon Scale between 0-100 Miles (100M) and 0-100 Kilometres (100K)">0–100 MI</button>
+        <div style="display:flex; align-items:center; gap:3px; font-size:0.74em; color:#cbd5e1;">
+          <span>Bg</span>
+          <input id="opacitySlider" type="range" min="0.25" max="1.0" step="0.05" value="0.95" style="width:42px; accent-color:#38bdf8; cursor:pointer;" />
+        </div>
+        <button id="toggleSimBtn" class="mini-btn active" type="button" title="Show/Hide Bottom Practice Simulator Bar">🎛️ Sim</button>
+        <button class="mini-btn close-btn" type="button" onclick="window.close()" title="Close Ribbon Window">✕</button>
+      </div>
+    </div>
+
+    <!-- Row 1B: 5-Group Leader Names Bar (Editable Names for Each Group E, D, C, B, A) -->
+    <div id="groupNamesBar" class="group-names-bar" title="Type the Ride Leader or Group Name for each category (E, D, C, B, A). Automatically displays on every group's floating ribbon box and summary card!">
+      <div class="group-name-item" style="border-color:rgba(192,132,252,0.5);">
+        <span class="group-name-badge" style="background:var(--cat-e);">🟣 E</span>
+        <input id="nameInputE" class="group-name-input" type="text" placeholder="Cat E Leader..." />
+      </div>
+      <div class="group-name-item" style="border-color:rgba(250,204,21,0.65);">
+        <span class="group-name-badge" style="background:var(--cat-d);">🟡 D</span>
+        <input id="nameInputD" class="group-name-input" type="text" placeholder="Cat D Leader..." value="Mark" />
+      </div>
+      <div class="group-name-item" style="border-color:rgba(56,189,248,0.5);">
+        <span class="group-name-badge" style="background:var(--cat-c);">🔵 C</span>
+        <input id="nameInputC" class="group-name-input" type="text" placeholder="Cat C Leader..." />
+      </div>
+      <div class="group-name-item" style="border-color:rgba(34,197,94,0.5);">
+        <span class="group-name-badge" style="background:var(--cat-b);">🟢 B</span>
+        <input id="nameInputB" class="group-name-input" type="text" placeholder="Cat B Leader..." />
+      </div>
+      <div class="group-name-item" style="border-color:rgba(248,113,113,0.5);">
+        <span class="group-name-badge" style="background:var(--cat-a);">🔴 A</span>
+        <input id="nameInputA" class="group-name-input" type="text" placeholder="Cat A Leader..." />
+      </div>
+    </div>
+
+    <!-- Row 2: Live Alert Strip -->
+    <div id="alertStrip" class="alert-strip">
+      <span id="alertMainText">🟢 GROUP D STEADY ON RIBBON — All 5 WOW Categories (E, D, C, B, A) Tracked Left-to-Right (0 → 100)</span>
+      <span id="alertSubText" style="color:#fde047; font-size:0.92em;">Starts: E 13:30 | D 13:45 | C 13:55 | B 14:04 | A 14:11</span>
+    </div>
+
+    <!-- Row 3: 0 -> 100 Horizontal Track with Vertical Colour-Coded Stems Above & Below -->
+    <div class="track-stage">
+      <div id="rulerBar" class="ruler-bar">
+        <div id="rulerDProgress" class="ruler-d-progress"></div>
+        <div id="rulerCatchGlow" class="ruler-catch-glow"></div>
+
+        <!-- Ticks 0, 10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 100 -->
+        <div class="ruler-tick major" style="left:0%;"><span class="ruler-tick-num">0 (Pen)</span></div>
+        <div class="ruler-tick" style="left:10%;"></div>
+        <div class="ruler-tick" style="left:20%;"></div>
+        <div class="ruler-tick major" style="left:25%;"><span class="ruler-tick-num">25</span></div>
+        <div class="ruler-tick" style="left:30%;"></div>
+        <div class="ruler-tick" style="left:40%;"></div>
+        <div class="ruler-tick major" style="left:50%;"><span class="ruler-tick-num">50</span></div>
+        <div class="ruler-tick" style="left:60%;"></div>
+        <div class="ruler-tick" style="left:70%;"></div>
+        <div class="ruler-tick major" style="left:75%;"><span class="ruler-tick-num">75</span></div>
+        <div class="ruler-tick" style="left:80%;"></div>
+        <div class="ruler-tick" style="left:90%;"></div>
+        <div class="ruler-tick major" style="left:100%;"><span id="tick100Text" class="ruler-tick-num">100M</span></div>
+
+        <!-- 5 Category Dots with Vertical Colour-Coded Leader Stems, Horizontal Elbow Bridges & Callouts -->
+        <div id="nodeE" class="cat-node" style="background:var(--cat-e); left:0%;">
+          E
+          <div id="stemE" class="stem-line below" style="background:var(--cat-e); box-shadow:0 0 8px var(--cat-e);"></div>
+          <div id="bridgeE" class="stem-bridge" style="background:var(--cat-e); box-shadow:0 0 6px var(--cat-e);"></div>
+          <div id="callE" class="node-callout" style="border-color:var(--cat-e); color:#f3e8ff;"></div>
+        </div>
+        <div id="nodeD" class="cat-node is-me" style="background:var(--cat-d); left:0%;">
+          D
+          <div id="stemD" class="stem-line above" style="background:var(--cat-d); box-shadow:0 0 10px var(--cat-d);"></div>
+          <div id="bridgeD" class="stem-bridge" style="background:var(--cat-d); box-shadow:0 0 6px var(--cat-d);"></div>
+          <div id="callD" class="node-callout" style="border-color:var(--cat-d); color:#fef08a;"></div>
+        </div>
+        <div id="nodeC" class="cat-node" style="background:var(--cat-c); left:0%;">
+          C
+          <div id="stemC" class="stem-line below" style="background:var(--cat-c); box-shadow:0 0 8px var(--cat-c);"></div>
+          <div id="bridgeC" class="stem-bridge" style="background:var(--cat-c); box-shadow:0 0 6px var(--cat-c);"></div>
+          <div id="callC" class="node-callout" style="border-color:var(--cat-c); color:#e0f2fe;"></div>
+        </div>
+        <div id="nodeB" class="cat-node" style="background:var(--cat-b); left:0%;">
+          B
+          <div id="stemB" class="stem-line above" style="background:var(--cat-b); box-shadow:0 0 8px var(--cat-b);"></div>
+          <div id="bridgeB" class="stem-bridge" style="background:var(--cat-b); box-shadow:0 0 6px var(--cat-b);"></div>
+          <div id="callB" class="node-callout" style="border-color:var(--cat-b); color:#dcfce7;"></div>
+        </div>
+        <div id="nodeA" class="cat-node" style="background:var(--cat-a); left:0%;">
+          A
+          <div id="stemA" class="stem-line below" style="background:var(--cat-a); box-shadow:0 0 8px var(--cat-a);"></div>
+          <div id="bridgeA" class="stem-bridge" style="background:var(--cat-a); box-shadow:0 0 6px var(--cat-a);"></div>
+          <div id="callA" class="node-callout" style="border-color:var(--cat-a); color:#fee2e2;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: 5-Category Status Cards -->
+    <div id="catsGrid" class="cats-grid"></div>
+
+    <!-- Row 5: Interactive Time-Warp Simulator Bar -->
+    <div id="simBar" class="sim-bar">
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button id="playBtn" class="mini-btn active" type="button">⏸ Pause</button>
+        <button class="mini-btn spd-btn" data-mult="1" type="button">1x</button>
+        <button class="mini-btn spd-btn active" data-mult="15" type="button">15x</button>
+        <button class="mini-btn spd-btn" data-mult="45" type="button">45x</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+        <button class="scen-btn" data-min="4" type="button" title="D has launched onto the ribbon; C, B, A waiting in Pen at 0">1️⃣ Pen Launch</button>
+        <button class="scen-btn" data-min="54" type="button" title="All 5 Categories (E, D, C, B, A) rolling left-to-right">2️⃣ All 5 Out</button>
+        <button class="scen-btn" data-min="93.2" type="button" style="border-color:#38bdf8; color:#7dd3fc;" title="Blue Cat C closes within 2m 00s of Yellow D -> Glowing Blue Dot + 🚧 D FENCE OFF!">3️⃣ 🚨 C → D</button>
+        <button class="scen-btn" data-min="111.8" type="button" style="border-color:#4ade80; color:#86efac;" title="Green Cat B closes within 2m 00s of Yellow D -> Glowing Green Dot + 🚧 D FENCE OFF!">4️⃣ 🚨 B → D</button>
+        <button class="scen-btn" data-min="101.5" type="button" style="border-color:#f87171; color:#fca5a5;" title="Red Cat A closes within 2m 00s of Yellow D -> Glowing Red Dot + 🚧 D FENCE OFF!">5️⃣ 🚨 A → D</button>
+        <button class="scen-btn" data-min="120.5" type="button" style="border-color:#c084fc; color:#e9d5ff;" title="Yellow Group D catches Purple Cat E ahead -> Glowing Purple Dot + 🚧 E FENCE OFF! (D Passing E)">6️⃣ 🚨 D → E!</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:150px;">
+        <input id="scrubber" type="range" min="0" max="260" step="0.2" value="54" style="flex:1; accent-color:#facc15; cursor:pointer;" />
+        <span id="clockLbl" style="font-size:0.80em; font-weight:900; color:#fde047; min-width:88px; text-align:right;">T+54m (14:39)</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const KM_TO_MI = 0.621371;
+    const CAT_ORDER = ['E', 'D', 'C', 'B', 'A'];
+
+    // Default Staggered Vertical Line (Stem) Configuration per Category:
+    // Uses safe vertical heights (56px Tall, 11px Short) so callout boxes NEVER clip off the top or bottom of .track-stage!
+    const SPECS = {
+      E: { speedKph: 33.0, offFromDMin: -15, col: '#c084fc', textCol: '#f3e8ff', startClock: '13:30', dir: 'below', tier: 'tall',  baseStemPx: 56 },
+      D: { speedKph: 37.0, offFromDMin: 0,   col: '#facc15', textCol: '#fef08a', startClock: '13:45', dir: 'above', tier: 'tall',  baseStemPx: 56 },
+      C: { speedKph: 39.4, offFromDMin: 10,  col: '#38bdf8', textCol: '#e0f2fe', startClock: '13:55', dir: 'below', tier: 'short', baseStemPx: 11 },
+      B: { speedKph: 41.6, offFromDMin: 19,  col: '#22c55e', textCol: '#dcfce7', startClock: '14:04', dir: 'above', tier: 'short', baseStemPx: 11 },
+      A: { speedKph: 44.2, offFromDMin: 26,  col: '#f87171', textCol: '#fee2e2', startClock: '14:11', dir: 'below', tier: 'tall',  baseStemPx: 56 }
+    };
+
+    // 1. Declare activeCat FIRST at top level (Fixes last night's ReferenceError!)
+    let activeCat = (localStorage.getItem('zwift_wow_active_cat') || localStorage.getItem('zwift_100k_hud_active_cat') || 'D').toUpperCase();
+    if (!SPECS[activeCat]) activeCat = 'D';
+
+    // 2. Load 5-Group Leader Names (E, D, C, B, A) from localStorage
+    const defaultGroupNames = {
+      E: '',
+      D: localStorage.getItem('zwift_wow_leader_name') || 'Mark',
+      C: '',
+      B: '',
+      A: ''
+    };
+    let groupNames = { ...defaultGroupNames };
+    try {
+      const saved = JSON.parse(localStorage.getItem('zwift_wow_group_names_v22') || '{}');
+      for (const k of CAT_ORDER) {
+        if (typeof saved[k] === 'string') groupNames[k] = saved[k];
+      }
+      if (!groupNames.D && defaultGroupNames.D) groupNames.D = defaultGroupNames.D;
+    } catch (e) {}
+
+    // Also track live auto-detected beacon names if Zwift sends an eventLeader for any category
+    const liveBeaconNames = { E: '', D: '', C: '', B: '', A: '' };
+
+    function saveGroupNames() {
+      try {
+        localStorage.setItem('zwift_wow_group_names_v22', JSON.stringify(groupNames));
+        if (groupNames[activeCat]) {
+          localStorage.setItem('zwift_wow_leader_name', groupNames[activeCat]);
+        }
+      } catch (e) {}
+    }
+
+    function getGroupLeaderLabel(catKey) {
+      const manual = String(groupNames[catKey] || '').trim();
+      if (manual) return manual;
+      const beacon = String(liveBeaconNames[catKey] || '').trim();
+      if (beacon) return beacon;
+      return '';
+    }
+
+    const connPill = document.getElementById('connPill');
+    const toggleNamesBtn = document.getElementById('toggleNamesBtn');
+    const groupNamesBar = document.getElementById('groupNamesBar');
+    const fontMinusBtn = document.getElementById('fontMinusBtn');
+    const fontPlusBtn = document.getElementById('fontPlusBtn');
+    const scaleModeBtn = document.getElementById('scaleModeBtn');
+    const opacitySlider = document.getElementById('opacitySlider');
+    const toggleSimBtn = document.getElementById('toggleSimBtn');
+    const alertStrip = document.getElementById('alertStrip');
+    const alertMainText = document.getElementById('alertMainText');
+    const alertSubText = document.getElementById('alertSubText');
+    const rulerBar = document.getElementById('rulerBar');
+    const rulerDProgress = document.getElementById('rulerDProgress');
+    const rulerCatchGlow = document.getElementById('rulerCatchGlow');
+    const tick100Text = document.getElementById('tick100Text');
+    const catsGrid = document.getElementById('catsGrid');
+    const simBar = document.getElementById('simBar');
+    const playBtn = document.getElementById('playBtn');
+    const scrubber = document.getElementById('scrubber');
+    const clockLbl = document.getElementById('clockLbl');
+
+    // Bind 5-Group Name Inputs (E, D, C, B, A)
+    for (const k of CAT_ORDER) {
+      const inp = document.getElementById(`nameInput${k}`);
+      if (inp) {
+        inp.value = groupNames[k] || '';
+        inp.addEventListener('input', (e) => {
+          groupNames[k] = String(e.target.value || '').trim();
+          saveGroupNames();
+        });
+      }
+    }
+
+    // Bind MY CAT (E, D, C, B, A) selector buttons
+    function syncCatButtonsUI() {
+      document.querySelectorAll('.cat-pick-btn').forEach(btn => {
+        const c = btn.dataset.cat;
+        btn.className = 'cat-pick-btn' + (c === activeCat ? ` active-${c}` : '');
+      });
+    }
+    syncCatButtonsUI();
+
+    document.querySelectorAll('.cat-pick-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const c = String(btn.dataset.cat || 'D').toUpperCase();
+        if (SPECS[c]) {
+          activeCat = c;
+          localStorage.setItem('zwift_wow_active_cat', activeCat);
+          localStorage.setItem('zwift_100k_hud_active_cat', activeCat);
+          syncCatButtonsUI();
+        }
+      });
+    });
+
+    let namesBarVisible = (localStorage.getItem('zwift_ribbon_names_bar') ?? '1') !== '0';
+    function syncNamesBarUI() {
+      groupNamesBar.style.display = namesBarVisible ? 'flex' : 'none';
+      toggleNamesBtn.classList.toggle('active', namesBarVisible);
+    }
+    syncNamesBarUI();
+    toggleNamesBtn.addEventListener('click', () => {
+      namesBarVisible = !namesBarVisible;
+      localStorage.setItem('zwift_ribbon_names_bar', namesBarVisible ? '1' : '0');
+      syncNamesBarUI();
+    });
+
+    let ribFontPx = Number(localStorage.getItem('zwift_ribbon_font_px') || '15');
+    function applyRibFont(px) {
+      ribFontPx = Math.max(12, Math.min(22, Math.round(px * 2) / 2));
+      document.documentElement.style.setProperty('--rib-font-px', ribFontPx + 'px');
+      localStorage.setItem('zwift_ribbon_font_px', String(ribFontPx));
+    }
+    applyRibFont(ribFontPx);
+    fontMinusBtn.addEventListener('click', () => applyRibFont(ribFontPx - 1));
+    fontPlusBtn.addEventListener('click', () => applyRibFont(ribFontPx + 1));
+
+    let useMiles = (localStorage.getItem('zwift_unified_use_miles') ?? '1') !== '0';
+    let liveMode = false;
+    let lastLiveMs = 0;
+    let livePayload = null;
+
+    let simPlaying = true;
+    let simMult = 15;
+    let simDMin = 54.0;
+    let lastTickMs = performance.now();
+
+    function syncScaleBtnUI() {
+      scaleModeBtn.textContent = useMiles ? '0–100 MI' : '0–100 KM';
+      tick100Text.textContent = useMiles ? '100M' : '100K';
+    }
+    syncScaleBtnUI();
+
+    scaleModeBtn.addEventListener('click', () => {
+      useMiles = !useMiles;
+      localStorage.setItem('zwift_unified_use_miles', useMiles ? '1' : '0');
+      syncScaleBtnUI();
+    });
+
+    opacitySlider.addEventListener('input', (e) => {
+      document.documentElement.style.setProperty('--rib-opacity', e.target.value);
+    });
+
+    toggleSimBtn.addEventListener('click', () => {
+      const show = simBar.style.display === 'none';
+      simBar.style.display = show ? 'flex' : 'none';
+      toggleSimBtn.classList.toggle('active', show);
+    });
+
+    playBtn.addEventListener('click', () => {
+      liveMode = false;
+      simPlaying = !simPlaying;
+      playBtn.textContent = simPlaying ? '⏸ Pause' : '▶ Play';
+      playBtn.classList.toggle('active', simPlaying);
+    });
+
+    document.querySelectorAll('.spd-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        liveMode = false;
+        simMult = Number(btn.dataset.mult) || 15;
+        document.querySelectorAll('.spd-btn').forEach(b => b.classList.toggle('active', b === btn));
+      });
+    });
+
+    document.querySelectorAll('.scen-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        liveMode = false;
+        simDMin = Number(btn.dataset.min) || 0;
+        scrubber.value = String(simDMin);
+        simPlaying = true;
+        playBtn.textContent = '⏸ Pause';
+        playBtn.classList.add('active');
+      });
+    });
+
+    scrubber.addEventListener('input', (e) => {
+      liveMode = false;
+      simDMin = Number(e.target.value) || 0;
+    });
+
+    // Listen to Master Unified HUD via BroadcastChannel
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        const bus = new BroadcastChannel('riderfeed_hud_bus_v21');
+        bus.addEventListener('message', (ev) => {
+          const d = ev.data;
+          if (d && d.type && d.type.startsWith('HUD_STATE_V21')) {
+            if (d.groupNames && typeof d.groupNames === 'object') {
+              for (const k of CAT_ORDER) {
+                if (d.groupNames[k] && !groupNames[k]) {
+                  groupNames[k] = d.groupNames[k];
+                  const inp = document.getElementById(`nameInput${k}`);
+                  if (inp && document.activeElement !== inp) inp.value = groupNames[k];
+                }
+              }
+            }
+            if (d.liveBeaconNames && typeof d.liveBeaconNames === 'object') {
+              for (const k of CAT_ORDER) {
+                if (d.liveBeaconNames[k]) liveBeaconNames[k] = d.liveBeaconNames[k];
+              }
+            }
+            if (!d.demoMode && d.eventKm > 0.05) {
+              liveMode = true;
+              lastLiveMs = performance.now();
+              livePayload = d;
+            }
+          }
+        });
+      }
+    } catch (e) {}
+
+    // Standalone Direct Sauce Telemetry Connection (for running WOW_0_100_Ribbon without hud.html open)
+    const directCatMemory = new Map();
+    function detectCatFromEntry(r) {
+      const sub = String(r?.state?.eventSubgroup?.subgroupLabel || r?.eventSubgroup?.subgroupLabel || r?.athlete?.category || '').toUpperCase();
+      if (['A', 'B', 'C', 'D', 'E'].includes(sub)) return sub;
+      const nm = String(r?.athlete?.sanitizedFullname || r?.athlete?.fullname || '');
+      const m = nm.match(/\b(?:CAT|GROUP|PEN|\[|\()\s*([ABCDE])(?:\]|\)|\b)/i);
+      if (m) return m[1].toUpperCase();
+      return null;
+    }
+
+    function ingestStandaloneNearby(nearbyArr) {
+      if (!Array.isArray(nearbyArr) || nearbyArr.length === 0) return;
+      if (liveMode && livePayload && (performance.now() - lastLiveMs) < 4000) return; // Prefer rich HUD bus if active
+      const self = nearbyArr.find(x => x && x.watching) || nearbyArr[0];
+      const selfDistKm = Number(self?.state?.eventDistance || self?.state?.distance || 0) / 1000;
+      if (selfDistKm <= 0.05) return;
+
+      const selfSpd = Number(self?.state?.speed || SPECS[activeCat].speedKph);
+      const selfElapSec = Number(self?.state?.eventTime || self?.state?.time || ((selfDistKm / Math.max(20, selfSpd)) * 3600));
+      const nowMs = performance.now();
+
+      for (const k of CAT_ORDER) {
+        const cRiders = nearbyArr.filter(r => detectCatFromEntry(r) === k);
+        if (cRiders.length > 0) {
+          const beacon = cRiders.find(r => r.eventLeader || r.state?.eventLeader || r.athlete?.eventLeader);
+          if (beacon) {
+            const bName = String(beacon?.athlete?.sanitizedFullname || beacon?.athlete?.fullname || '').trim();
+            if (bName) liveBeaconNames[k] = bName;
+          }
+          const rep = beacon || cRiders[0];
+          const dKm = Number(rep?.state?.eventDistance || rep?.state?.distance || 0) / 1000;
+          const spd = Number(rep?.state?.speed || SPECS[k].speedKph);
+          if (dKm > 0.05) {
+            directCatMemory.set(k, { distKm: dKm, speedKph: spd, seenMs: nowMs });
+          }
+        }
+      }
+
+      const totalKm = useMiles ? 160.934 : 100.0;
+      const myOffMin = SPECS[activeCat].offFromDMin;
+      const simDMinEquiv = (selfElapSec / 60) + myOffMin;
+      liveMode = true;
+      lastLiveMs = nowMs;
+      livePayload = {
+        standaloneDirect: true,
+        activeCat,
+        useMiles,
+        myElapsedSec: selfElapSec,
+        simDMinEquiv,
+        selfDistKm,
+        selfSpd,
+        totalKm
+      };
+    }
+
+    (async function initStandaloneSauceStream() {
+      try {
+        const common = await import('/pages/src/common.mjs');
+        if (common && common.subscribe) {
+          common.subscribe('nearby', ingestStandaloneNearby);
+        }
+      } catch (e) {
+        try {
+          const ws = new WebSocket('ws://localhost:1080/api/ws/events');
+          ws.addEventListener('open', () => {
+            ws.send(JSON.stringify({ type: 'subscribe', data: { event: 'nearby', subId: 'wow_rib_v22' } }));
+          });
+          ws.addEventListener('message', (ev) => {
+            const msg = JSON.parse(ev.data);
+            if (msg && msg.success && Array.isArray(msg.data)) ingestStandaloneNearby(msg.data);
+          });
+        } catch (err) {}
+      }
+    })();
+
+    function fmtDist(kmVal) {
+      const k = Math.max(0, Math.abs(Number(kmVal) || 0));
+      if (useMiles) {
+        const mi = k * KM_TO_MI;
+        if (mi < 0.30) return `${Math.round(mi * 1760)}yd`;
+        return `${mi.toFixed(2)}mi`;
+      }
+      if (k < 1.0) return `${Math.round(k * 1000)}m`;
+      return `${k.toFixed(2)}km`;
+    }
+
+    function fmtMinSec(secVal) {
+      const s = Math.max(1, Math.round(Number(secVal) || 0));
+      if (s < 60) return `${s}s`;
+      const m = Math.floor(s / 60);
+      const rem = s % 60;
+      return `${m}m ${rem < 10 ? '0' : ''}${rem}s`;
+    }
+
+    // Build full 5-category state & pairwise overtake alerts around `activeCat`
+    function buildStatesFromSimClock(simDMinVal, totalKm, unitSuffix, overrideSelfDistKm = null, overrideSelfSpd = null) {
+      const rawDist = {};
+      const rawSpd = {};
+      const rawInPen = {};
+      const rawWaitSec = {};
+
+      for (const k of CAT_ORDER) {
+        const sp = SPECS[k];
+        const elapMin = simDMinVal - sp.offFromDMin;
+        const mem = directCatMemory.get(k);
+        if (k === activeCat && overrideSelfDistKm !== null) {
+          rawInPen[k] = false;
+          rawWaitSec[k] = 0;
+          rawDist[k] = Math.min(totalKm, Math.max(0, overrideSelfDistKm));
+          rawSpd[k] = overrideSelfSpd || sp.speedKph;
+        } else if (mem && (performance.now() - mem.seenMs) < 300000) {
+          const ageHr = (performance.now() - mem.seenMs) / 3600000;
+          rawInPen[k] = false;
+          rawWaitSec[k] = 0;
+          rawDist[k] = Math.min(totalKm, Math.max(0, mem.distKm + (mem.speedKph * ageHr)));
+          rawSpd[k] = mem.speedKph;
+        } else if (elapMin <= 0) {
+          rawInPen[k] = true;
+          rawWaitSec[k] = Math.abs(elapMin) * 60;
+          rawDist[k] = 0;
+          rawSpd[k] = sp.speedKph;
+        } else {
+          rawInPen[k] = false;
+          rawWaitSec[k] = 0;
+          rawDist[k] = Math.min(totalKm, Math.max(0, (elapMin / 60) * sp.speedKph));
+          rawSpd[k] = sp.speedKph;
+        }
+      }
+
+      const myDistKm = rawDist[activeCat] || 0;
+      const mySpdKph = rawSpd[activeCat] || SPECS[activeCat].speedKph;
+      const out = {};
+
+      for (const k of CAT_ORDER) {
+        const sp = SPECS[k];
+        const cDistKm = rawDist[k];
+        const cSpd = rawSpd[k];
+        const pct = Math.max(0, Math.min(100, (cDistKm / totalKm) * 100));
+        const isMe = (k === activeCat);
+
+        if (isMe) {
+          const curU = useMiles ? (cDistKm * KM_TO_MI) : cDistKm;
+          out[k] = {
+            cat: k, isMe: true, inPen: rawInPen[k], inPenWaitSec: rawWaitSec[k],
+            distKm: cDistKm, pct, speedKph: cSpd,
+            deltaFromMeKm: 0, roadTimeGapSec: 0, catchSec: 0,
+            isGlowing: false, isFenceOff: false, isPassingNow: false, alreadyPassed: false,
+            overtakeRole: null,
+            chipText: `👑${k}: ${curU.toFixed(1)}${unitSuffix}`
+          };
+          continue;
+        }
+
+        if (rawInPen[k]) {
+          const waitSec = rawWaitSec[k];
+          const dv = Math.max(1.2, Math.abs(cSpd - mySpdKph));
+          const distAtLaunch = myDistKm + (mySpdKph * (waitSec / 3600));
+          const catchSec = waitSec + ((distAtLaunch / dv) * 3600);
+          out[k] = {
+            cat: k, isMe: false, inPen: true, inPenWaitSec: waitSec,
+            distKm: 0, pct: 0, speedKph: cSpd,
+            deltaFromMeKm: -myDistKm, roadTimeGapSec: waitSec + ((myDistKm / Math.max(20, cSpd)) * 3600), catchSec,
+            isGlowing: false, isFenceOff: false, isPassingNow: false, alreadyPassed: false,
+            overtakeRole: null,
+            chipText: `${k}: Pen -${fmtMinSec(waitSec)}`
+          };
+          continue;
+        }
+
+        const deltaKm = cDistKm - myDistKm;
+        const absDeltaKm = Math.abs(deltaKm);
+        const isOtherFaster = cSpd > mySpdKph;
+        const isMeFaster = mySpdKph > cSpd;
+        const dv = Math.max(0.8, Math.abs(cSpd - mySpdKph));
+        const refSpd = deltaKm < 0 ? cSpd : mySpdKph;
+        const roadTimeGapSec = (absDeltaKm / Math.max(20, refSpd)) * 3600;
+
+        let catchSec = 0;
+        let isPassingNow = false;
+        let alreadyPassed = false;
+        let isFenceOff = false;
+        let isGlowing = false;
+        let overtakeRole = null;
+
+        if (isOtherFaster) {
+          // Chaser behind us (e.g., C, B, A catching D)
+          const distBehindKm = myDistKm - cDistKm;
+          catchSec = distBehindKm > 0 ? ((distBehindKm / dv) * 3600) : 0;
+          isPassingNow = distBehindKm <= 0.18 && distBehindKm > -0.28;
+          alreadyPassed = distBehindKm <= -0.28;
+          isFenceOff = !alreadyPassed && !isPassingNow && distBehindKm > -0.28 && (roadTimeGapSec <= 120 || catchSec <= 90 || (distBehindKm > 0 && distBehindKm <= 0.45));
+          isGlowing = !alreadyPassed && (isPassingNow || isFenceOff || (distBehindKm > 0 && (roadTimeGapSec <= 300 || catchSec <= 300)));
+          overtakeRole = 'CHASER_CATCHING_ME';
+        } else if (isMeFaster) {
+          // Slower group ahead that WE are catching (e.g., D catching E!)
+          const distAheadKm = cDistKm - myDistKm;
+          catchSec = distAheadKm > 0 ? ((distAheadKm / dv) * 3600) : 0;
+          isPassingNow = distAheadKm <= 0.18 && distAheadKm > -0.28;
+          alreadyPassed = distAheadKm <= -0.28;
+          isFenceOff = !alreadyPassed && !isPassingNow && distAheadKm > -0.28 && (roadTimeGapSec <= 120 || catchSec <= 90 || (distAheadKm > 0 && distAheadKm <= 0.45));
+          isGlowing = !alreadyPassed && (isPassingNow || isFenceOff || (distAheadKm > 0 && (roadTimeGapSec <= 300 || catchSec <= 300)));
+          overtakeRole = 'ME_CATCHING_SLOWER';
+        }
+
+        let chipText = '';
+        if (isPassingNow) chipText = `🚀${k}: PASSING NOW!`;
+        else if (alreadyPassed) chipText = `✓${k}: ${deltaKm >= 0 ? '+' : '-'}${fmtDist(absDeltaKm)} (${deltaKm >= 0 ? '+' : '-'}${fmtMinSec(roadTimeGapSec)})`;
+        else if (deltaKm < 0) chipText = `${k}: -${fmtDist(absDeltaKm)} (-${fmtMinSec(roadTimeGapSec)})`;
+        else chipText = `${k}: +${fmtDist(absDeltaKm)} (+${fmtMinSec(roadTimeGapSec)})`;
+
+        out[k] = {
+          cat: k, isMe: false, inPen: false, inPenWaitSec: 0,
+          distKm: cDistKm, pct, speedKph: cSpd,
+          deltaFromMeKm: deltaKm, roadTimeGapSec, catchSec,
+          isGlowing, isFenceOff, isPassingNow, alreadyPassed,
+          overtakeRole,
+          chipText
+        };
+      }
+      return out;
+    }
+
+    function renderLoop(nowMs) {
+      const dt = Math.min(0.25, Math.max(0.001, (nowMs - lastTickMs) / 1000));
+      lastTickMs = nowMs;
+
+      if (liveMode && (nowMs - lastLiveMs) > 12000) {
+        liveMode = false;
+      }
+
+      const totalKm = useMiles ? 160.934 : 100.0;
+      const unitSuffix = useMiles ? 'M' : 'K';
+      let states = {};
+      let elapsedRideSecForMe = 0;
+
+      if (liveMode && livePayload) {
+        connPill.textContent = '● ZWIFT LIVE';
+        connPill.classList.add('live');
+        if (livePayload.allCatsState && !livePayload.standaloneDirect) {
+          if (livePayload.activeCat && SPECS[livePayload.activeCat]) {
+            activeCat = livePayload.activeCat;
+            syncCatButtonsUI();
+          }
+          useMiles = Boolean(livePayload.useMiles);
+          syncScaleBtnUI();
+          states = livePayload.allCatsState;
+          elapsedRideSecForMe = Number(livePayload.myElapsedSec || 0);
+        } else {
+          elapsedRideSecForMe = Number(livePayload.myElapsedSec || 0);
+          states = buildStatesFromSimClock(
+            livePayload.simDMinEquiv || 54,
+            totalKm,
+            unitSuffix,
+            livePayload.selfDistKm,
+            livePayload.selfSpd
+          );
+        }
+      } else {
+        connPill.textContent = `● SIMULATOR (${simMult}x)`;
+        connPill.classList.remove('live');
+        if (simPlaying) {
+          simDMin += (dt * simMult) / 60;
+          if (simDMin > 260) simDMin = 0;
+          scrubber.value = String(simDMin.toFixed(1));
+        }
+        const myElapMin = Math.max(0, simDMin - SPECS[activeCat].offFromDMin);
+        elapsedRideSecForMe = Math.round(myElapMin * 60);
+        const clockTot = (13 * 60 + 45) + Math.floor(simDMin);
+        const hh = Math.floor(clockTot / 60) % 24;
+        const mm = clockTot % 60;
+        clockLbl.textContent = `T+${Math.floor(simDMin)}m (${hh}:${mm < 10 ? '0' : ''}${mm})`;
+
+        states = buildStatesFromSimClock(simDMin, totalKm, unitSuffix);
+      }
+
+      const me = states[activeCat] || states.D;
+      if (me) {
+        rulerDProgress.style.width = `${me.pct.toFixed(2)}%`;
+        rulerDProgress.style.background = `linear-gradient(90deg, ${SPECS[activeCat].col}44, ${SPECS[activeCat].col}e0)`;
+      }
+
+      const otherCats = CAT_ORDER.filter(k => k !== activeCat);
+      const urgent = otherCats.map(k => states[k]).find(x => x && (x.isPassingNow || x.isFenceOff))
+        || otherCats.map(k => states[k]).find(x => x && x.isGlowing);
+
+      if (urgent && me && !urgent.inPen) {
+        const leftP = Math.min(urgent.pct, me.pct);
+        const wP = Math.max(1.0, Math.abs(me.pct - urgent.pct));
+        const col = SPECS[urgent.cat].col;
+        rulerCatchGlow.style.display = 'block';
+        rulerCatchGlow.style.left = `${leftP.toFixed(2)}%`;
+        rulerCatchGlow.style.width = `${wP.toFixed(2)}%`;
+        rulerCatchGlow.style.background = `linear-gradient(90deg, ${col}, ${SPECS[activeCat].col})`;
+        rulerCatchGlow.style.boxShadow = `0 0 14px ${col}`;
+      } else {
+        rulerCatchGlow.style.display = 'none';
+      }
+
+      const myLeaderName = getGroupLeaderLabel(activeCat);
+      const myGroupTitle = myLeaderName ? `GROUP ${activeCat} (${myLeaderName})` : `GROUP ${activeCat}`;
+
+      // Update Top Alert Strip
+      if (urgent && urgent.isPassingNow) {
+        alertStrip.className = 'alert-strip fence-off';
+        const uName = getGroupLeaderLabel(urgent.cat);
+        const uTitle = uName ? `Cat ${urgent.cat} (${uName})` : `Cat ${urgent.cat}`;
+        if (urgent.overtakeRole === 'ME_CATCHING_SLOWER' || urgent.cat === 'E') {
+          alertMainText.textContent = `🚧 ${urgent.cat} FENCE OFF! (${myGroupTitle} Passing ${uTitle}) • Keep ${urgent.cat} Fence OFF!`;
+        } else {
+          alertMainText.textContent = `🔓 ${uTitle.toUpperCase()} PASSING ${myGroupTitle} NOW! Keep ${activeCat} Fence OFF so riders can join ${urgent.cat}!`;
+        }
+        alertSubText.textContent = `Staying riders hold steady pace`;
+      } else if (urgent && urgent.isFenceOff) {
+        alertStrip.className = 'alert-strip fence-off';
+        const uName = getGroupLeaderLabel(urgent.cat);
+        const uTitle = uName ? `Cat ${urgent.cat} (${uName})` : `Cat ${urgent.cat}`;
+        if (urgent.overtakeRole === 'ME_CATCHING_SLOWER' || urgent.cat === 'E') {
+          alertMainText.textContent = `🚧 ${urgent.cat} FENCE OFF! (${myGroupTitle} Catching ${uTitle}) • Road Gap: +${fmtMinSec(urgent.roadTimeGapSec)} (+${fmtDist(Math.abs(urgent.deltaFromMeKm))})`;
+        } else {
+          alertMainText.textContent = `🚧 SWITCH ${activeCat} FENCE OFF NOW! ${uTitle} catches ${myGroupTitle} in ${fmtMinSec(urgent.roadTimeGapSec)} (-${fmtDist(Math.abs(urgent.deltaFromMeKm))})!`;
+        }
+        alertSubText.textContent = `Road Time Gap <= 2m 00s = Imminent Pass!`;
+      } else if (urgent && urgent.isGlowing) {
+        alertStrip.className = 'alert-strip warn';
+        const uName = getGroupLeaderLabel(urgent.cat);
+        const uTitle = uName ? `Cat ${urgent.cat} (${uName})` : `Cat ${urgent.cat}`;
+        if (urgent.overtakeRole === 'ME_CATCHING_SLOWER' || urgent.cat === 'E') {
+          alertMainText.textContent = `⚠️ ${urgent.cat} HEADS-UP: ${myGroupTitle} is catching ${uTitle} (+${fmtDist(Math.abs(urgent.deltaFromMeKm))} • +${fmtMinSec(urgent.roadTimeGapSec)})`;
+        } else {
+          alertMainText.textContent = `⚠️ CHASER HEADS-UP: ${uTitle} is -${fmtDist(Math.abs(urgent.deltaFromMeKm))} (-${fmtMinSec(urgent.roadTimeGapSec)}) behind ${myGroupTitle}`;
+        }
+        alertSubText.textContent = `Announce on Discord & prepare Fence OFF`;
+      } else {
+        alertStrip.className = 'alert-strip';
+        const cSt = states.C;
+        const bSt = states.B;
+        const cTxt = cSt ? cSt.chipText : '';
+        const bTxt = bSt ? bSt.chipText : '';
+        alertMainText.textContent = `🟢 ${myGroupTitle} ON 0→100${unitSuffix} RIBBON — ${cTxt} | ${bTxt}`;
+        alertSubText.textContent = `Starts: E 13:30 | D 13:45 | C 13:55 | B 14:04 | A 14:11`;
+      }
+
+      const NEXT_AHEAD_CAT = { A: 'B', B: 'C', C: 'D', D: 'E', E: null };
+      const cardsHtml = [];
+
+      // Pass 1: Update Node positions and populate Callout Box HTML so we can measure real pixel widths
+      for (const k of CAT_ORDER) {
+        const st = states[k];
+        if (!st) continue;
+        const nodeEl = document.getElementById(`node${k}`);
+        const callEl = document.getElementById(`call${k}`);
+        const ldrName = getGroupLeaderLabel(k);
+        const ldrLineHtml = ldrName
+          ? `<span class="call-ldr" style="color:${SPECS[k].textCol};">${st.isMe ? '👑 ' : ''}${k} • ${ldrName}</span>`
+          : `<span class="call-ldr" style="color:${SPECS[k].textCol};">${st.isMe ? '👑 ' : ''}CAT ${k} (${SPECS[k].startClock})</span>`;
+
+        if (nodeEl) {
+          nodeEl.style.left = `${st.pct.toFixed(2)}%`;
+          nodeEl.classList.toggle('is-me', st.isMe);
+          nodeEl.classList.toggle('glowing', st.isGlowing);
+          nodeEl.classList.toggle('in-pen', st.inPen);
+        }
+
+        const absD = Math.abs(st.deltaFromMeKm || 0);
+        const roadSecVsMe = st.roadTimeGapSec != null
+          ? st.roadTimeGapSec
+          : ((absD / Math.max(20, st.speedKph || 37)) * 3600);
+
+        if (callEl) {
+          callEl.classList.toggle('fence-alert-box', Boolean(st.isFenceOff || st.isPassingNow));
+          if (st.isMe) {
+            const curU = useMiles ? (st.distKm * KM_TO_MI).toFixed(1) + 'M' : st.distKm.toFixed(1) + 'K';
+            const elapStr = elapsedRideSecForMe > 0 ? fmtMinSec(elapsedRideSecForMe) : '0m 00s';
+            callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">${curU}</span><span class="call-time">⏱️ ${elapStr}</span>`;
+          } else if (st.inPen) {
+            callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">In Pen</span><span class="call-time">⏳ -${fmtMinSec(st.inPenWaitSec)}</span>`;
+          } else if (st.isPassingNow) {
+            if (st.overtakeRole === 'ME_CATCHING_SLOWER' || k === 'E') {
+              callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">🚧 ${k} FENCE OFF!</span><span class="call-time">🚀 ${activeCat} Passing ${k}</span>`;
+            } else {
+              callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">🚀 PASSING ${activeCat}!</span><span class="call-time">🔓 ${activeCat} FENCE OFF</span>`;
+            }
+          } else if (st.isFenceOff) {
+            if (st.overtakeRole === 'ME_CATCHING_SLOWER' || k === 'E') {
+              callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">🚧 ${k} FENCE OFF!</span><span class="call-time">⏱️ +${fmtMinSec(roadSecVsMe)}</span>`;
+            } else {
+              callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">🚧 ${activeCat} FENCE OFF!</span><span class="call-time">⏱️ -${fmtMinSec(roadSecVsMe)}</span>`;
+            }
+          } else {
+            const sign = (st.deltaFromMeKm ?? 0) >= 0 ? '+' : '-';
+            callEl.innerHTML = `${ldrLineHtml}<span class="call-dist">${sign}${fmtDist(absD)}</span><span class="call-time">⏱️ ${sign}${fmtMinSec(roadSecVsMe)}</span>`;
+          }
+        }
+
+        // Build Summary Card for Row 4
+        const aheadCat = NEXT_AHEAD_CAT[k];
+        const aheadSt = aheadCat ? states[aheadCat] : null;
+        let neighbourGapHtml = '';
+        if (aheadSt) {
+          const distToAheadKm = aheadSt.distKm - st.distKm;
+          const secToAhead = (Math.abs(distToAheadKm) / Math.max(20, st.speedKph || 37)) * 3600;
+          if (st.inPen) {
+            neighbourGapHtml = `Pen launch in ${fmtMinSec(st.inPenWaitSec)}`;
+          } else if (distToAheadKm >= 0) {
+            neighbourGapHtml = `Behind ${aheadCat}: -${fmtMinSec(secToAhead)} (-${fmtDist(distToAheadKm)})`;
+          } else {
+            neighbourGapHtml = `Ahead of ${aheadCat}: +${fmtMinSec(secToAhead)} (+${fmtDist(Math.abs(distToAheadKm))})`;
+          }
+        } else {
+          neighbourGapHtml = `Lead Group on Road (+15m head start)`;
+        }
+
+        const dVal = useMiles ? (st.distKm * KM_TO_MI).toFixed(1) + ' mi' : st.distKm.toFixed(1) + ' km';
+        const cardCls = st.isMe ? 'cat-summary-card me-card' : ((st.isGlowing || st.isFenceOff || st.isPassingNow) ? 'cat-summary-card glow-card' : 'cat-summary-card');
+        const cardHeaderTitle = ldrName ? `CAT ${k} • ${ldrName}` : `CAT ${k} (${SPECS[k].startClock})`;
+        const vsMeLine = st.isMe
+          ? `👑 YOU (${k}${ldrName ? ' • ' + ldrName : ''}): ${fmtMinSec(elapsedRideSecForMe)}`
+          : (st.inPen
+              ? `In Pen: -${fmtMinSec(st.inPenWaitSec)}`
+              : ((st.deltaFromMeKm ?? 0) < 0
+                  ? `Vs ${activeCat}: -${fmtDist(absD)} (-${fmtMinSec(roadSecVsMe)})`
+                  : `Vs ${activeCat}: +${fmtDist(absD)} (+${fmtMinSec(roadSecVsMe)})`));
+
+        cardsHtml.push(`
+          <div class="${cardCls}">
+            <div style="display:flex; justify-content:space-between; font-weight:900; color:${SPECS[k].col};">
+              <span>${st.isMe ? '👑 ' : ''}${cardHeaderTitle}</span>
+              <span>${dVal}</span>
+            </div>
+            <div style="font-weight:900; color:#fde047;">${vsMeLine}</div>
+            <div style="font-size:0.90em; color:#e2e8f0; font-weight:800;">${neighbourGapHtml}</div>
+          </div>
+        `);
+      }
+      catsGrid.innerHTML = cardsHtml.join('');
+
+      // Pass 2: True Pixel Bounding-Box Juxtaposition & Stem Resolver
+      // Uses 4 safe vertical lanes (above-tall: 56px, above-short: 11px, below-short: 11px, below-tall: 56px)
+      // and slides boxes horizontally within each lane so they sit strictly side-by-side with 0px overlap!
+      const rulerW = Math.max(320, rulerBar.clientWidth || 720);
+      const laneAssignments = {
+        'above-tall':  ['D'],
+        'above-short': ['B'],
+        'below-short': ['C'],
+        'below-tall':  ['E', 'A']
+      };
+
+      // If E and A on 'below-tall' are close and C on 'below-short' is far away, promote one to 'below-short'
+      // Or if C, E, A all cluster together (e.g. Pen or Finish), keep E & A on below-tall and C on below-short (or promote one to above-short if free)
+      const layout = {};
+      for (const k of CAT_ORDER) {
+        const sp = SPECS[k];
+        const callEl = document.getElementById(`call${k}`);
+        const wPx = Math.max(88, (callEl ? callEl.offsetWidth : 104));
+        const anchorX = ((states[k]?.pct ?? 0) / 100) * rulerW;
+        layout[k] = {
+          k,
+          dir: sp.dir,
+          stemPx: sp.baseStemPx,
+          anchorX,
+          boxX: anchorX,
+          wPx,
+          shiftPx: 0
+        };
+      }
+
+      // Resolve horizontal collisions within each vertical lane using iterative side-by-side relaxation
+      for (const [laneKey, catsInLane] of Object.entries(laneAssignments)) {
+        const items = catsInLane.map(k => layout[k]).filter(Boolean).sort((a, b) => a.anchorX - b.anchorX);
+        const minPad = 8;
+        // Clamp each box inside [w/2 - 28, rulerW - w/2 + 28] first
+        const minEdge = -28;
+        const maxEdge = rulerW + 28;
+        items.forEach(it => {
+          it.boxX = Math.max(minEdge + it.wPx / 2, Math.min(maxEdge - it.wPx / 2, it.anchorX));
+        });
+
+        for (let iter = 0; iter < 6; iter++) {
+          for (let i = 0; i < items.length - 1; i++) {
+            const leftIt = items[i];
+            const rightIt = items[i + 1];
+            const reqDist = (leftIt.wPx / 2) + (rightIt.wPx / 2) + minPad;
+            const curDist = rightIt.boxX - leftIt.boxX;
+            if (curDist < reqDist) {
+              const push = (reqDist - curDist) / 2;
+              leftIt.boxX -= push;
+              rightIt.boxX += push;
+            }
+          }
+          // Re-clamp to stage boundaries
+          for (let i = 0; i < items.length; i++) {
+            const halfW = items[i].wPx / 2;
+            if (items[i].boxX - halfW < minEdge) items[i].boxX = minEdge + halfW;
+          }
+          for (let i = items.length - 1; i >= 0; i--) {
+            const halfW = items[i].wPx / 2;
+            if (items[i].boxX + halfW > maxEdge) items[i].boxX = maxEdge - halfW;
+          }
+        }
+      }
+
+      // Apply computed stem heights, horizontal shifts, and horizontal elbow bridges
+      for (const k of CAT_ORDER) {
+        const cfg = layout[k];
+        if (!cfg) continue;
+        const stemEl = document.getElementById(`stem${k}`);
+        const bridgeEl = document.getElementById(`bridge${k}`);
+        const callEl = document.getElementById(`call${k}`);
+        const shiftPx = Number((cfg.boxX - cfg.anchorX).toFixed(1));
+
+        if (stemEl) {
+          stemEl.className = `stem-line ${cfg.dir}`;
+          stemEl.style.height = `${cfg.stemPx}px`;
+        }
+
+        if (bridgeEl) {
+          if (Math.abs(shiftPx) >= 6) {
+            bridgeEl.style.display = 'block';
+            bridgeEl.style.width = `${Math.abs(shiftPx)}px`;
+            bridgeEl.style.left = shiftPx >= 0 ? '50%' : `calc(50% - ${Math.abs(shiftPx)}px)`;
+            if (cfg.dir === 'above') {
+              bridgeEl.style.bottom = `calc(100% + ${cfg.stemPx - 1}px)`;
+              bridgeEl.style.top = 'auto';
+            } else {
+              bridgeEl.style.top = `calc(100% + ${cfg.stemPx - 1}px)`;
+              bridgeEl.style.bottom = 'auto';
+            }
+          } else {
+            bridgeEl.style.display = 'none';
+          }
+        }
+
+        if (callEl) {
+          callEl.style.setProperty('--shift-px', `${shiftPx}px`);
+          if (cfg.dir === 'above') {
+            callEl.style.bottom = `calc(100% + ${cfg.stemPx}px)`;
+            callEl.style.top = 'auto';
+          } else {
+            callEl.style.top = `calc(100% + ${cfg.stemPx}px)`;
+            callEl.style.bottom = 'auto';
+          }
+        }
+      }
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    requestAnimationFrame(renderLoop);
+  </script>
+</body>
+</html>

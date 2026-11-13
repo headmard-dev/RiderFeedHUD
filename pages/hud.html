@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WOW 100K Leader & Sweeper HUD (2.00 W/kg Front • 37 kph)</title>
+  <title>Master Unified RiderFeedHUD v22.1 (Steady No-Pulse Ribbon + 5-Group Names)</title>
   <style>
     :root {
       --bg-opacity: 0.90;
@@ -1093,7 +1093,7 @@
     /* Row 2B: Official Yellow Leader/Co-Leader + Red Sweep + Chasing B/C Groups Radar Bar */
     .sweep-bc-radar-bar {
       display: grid;
-      grid-template-columns: 1.05fr 1.05fr 0.95fr;
+      grid-template-columns: 0.88fr 0.92fr 1.32fr;
       gap: 5px;
       padding: 3px 8px 4px 8px;
       background: rgba(9, 88, 142, 0.92);
@@ -1333,6 +1333,44 @@
     .cat-C { background: #2563eb; }
     .cat-D { background: #ca8a04; color: #090d16 !important; }
     .cat-E { background: #7c3aed; }
+
+    /* WOW 100K Category Selector Strip (A | B | C | D | E) */
+    .cat-selector-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+      padding: 1px 2px;
+      -webkit-app-region: no-drag;
+    }
+
+    .cat-sel-btn {
+      background: rgba(255, 255, 255, 0.10);
+      color: #cbd5e1;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: var(--font-ui);
+      font-size: 0.82em;
+      font-weight: 900;
+      cursor: pointer;
+      line-height: 1.2;
+      transition: all 0.12s ease;
+      -webkit-app-region: no-drag;
+    }
+
+    .cat-sel-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    .cat-sel-btn.active-cat-A { background: #dc2626 !important; color: #ffffff !important; border-color: #ffffff !important; box-shadow: 0 0 6px rgba(220, 38, 38, 0.85); }
+    .cat-sel-btn.active-cat-B { background: #16a34a !important; color: #ffffff !important; border-color: #ffffff !important; box-shadow: 0 0 6px rgba(22, 163, 74, 0.85); }
+    .cat-sel-btn.active-cat-C { background: #2563eb !important; color: #ffffff !important; border-color: #ffffff !important; box-shadow: 0 0 6px rgba(37, 99, 235, 0.85); }
+    .cat-sel-btn.active-cat-D { background: #ca8a04 !important; color: #090d16 !important; border-color: #ffffff !important; box-shadow: 0 0 6px rgba(250, 204, 21, 0.85); text-shadow: none !important; }
+    .cat-sel-btn.active-cat-E { background: #7c3aed !important; color: #ffffff !important; border-color: #ffffff !important; box-shadow: 0 0 6px rgba(124, 58, 237, 0.85); }
 
     .tactical-card {
       position: relative;
@@ -1767,6 +1805,787 @@
       color: inherit !important;
       text-shadow: none !important;
     }
+
+    /* =========================================================================
+       UNIFIED ALL-IN-ONE MODE BAR, RACE POWER TANKS & 🎯 CENTER-LOCK HORIZON
+       ========================================================================= */
+    .unified-mode-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 3px 8px;
+      background: linear-gradient(90deg, rgba(11, 45, 78, 0.96), rgba(15, 23, 42, 0.96));
+      border-bottom: 1px solid rgba(56, 189, 248, 0.40);
+      font-size: 0.78em;
+      font-weight: 800;
+      user-select: none;
+      flex-wrap: wrap;
+      -webkit-app-region: no-drag;
+    }
+
+    .hud-container.hide-tactical-banners .unified-mode-strip,
+    .hud-container.hide-tactical-banners .race-tanks-bar {
+      display: none !important;
+    }
+
+    .mode-pill-group,
+    .mileage-pill-group,
+    .center-lock-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+
+    .mode-switch-btn {
+      background: rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-family: var(--font-ui);
+      font-size: 0.92em;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .mode-switch-btn:hover {
+      background: rgba(56, 189, 248, 0.35);
+      color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .mode-switch-btn.active-mode-race {
+      background: linear-gradient(90deg, #16a34a, #15803d) !important;
+      color: #ffffff !important;
+      border-color: #86efac !important;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.75);
+    }
+
+    .mode-switch-btn.active-mode-40k {
+      background: linear-gradient(90deg, #0284c7, #0369a1) !important;
+      color: #ffffff !important;
+      border-color: #7dd3fc !important;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.75);
+    }
+
+    .mode-switch-btn.active-mode-100k {
+      background: linear-gradient(90deg, #ca8a04, #a16207) !important;
+      color: #090d16 !important;
+      border-color: #fef08a !important;
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.75);
+      text-shadow: none !important;
+    }
+
+    .km-preset-btn {
+      background: rgba(15, 23, 42, 0.85);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: var(--font-num);
+      font-size: 0.88em;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .km-preset-btn:hover {
+      background: #38bdf8;
+      color: #090d16;
+    }
+
+    .km-preset-btn.active-km {
+      background: #38bdf8 !important;
+      color: #090d16 !important;
+      border-color: #ffffff !important;
+      font-weight: 900;
+    }
+
+    .custom-km-input {
+      width: 44px;
+      background: rgba(9, 13, 22, 0.92);
+      color: #fde047;
+      border: 1px solid rgba(56, 189, 248, 0.65);
+      border-radius: 3px;
+      padding: 1px 3px;
+      font-family: var(--font-num);
+      font-size: 0.90em;
+      font-weight: 900;
+      text-align: center;
+      outline: none;
+    }
+
+    /* 🎯 Center-Lock Controls & Visual Horizon Highlight */
+    .center-lock-btn {
+      background: rgba(15, 23, 42, 0.88);
+      color: #cbd5e1;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: var(--font-ui);
+      font-size: 0.90em;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .center-lock-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    .center-lock-btn.active-lock {
+      background: linear-gradient(90deg, #06b6d4, #0284c7) !important;
+      color: #090d16 !important;
+      border-color: #ffffff !important;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.85);
+      text-shadow: none !important;
+    }
+
+    /* Per-Row 🎯 Mid-Pin Button */
+    .mid-pin-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 3px;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-size: 0.72em;
+      font-weight: 900;
+      background: rgba(6, 182, 212, 0.18);
+      color: #67e8f9;
+      border: 1px solid rgba(103, 232, 249, 0.45);
+      cursor: pointer;
+      vertical-align: middle;
+      line-height: 1.25;
+    }
+
+    .mid-pin-btn:hover {
+      background: #06b6d4;
+      color: #090d16;
+      border-color: #ffffff;
+    }
+
+    .mid-pin-btn.active-mid {
+      background: #06b6d4 !important;
+      color: #090d16 !important;
+      border: 1.5px solid #ffffff !important;
+      text-shadow: none !important;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.95);
+    }
+
+    /* Center-Locked Middle Row Horizon Highlight */
+    tbody tr.center-locked-anchor-row {
+      border-top: 2px solid #22d3ee !important;
+      border-bottom: 2px solid #22d3ee !important;
+      box-shadow: inset 4px 0 0 #22d3ee, inset -4px 0 0 #22d3ee, 0 0 12px rgba(34, 211, 238, 0.55) !important;
+    }
+
+    /* Sticky Top/Bottom Horizon Dock Row (when YOU or LDR is outside the middle slice) */
+    tbody tr.sticky-horizon-top-row {
+      position: sticky;
+      top: 2.1em;
+      z-index: 6;
+      border-bottom: 2px dashed #fde047 !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.85) !important;
+    }
+
+    tbody tr.sticky-horizon-bottom-row {
+      position: sticky;
+      bottom: 0;
+      z-index: 6;
+      border-top: 2px dashed #fde047 !important;
+      box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.85) !important;
+    }
+
+    .horizon-delta-tag {
+      display: inline-block;
+      margin-right: 4px;
+      padding: 0 4px;
+      border-radius: 3px;
+      font-family: var(--font-num);
+      font-size: 0.72em;
+      font-weight: 900;
+      background: #090d16;
+      color: #22d3ee !important;
+      border: 1px solid #22d3ee;
+      text-shadow: none !important;
+      vertical-align: middle;
+    }
+
+    /* Floating Re-Center Pill when user scrolls manually with mouse wheel */
+    .recenter-floating-pill {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 26;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #06b6d4, #0284c7);
+      color: #090d16;
+      border: 2px solid #ffffff;
+      font-size: 0.82em;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85);
+      -webkit-app-region: no-drag;
+    }
+
+    .recenter-floating-pill.visible {
+      display: inline-flex;
+    }
+
+    /* Race Mode Bar: Green POS Box + 4 Power Curve Countdown Tanks (15s, 1m, 5m, 20m) */
+    .race-tanks-bar {
+      display: none;
+      grid-template-columns: 1.35fr 0.9fr 0.9fr 0.9fr 0.9fr;
+      gap: 4px;
+      padding: 3px 8px 4px 8px;
+      background: rgba(6, 62, 105, 0.94);
+      border-bottom: 1.5px solid rgba(74, 222, 128, 0.45);
+      user-select: none;
+      -webkit-app-region: no-drag;
+    }
+
+    .hud-container.race-mode-active .race-tanks-bar {
+      display: grid;
+    }
+
+    .race-pos-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, rgba(20, 83, 45, 0.92), rgba(22, 101, 52, 0.88));
+      border: 1.5px solid #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+      font-size: 0.78em;
+      font-weight: 900;
+      color: #ffffff;
+      gap: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .power-tank-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      font-size: 0.75em;
+      font-weight: 900;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .power-tank-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+      transition: width 0.25s linear, background 0.25s ease;
+    }
+
+    .power-tank-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 3px;
+    }
+
+    .road-pos-badge {
+      display: inline-block;
+      min-width: 1.6em;
+      text-align: center;
+      margin-right: 3px;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-family: var(--font-num);
+      font-size: 0.72em;
+      font-weight: 900;
+      background: rgba(15, 23, 42, 0.85);
+      color: #38bdf8 !important;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      text-shadow: none !important;
+      vertical-align: middle;
+    }
+
+    .road-pos-badge.pos-podium {
+      background: #14532d;
+      color: #4ade80 !important;
+      border-color: #4ade80;
+    }
+
+
+    /* =========================================================================
+       BUILT-IN ❓ HELP & 100K TTT VISUAL GUIDE MODAL + 👁️ CLEAN VIEW BUTTON
+       ========================================================================= */
+    .help-modal {
+      position: absolute;
+      top: 38px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      background: rgba(9, 15, 26, 0.98);
+      border: 1.5px solid #fde047;
+      border-radius: 8px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.92);
+      display: none;
+      flex-direction: column;
+      z-index: 45;
+      overflow: hidden;
+      -webkit-app-region: no-drag;
+    }
+
+    .help-modal.open {
+      display: flex;
+    }
+
+    .help-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: linear-gradient(90deg, #854d0e, #0f172a);
+      border-bottom: 1px solid rgba(250, 204, 21, 0.45);
+    }
+
+    .help-title {
+      font-weight: 900;
+      font-size: 0.92em;
+      color: #fde047;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .help-body {
+      padding: 10px 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.82em;
+      line-height: 1.38;
+      color: #f1f5f9;
+    }
+
+    .help-section-card {
+      background: rgba(30, 41, 59, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 6px;
+      padding: 7px 10px;
+    }
+
+    .help-section-card h4 {
+      color: #38bdf8;
+      font-size: 0.96em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .help-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+
+    /* =========================================================================
+       v19.0: 100-MILE / WATOPIA 150 MULTI-LAP REAL-PASS VS LAPPED INDICATORS
+       ========================================================================= */
+    .mode-switch-btn.active-mode-100m {
+      background: linear-gradient(90deg, #9333ea, #ec4899) !important;
+      color: #ffffff !important;
+      border-color: #fbcfe8 !important;
+      box-shadow: 0 0 9px rgba(236, 72, 153, 0.85);
+    }
+
+    .unit-toggle-btn {
+      background: rgba(234, 179, 8, 0.22);
+      color: #fde047;
+      border: 1px solid rgba(250, 204, 21, 0.65);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: var(--font-num);
+      font-size: 0.88em;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .unit-toggle-btn:hover,
+    .unit-toggle-btn.active-mi {
+      background: #eab308;
+      color: #090d16;
+      border-color: #ffffff;
+    }
+
+    .lap-circuit-btn {
+      background: rgba(147, 51, 234, 0.32);
+      color: #f3e8ff;
+      border: 1px solid rgba(216, 180, 254, 0.70);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: var(--font-num);
+      font-size: 0.84em;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .lap-circuit-btn:hover {
+      background: #a855f7;
+      color: #ffffff;
+      border-color: #ffffff;
+    }
+
+    /* Row Lap Comparison Badges: SAME LP (Real Pass) vs +1 LAP (Lapping) vs -1L UNLAP vs LAPPED */
+    .lap-status-tag {
+      display: inline-block;
+      margin-right: 3px;
+      padding: 0 4px;
+      border-radius: 3px;
+      font-family: var(--font-num);
+      font-size: 0.68em;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      vertical-align: middle;
+      text-shadow: none !important;
+    }
+
+    .lap-real-pass {
+      background: linear-gradient(90deg, #facc15, #f97316) !important;
+      color: #090d16 !important;
+      border: 1px solid #ffffff;
+      box-shadow: 0 0 7px rgba(250, 204, 21, 0.9);
+    }
+
+    .lap-ahead-lapping {
+      background: #7e22ce !important;
+      color: #f3e8ff !important;
+      border: 1px solid #d8b4fe;
+    }
+
+    .lap-behind-unlap {
+      background: #0369a1 !important;
+      color: #e0f2fe !important;
+      border: 1px solid #7dd3fc;
+    }
+
+    .lap-straggler-down {
+      background: rgba(51, 65, 85, 0.92) !important;
+      color: #cbd5e1 !important;
+      border: 1px dashed #94a3b8;
+    }
+
+    .radar-card.radar-lapping {
+      border-color: #c084fc;
+      background: linear-gradient(90deg, rgba(88, 28, 135, 0.78), rgba(30, 41, 59, 0.90));
+      box-shadow: 0 0 8px rgba(192, 132, 252, 0.45);
+    }
+
+
+    /* =========================================================================
+       v20.0: WOW STAGGERED-START CHASER WARNING BANNER & SCHEDULE INPUTS
+       ========================================================================= */
+    .leader-catch-alert-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 3px 10px;
+      background: linear-gradient(90deg, rgba(180, 83, 9, 0.96), rgba(146, 64, 14, 0.96));
+      border-bottom: 1.5px solid #fde047;
+      color: #ffffff;
+      font-size: 0.80em;
+      font-weight: 900;
+      letter-spacing: 0.25px;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.55);
+      user-select: none;
+      -webkit-app-region: no-drag;
+    }
+
+    .leader-catch-alert-bar.visible {
+      display: flex;
+    }
+
+    .leader-catch-alert-bar.imminent-pass {
+      background: linear-gradient(90deg, rgba(185, 28, 28, 0.98), rgba(217, 119, 6, 0.98));
+      border-bottom-color: #fef08a;
+      animation: none !important;
+    }
+
+    .hud-container.hide-tactical-banners .leader-catch-alert-bar {
+      display: none !important;
+    }
+
+    .stagger-time-input {
+      width: 52px;
+      background: rgba(9, 13, 22, 0.94);
+      color: #fde047;
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      border-radius: 3px;
+      padding: 1px 3px;
+      font-family: var(--font-num);
+      font-size: 0.86em;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+    }
+
+    .stagger-time-input:focus {
+      border-color: #ffffff;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.85);
+    }
+
+
+    /* =========================================================================
+       v21.7: AUTO PEN-EXIT W/KG RESET + INSTANT FENCE LOCK + DETACHABLE HELP
+       ========================================================================= */
+    .radar-card.radar-passing-now {
+      border-color: #fde047 !important;
+      background: linear-gradient(90deg, rgba(21, 128, 61, 0.94), rgba(161, 98, 7, 0.94)) !important;
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.85) !important;
+    }
+
+    .leader-catch-alert-bar.passing-active {
+      background: linear-gradient(90deg, rgba(21, 128, 61, 0.98), rgba(180, 83, 9, 0.98)) !important;
+      border-bottom-color: #fde047 !important;
+      animation: none !important;
+    }
+
+    .leader-catch-alert-bar.pass-cleared-ok {
+      background: linear-gradient(90deg, rgba(20, 83, 45, 0.96), rgba(15, 118, 110, 0.96)) !important;
+      border-bottom-color: #4ade80 !important;
+      animation: none !important;
+    }
+
+
+    /* =========================================================================
+       v21.7: BUILT-IN 0 -> 100 ALL-CATEGORIES RIBBON WITH VERTICAL STEMS & LARGER TEXT
+       ========================================================================= */
+    .all-cats-ribbon-bar {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 5px 10px 6px 10px;
+      background: linear-gradient(90deg, rgba(9, 15, 26, 0.96), rgba(12, 42, 68, 0.96), rgba(9, 15, 26, 0.96));
+      border-bottom: 1.5px solid rgba(56, 189, 248, 0.5);
+      user-select: none;
+      -webkit-app-region: no-drag;
+    }
+
+    .ribbon-header-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 0.84em;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .ribbon-title-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #e0f2fe;
+      white-space: nowrap;
+      flex-wrap: wrap;
+    }
+
+    .ribbon-cats-summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      font-family: var(--font-num);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rib-cat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      font-size: 1.02em;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+    }
+
+    .rib-cat-chip.glow-catch {
+      background: linear-gradient(90deg, rgba(185, 28, 28, 0.96), rgba(161, 98, 7, 0.96));
+      border-color: #fde047 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.9);
+    }
+
+    .ribbon-track-wrap {
+      position: relative;
+      height: 54px;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .ribbon-track-line {
+      position: absolute;
+      left: 20px;
+      right: 24px;
+      top: 27px;
+      height: 6px;
+      background: rgba(30, 41, 59, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      border-radius: 999px;
+      overflow: visible;
+    }
+
+    .ribbon-d-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(250, 204, 21, 0.28), rgba(250, 204, 21, 0.85));
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .ribbon-catch-seg {
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      border-radius: 999px;
+      pointer-events: none;
+      display: none;
+    }
+
+    .ribbon-tick {
+      position: absolute;
+      top: -3px;
+      width: 1.5px;
+      height: 10px;
+      background: rgba(203, 213, 225, 0.48);
+    }
+
+    .ribbon-tick-lbl {
+      position: absolute;
+      top: 9px;
+      transform: translateX(-50%);
+      font-family: var(--font-num);
+      font-size: 0.72em;
+      font-weight: 900;
+      color: #cbd5e1;
+      pointer-events: none;
+    }
+
+    .ribbon-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      font-family: var(--font-num);
+      font-size: 0.74em;
+      font-weight: 900;
+      color: #090d16;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.9);
+      transition: left 0.25s ease, transform 0.2s ease;
+      z-index: 4;
+    }
+
+    .ribbon-marker.cat-me {
+      width: 20px;
+      height: 20px;
+      font-size: 0.80em;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 11px rgba(250, 204, 21, 0.95);
+      z-index: 7;
+    }
+
+    /* Vertical colour-coded stem & mini badge above/below the built-in HUD ribbon */
+    .rib-mini-stem {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .rib-mini-stem.up {
+      bottom: 100%;
+      height: 9px;
+    }
+
+    .rib-mini-stem.down {
+      top: 100%;
+      height: 9px;
+    }
+
+    .rib-mini-tag {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0px 4px;
+      border-radius: 3px;
+      background: rgba(9, 15, 26, 0.94);
+      border: 1px solid currentColor;
+      font-family: var(--font-num);
+      font-size: 0.86em;
+      font-weight: 900;
+      white-space: nowrap;
+      line-height: 1.15;
+      pointer-events: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.85);
+    }
+
+    .rib-mini-tag.up {
+      bottom: calc(100% + 9px);
+    }
+
+    .rib-mini-tag.down {
+      top: calc(100% + 9px);
+    }
+
+    .ribbon-marker.real-pass-glow {
+      border-color: #fde047 !important;
+      border-width: 2px;
+      box-shadow: 0 0 9px rgba(253, 224, 71, 0.85);
+      animation: none !important;
+      z-index: 8;
+    }
+
+    .ribbon-marker.in-pen {
+      opacity: 0.78;
+      border-style: dashed;
+    }
+
   </style>
 </head>
 <body>
@@ -1778,7 +2597,7 @@
     <div class="control-bar">
       <div class="top-bar-left">
         <span class="sauce-bottle-icon" title="Drag anywhere on this black bar to move the HUD window">🌶️</span>
-        <span class="window-main-title">Nearby Athletes</span>
+        <span class="window-main-title">Nearby Athletes <span style="color:#fde047; font-size:0.85em;">v22.1</span></span>
         <input id="riderFilterInput" class="rider-filter-input" type="text" placeholder="filter" title="Filter scrollable riders by name or category (e.g. Robertson, Cat C, LDR, SWP)" />
         <span id="statusDot" class="status-dot" title="Sauce Telemetry Status"></span>
         <span id="statusText" style="font-size: 0.78em; font-weight: 800; color: #cbd5e1;">Connecting...</span>
@@ -1787,6 +2606,8 @@
 
       <div class="top-bar-right">
         <button id="demoBtn" class="btn-toggle" style="border-color: #38bdf8; font-weight: 900; padding: 2px 7px;" title="Toggle Simulated Scrollable Event Rider Feed (Demo Mode)">▶ Demo</button>
+        <button id="topBarMapBtn" class="icon-chrome-btn" type="button" style="color:#38bdf8;" title="Open Detachable 0-100 All-Categories (E, D, C, B, A) Live Distance Ribbon Window">📏</button>
+        <button id="topBarHelpBtn" class="icon-chrome-btn" type="button" style="color:#fde047;" title="Open Detachable Help, About & WOW Leader Guide Window (Never Covers Live Table)">❓</button>
         <button id="settingsCogBtn" class="icon-chrome-btn" type="button" title="Open Settings (Font Size, Scale, Opacity, Pantone Colours, Window Size & Tactical Options)">⚙️</button>
         <button id="fullScreenBtn" class="icon-chrome-btn" type="button" title="Toggle Full Screen / Maximize Window (F11)">⛶</button>
         <button id="minimizeHudBtn" class="icon-chrome-btn" type="button" title="Minimize / Collapse Rider Table">_</button>
@@ -1853,12 +2674,48 @@
           </div>
         </div>
 
+        <!-- 5A. WOW 100K Rider Category Selector (Cat A, B, C, D & E from WOW Chat to Text) -->
+        <div class="settings-row" title="Select your WOW 100K TTT Category (sets official WOW W/kg pace range, front ceiling, target blob speed & chasing group radar)">
+          <span class="settings-label">🏷️ WOW 100K Category (A–E)</span>
+          <div class="settings-control">
+            <button class="cat-sel-btn" data-cat="A" type="button" title="Cat A Pace: Steady 3.5–4.5 W/kg (~44 kph)">A (3.5-4.5)</button>
+            <button class="cat-sel-btn" data-cat="B" type="button" title="Cat B Pace: Steady 2.7–3.3 W/kg (~41 kph)">B (2.7-3.3)</button>
+            <button class="cat-sel-btn" data-cat="C" type="button" title="Cat C Pace: Steady 2.1–2.6 W/kg (~39 kph)">C (2.1-2.6)</button>
+            <button class="cat-sel-btn active-cat-D" data-cat="D" type="button" title="Cat D Pace: Steady 1.6–2.0 W/kg (~37 kph)">D (1.6-2.0)</button>
+            <button class="cat-sel-btn" data-cat="E" type="button" title="Cat E Pace: Steady 1.2–1.5 W/kg (~33 kph)">E (1.2-1.5)</button>
+          </div>
+        </div>
+
         <!-- 5B. Event Preset (40K Recovery Max 2.4 W/kg vs 100K TTT 2.0 W/kg • 37 kph) -->
         <div class="settings-row" title="Switch Event Pacer Preset between 40K Recovery (Max 2.40 W/kg) and 100K TTT (2.00 W/kg & 37 kph)">
           <span class="settings-label">🏁 Event Mode Preset</span>
           <div class="settings-control">
             <button id="preset100kBtn" class="btn-toggle" type="button" style="background: rgba(34, 197, 94, 0.45); border-color: #4ade80;">100K TTT (2.0 • 37kph)</button>
             <button id="preset40kBtn" class="btn-toggle" type="button">40K Recovery (Max 2.4)</button>
+            <button id="presetRaceBtn" class="btn-toggle" type="button">22.5K Race</button>
+            <button id="preset100mBtn" class="btn-toggle" type="button" title="Monthly 100-Mile (160.9 km) & Watopia 150 Multi-Lap Mode">💯 100M / W150</button>
+          </div>
+        </div>
+
+        <!-- 5C. WOW Staggered Start Schedule (E 13:30 | D 13:45 | C 13:55 | B 14:04 | A 14:11) -->
+        <div class="settings-row" title="Official WOW Staggered Start Times (HH:MM). Automatically calculates relative minute offsets across any timezone to compute Distance Behind & Time to Catch!">
+          <span class="settings-label">⏱️ Stagger Starts</span>
+          <div class="settings-control" style="gap:4px;">
+            <span style="font-size:0.85em; color:#c084fc; font-weight:900;">E</span><input id="stgInputE" class="stagger-time-input" type="text" value="13:30" title="Cat E Start Time (HH:MM)" />
+            <span style="font-size:0.85em; color:#facc15; font-weight:900;">D</span><input id="stgInputD" class="stagger-time-input" type="text" value="13:45" title="Cat D Start Time (+15m after E)" />
+            <span style="font-size:0.85em; color:#60a5fa; font-weight:900;">C</span><input id="stgInputC" class="stagger-time-input" type="text" value="13:55" title="Cat C Start Time (+10m after D)" />
+            <span style="font-size:0.85em; color:#4ade80; font-weight:900;">B</span><input id="stgInputB" class="stagger-time-input" type="text" value="14:04" title="Cat B Start Time (+9m after C)" />
+            <span style="font-size:0.85em; color:#f87171; font-weight:900;">A</span><input id="stgInputA" class="stagger-time-input" type="text" value="14:11" title="Cat A Start Time (+7m after B)" />
+            <button id="resetStgScheduleBtn" class="btn-toggle" type="button" title="Restore Official WOW Staggered Starts (13:30 / 13:45 / 13:55 / 14:04 / 14:11)">Rst</button>
+          </div>
+        </div>
+
+        <!-- 5D. Chaser Radar Mode & Direction (Auto-Selected by Event Mode; Tucked in Settings to Keep Radar Bar Clean) -->
+        <div class="settings-row" title="Automatically uses WOW Stagger + Live Handoff in 100K & 100M/150 modes, and Live Nearby Only in Race & 40K modes. Override manually anytime here.">
+          <span class="settings-label">📡 Chaser Radar Mode</span>
+          <div class="settings-control">
+            <button id="bcStaggerBtn" class="btn-toggle" type="button" title="Auto (WOW Stagger Clock + Automatic Live Handoff) vs. Live Nearby Radar Only">Auto: WOW Stg + Live</button>
+            <button id="bcDirBtn" class="btn-toggle" type="button" title="Radar Focus: Chasing Groups Behind (Default for E/D/C/B) vs. Slower Groups Ahead">Focus: ⇄ Behind</button>
           </div>
         </div>
 
@@ -1894,6 +2751,56 @@
       </div>
     </div>
 
+    <!-- Built-In ❓ Help & 100K TTT Setup Guide Modal -->
+    <div id="helpModal" class="help-modal">
+      <div class="help-header">
+        <span class="help-title">❓ Visual Field Guide & How to Lead a 100K TTT</span>
+        <button id="helpCloseBtn" class="btn-toggle" type="button">Close ✕</button>
+      </div>
+      <div class="help-body">
+        <div class="help-section-card" style="border-color:#38bdf8; background:rgba(12,74,110,0.42);">
+          <h4 style="color:#7dd3fc;">🚧 Side-by-Side C & B Chaser Radar + Fence-Off Alert (800-Rider Edition)</h4>
+          <div><b>• Always-Visible C & B Side-by-Side:</b> For Cat D Leaders, the Right Radar Box permanently displays <b>C & B's exact Distance & Time Behind</b> side-by-side (e.g. <b>C: -0.52mi (3m45s) | B: -1.85mi (9m)</b>) and is never hidden by +1L lappers!</div>
+          <div><b>• 4-Stage Fence-Off Workflow:</b> (1) <b>5m Out:</b> Amber Heads-Up → (2) <b>90s Out:</b> Flashing <b>🚧 FENCE OFF!</b> warning so you can disable the D Fence before C/B arrives → (3) <b>Passing:</b> <b>🔓 FENCE OFF (JOIN C)</b> while the blob flows past → (4) <b>-28s Ahead:</b> Green <b>✅ CLEAR</b> confirmation!</div>
+          <div><b>• Instant Fence-Controlled Group Lock:</b> Because all WOW groups (A–E) ride behind an active Fence with no solo breakaways, locks immediately onto the very first Cat C / B / A rider or Yellow Beacon entering nearby!</div>
+          <div><b>• Auto Pen-Exit Start Reset (0.05 mi — Zero Buttons to Click!):</b> Zwift zeroes official event distance at the pen gate, and v21.7 automatically resets your Ride-Average W/kg (<b>Rst → Auto✓</b>) as you roll past <b>0.05 mi (80m)</b> so pen warm-up spinning never skews your ride average!</div>
+        </div>
+        <div class="help-section-card" style="border-color:#f472b6; background:rgba(131,24,67,0.38);">
+          <h4 style="color:#fbcfe8;">💯 Monthly 100-Mile & Watopia 150 (32 Laps): Real Pass vs. Lapped Guide</h4>
+          <div><b>1. Click 💯 100M/150 on Row 2:</b> Sets target distance to <b>100.0 Miles (160.9 km)</b> (~31.8 Lightning Laps after 1.8K lead-in; earns the 30-Lap Watopia 150 badge at 94.6M / 152.2K and finishes at 100.0M!), switches units to <b>MI / mph</b> (click <b>MI/KM</b> anytime to toggle), and activates the <b>🔄 5.0K Lp</b> circuit filter.</div>
+          <div><b>2. How Real Pass vs. Lapped Works Automatically (Uses Zwift Event Distance):</b></div>
+          <div>• <b style="color:#fde047;">[SAME LP] + 🚨 REAL PASS:</b> Their total event distance matches yours (±2.25 km). Cat C/B/A is genuinely catching your group on the same lap (~60K / 37.3M)!</div>
+          <div>• <b style="color:#d8b4fe;">[+1 LAP] + 🔄 LAPPING (HOLD):</b> Group is +5 km / +10 km ahead of you in event distance. They already passed you earlier—<b>hold steady pace, do NOT surge!</b></div>
+          <div>• <b style="color:#7dd3fc;">[-1L UNLAP] + ⏳ UNLAPPING:</b> Faster Cat A/B started >8m behind you and is still 1+ lap behind in total distance—overtaking to unlap, <b>not</b> a real pass yet!</div>
+          <div>• <b style="color:#cbd5e1;">[⤵️ -1L] Lapped Straggler:</b> Dropped rider 1+ lap behind in distance—<b>Sweeps (SWP) automatically ignore lapped riders</b> so you never drop back by mistake!</div>
+        </div>
+        <div class="help-section-card" style="border-color:#facc15; background:rgba(113,63,18,0.35);">
+          <h4 style="color:#fde047;">👑 Step-by-Step: How to Set Up the Grid to Lead a WOW 100K TTT (60 Seconds)</h4>
+          <div><b>1. Select 100K Mode & Distance:</b> On Row 2, click <b>👑 100K TTT</b> and verify <b>100K</b> is highlighted under <b>KM:</b>.</div>
+          <div><b>2. Click Your Category (A–E):</b> On the Left Green Card, click <b>A</b> (3.5–4.5w / 44kph), <b>B</b> (2.7–3.3w / 41kph), <b>C</b> (2.1–2.6w / 39kph), <b>D</b> (1.6–2.0w / 37kph), or <b>E</b> (1.2–1.5w / 33kph).</div>
+          <div><b>3. Lock Yourself in the Middle:</b> Click <b>🎯 YOU</b> on the right side of Row 2 so your row stays locked dead-center even in a 300-rider pen.</div>
+          <div><b>4. Tag Your Co-Leader & Sweeps:</b> Click <b>LDR</b> on your Co-Leader's row (turns <b>Beacon Yellow</b>) and click <b>SWP</b> on your Sweeper's row (turns <b>Vibrant Red</b>), or type their names into the <b>Co-Ldr…</b> and <b>Sweep…</b> boxes.</div>
+          <div><b>5. Concertina the Columns:</b> Drag any vertical bar (<b>||</b>) in the table header (or click <b>Compact Cols</b> inside ⚙️ Settings) to tighten column spacing.</div>
+        </div>
+        <div class="help-grid-2col">
+          <div class="help-section-card">
+            <h4>🧭 Top Mode & Pacer Bars</h4>
+            <div>• <b>🏁 Race | 🌿 40K Rec | 👑 100K TTT:</b> Switches HUD mode & target W/kg ceilings automatically.</div>
+            <div>• <b>KM [22.5K..100K] + Input Box:</b> Sets any event distance (5–250 km) for the progress bar & catch calculator.</div>
+            <div>• <b>🎯 Mid-Pin (YOU | LDR | Free):</b> Locks YOU or the Leader in the middle row. Scroll mouse wheel anytime for a 5s pause.</div>
+            <div>• <b>👁️ Clean Button:</b> Hides the pacer & radar bars if you want a super-clean rider-only table!</div>
+          </div>
+          <div class="help-section-card">
+            <h4>📡 Radar Cards & Row Buttons</h4>
+            <div>• <b>🟡👑 LDR Radar (Left):</b> Shows Main Yellow Beacon Leader + Co-Leader gap & W/kg.</div>
+            <div>• <b>🧹 SWP Radar (Middle):</b> Tracks your Red Sweep's gap (▲ closing / ▼ dropping). Flashes <b>EASE FRONT 0.2w!</b> if sweep drops >10s back.</div>
+            <div>• <b>🚂 B/C Radar (Right):</b> Scans behind for faster chasing groups (or ahead for slower groups in Cat A).</div>
+            <div>• <b>Row Badges (#Pos | 🎯 | LDR | SWP | D):</b> Road rank, Mid-Pin toggle, Yellow Leader pin, Red Sweep pin, and Category tag.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 256 Pantone Colour Chart Modal -->
     <div id="pantoneModal" class="pantone-modal">
       <div class="pantone-header">
@@ -1914,15 +2821,87 @@
       </div>
     </div>
 
-    <!-- Row 2A: Whole-100K Event W/kg Pacer (Top-Left) & 100K Front Max 2.00 W/kg + 37 kph Pacer (Top-Right) -->
+    <!-- UNIFIED ALL-IN-ONE MODE, ANY-MILEAGE & 🎯 CENTER-LOCK HORIZON BAR -->
+    <div class="unified-mode-strip">
+      <div class="mode-pill-group" title="Switch Unified HUD Mode: 22.5K Race | 40K Recovery | 100K TTT | 100-Mile & Watopia 150 Multi-Lap">
+        <span style="color:#7dd3fc; text-transform:uppercase; font-size:0.90em;">Mode:</span>
+        <button id="modeRaceBtn" class="mode-switch-btn" type="button" title="Open Race & Climb Mode: Shows Green POS Box, Road Position # Badges, and 15s/1m/5m/20m Power Curve Countdown Tanks">🏁 Race</button>
+        <button id="mode40kBtn" class="mode-switch-btn" type="button" title="WOW 40K Recovery Mode: Max 2.40 W/kg Front Ceiling & 35 kph Group Pacer">🌿 40K</button>
+        <button id="mode100kBtn" class="mode-switch-btn active-mode-100k" type="button" title="WOW 100K TTT Leader & Sweeper Mode: Cat A-E Selector, Yellow Beacon Leader & Red Sweep Radar">👑 100K</button>
+        <button id="mode100mBtn" class="mode-switch-btn" type="button" title="Monthly WOW 100-Mile (160.9 km) & Watopia 150 Multi-Lap Mode: Enables Miles/KM display, 32-Lap Counter (5.01km Lightning Lap), and REAL PASS vs LAPPED (+1L / -1L) group detection!">💯 100M/150</button>
+      </div>
+
+      <div class="mileage-pill-group" title="Select Event Distance (22.5K to 100 Miles / 300K), toggle KM <-> MI units, or set Multi-Lap Circuit length">
+        <button id="unitToggleBtn" class="unit-toggle-btn" type="button" title="Click to switch HUD distance & speed display between Kilometres (KM / kph) and Miles (MI / mph)">KM</button>
+        <button class="km-preset-btn" data-km="22.5" type="button" title="22.5 km (14.0 mi) Race Distance">22.5K</button>
+        <button class="km-preset-btn" data-km="40" type="button" title="40 km (24.9 mi) Recovery Distance">40K</button>
+        <button class="km-preset-btn active-km" data-km="100" type="button" title="100 km (62.1 mi) TTT Distance">100K</button>
+        <button class="km-preset-btn" data-km="160.9" type="button" title="100.0 Miles (160.93 km) — Monthly WOW 100-Mile & Zwift 150 (100-Mile Distance) Event!">100M</button>
+        <input id="customKmInput" class="custom-km-input" type="number" min="5" max="300" step="0.5" value="100" title="Type any custom event distance in KM (5 to 300 km; 160.9 = 100 Miles)" />
+        <button id="lapCircuitBtn" class="lap-circuit-btn" type="button" title="Multi-Lap Real-Pass vs Lapped Circuit Filter: Cycles 5.01K (Watopia 150 Lightning Lap) | 4.10K (Seafoam/Volcano) | 17.3K (Tempus) | OFF (Point-to-Point)">🔄 5.0K Lp</button>
+      </div>
+
+      <div class="center-lock-group" title="🎯 Center-Lock Horizon: Keeps YOU or the Lead (LDR) pinned dead-center in the middle of the table even when 300+ riders are in the group!">
+        <span style="color:#67e8f9; font-size:0.90em;">🎯 Mid-Pin:</span>
+        <button id="lockSelfBtn" class="center-lock-btn active-lock" type="button" title="Pin YOU dead-center in the middle of the visible rider table (with riders ahead above & riders behind below)">🎯 YOU</button>
+        <button id="lockLdrBtn" class="center-lock-btn" type="button" title="Pin the Active Yellow Beacon Leader / Co-Leader (or any rider clicked with 🎯) dead-center in the middle of the table">👑 LDR</button>
+        <button id="lockOffBtn" class="center-lock-btn" type="button" title="Free Scroll Mode (disables automatic middle pinning)">Free</button>
+        <button id="quickCleanViewBtn" class="center-lock-btn" type="button" style="border-color:#fde047; color:#fde047;" title="Declutter / Clean View: Hides the top Pacer & Radar banners so only the Rider Table is shown!">👁️ Clean</button>
+        <button id="openMapWindowBtn" class="center-lock-btn" type="button" style="background:linear-gradient(90deg,#0284c7,#16a34a); color:#ffffff; border-color:#7dd3fc;" title="Open Detachable 0 to 100 All-Categories (E, D, C, B, A) Live Distance & Catch Ribbon Window">📏 0-100 ↗</button>
+        <button id="openHelpModalBtn" class="center-lock-btn" type="button" style="background:#eab308; color:#090d16; border-color:#ffffff;" title="Open Detachable Help, About & WOW Leader Guide Window (Never Covers Live Table)">❓ Help ↗</button>
+      </div>
+    </div>
+
+    <!-- LEADER CATCH WARNING BANNER (Auto-pops when Chaser Behind or Group Ahead is <= 5 min from Catch!) -->
+    <div id="leaderCatchAlertBar" class="leader-catch-alert-bar" title="Automatic WOW Leader Catch Warning: Shows Chasing Group Distance Behind & Exact Time to Catch!">
+      <span id="leaderCatchAlertText">⚠️ CHASER ALERT: Cat C is 1.4km behind — catches your group in 3m 20s!</span>
+      <div style="display:inline-flex; gap:5px; align-items:center;">
+        <span id="leaderCatchAheadSub" style="color:#fde047; font-size:0.92em;"></span>
+        <button id="dismissCatchAlertBtn" class="tactical-mini-btn" type="button" title="Snooze top catch banner for 2 minutes (Radar card stays live)">Snooze 2m</button>
+      </div>
+    </div>
+
+    <!-- RACE MODE BAR: Green POS Box + 15s / 1m / 5m / 20m Power Curve Countdown Tanks -->
+    <div id="raceTanksBar" class="race-tanks-bar">
+      <div id="racePosCard" class="race-pos-card" title="Live Overall Road Position, Category Rank & Gap to Nearest Faster Wheel Ahead">
+        <span id="racePosMain">POS 1 / 22</span>
+        <span id="raceCatRank" style="color:#fde047;">C #1</span>
+        <span id="raceBWheelGap" style="color:#86efac;">Wheel: -0.4s</span>
+      </div>
+      <div class="power-tank-card" title="15s Sprint Tank (6.71 W/kg • 387W): Counts down from 15s when sprinting >= 6.0 W/kg">
+        <div id="tank15sFill" class="power-tank-fill" style="width:100%; background:linear-gradient(90deg, rgba(168,85,247,0.55), rgba(217,70,239,0.85));"></div>
+        <div class="power-tank-content"><span>15s (6.7w)</span><span id="tank15sVal">15s</span></div>
+      </div>
+      <div class="power-tank-card" title="1m Anaerobic Tank (4.23 W/kg • 244W): Counts down from 60s when pushing >= 4.0 W/kg">
+        <div id="tank1mFill" class="power-tank-fill" style="width:100%; background:linear-gradient(90deg, rgba(239,68,68,0.55), rgba(249,115,22,0.85));"></div>
+        <div class="power-tank-content"><span>1m (4.2w)</span><span id="tank1mVal">60s</span></div>
+      </div>
+      <div class="power-tank-card" title="5m VO2 Max Tank (3.40 W/kg • 196W): Counts down from 300s when climbing >= 3.2 W/kg">
+        <div id="tank5mFill" class="power-tank-fill" style="width:100%; background:linear-gradient(90deg, rgba(245,158,11,0.55), rgba(234,179,8,0.85));"></div>
+        <div class="power-tank-content"><span>5m (3.4w)</span><span id="tank5mVal">300s</span></div>
+      </div>
+      <div class="power-tank-card" title="20m FTP Tank (2.98 W/kg • 172W): Counts down from 20m when riding >= 2.85 W/kg">
+        <div id="tank20mFill" class="power-tank-fill" style="width:100%; background:linear-gradient(90deg, rgba(34,197,94,0.55), rgba(16,185,129,0.85));"></div>
+        <div class="power-tank-content"><span>20m (3.0w)</span><span id="tank20mVal">20:00</span></div>
+      </div>
+    </div>
+
+    <!-- Row 2A: Whole-Event W/kg Pacer (Top-Left) & Front Target W/kg + Group Speed Pacer (Top-Right) -->
     <div class="personal-tactical-bar">
       <!-- Left Banner: Whole-100K Event W/kg Target & Ride Average Pacer (Default Max 2.00 W/kg) -->
       <div id="ftp5mCard" class="tactical-card state-ttt-good" title="Whole-100K Event W/kg Pacer. Pre-set to 2.00 W/kg for the D WOW 100K TTT ride: tracks both your Live W/kg and Whole-100K Ride Average W/kg from 0 km to 100 km!">
         <div id="ftp5mFill" class="tactical-fill" style="width: 100%; background: linear-gradient(90deg, rgba(34, 197, 94, 0.50), rgba(16, 185, 129, 0.78));"></div>
         <div class="tactical-content">
           <div class="tactical-left">
-            <span class="tactical-title">100K WKG</span>
-            <div class="tactical-target-ctrl" title="Set Max Target W/kg for the 100K TTT Event (Default: 2.00 W/kg)">
+            <span id="cat100kWkgTitle" class="tactical-title" title="Active WOW 100K Category & Advertised W/kg Band">100K D</span>
+            <div class="cat-selector-strip" title="Click to switch WOW 100K Category: A (3.5-4.5) | B (2.7-3.3) | C (2.1-2.6) | D (1.6-2.0) | E (1.2-1.5)">
+              <button class="cat-sel-btn" data-cat="A" type="button" title="Cat A: Steady 3.5–4.5 W/kg (~44 kph)">A</button>
+              <button class="cat-sel-btn" data-cat="B" type="button" title="Cat B: Steady 2.7–3.3 W/kg (~41 kph)">B</button>
+              <button class="cat-sel-btn" data-cat="C" type="button" title="Cat C: Steady 2.1–2.6 W/kg (~39 kph)">C</button>
+              <button class="cat-sel-btn active-cat-D" data-cat="D" type="button" title="Cat D: Steady 1.6–2.0 W/kg (~37 kph)">D</button>
+              <button class="cat-sel-btn" data-cat="E" type="button" title="Cat E: Steady 1.2–1.5 W/kg (~33 kph)">E</button>
+            </div>
+            <div class="tactical-target-ctrl" title="Set Max Front Target W/kg for the selected WOW 100K Category">
               <button id="ftp5mMinus" class="tactical-step-btn" type="button">−</button>
               <span id="ftp5mTargetText" class="tactical-target-val">2.00</span>
               <button id="ftp5mPlus" class="tactical-step-btn" type="button">+</button>
@@ -1931,7 +2910,7 @@
           <div class="tactical-right">
             <span id="ftp5mStatus" class="tactical-status-pill" title="Live W/kg vs 100K Target (Max 2.00 W/kg)">100K OK</span>
             <span id="ftp5mTimer" class="tactical-timer" title="Whole-100K Ride Average W/kg">Avg 1.98</span>
-            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Reset Whole-100K Average W/kg counter">Rst</button>
+            <button id="ftp5mResetBtn" class="tactical-mini-btn" type="button" title="Auto-resets your Ride-Average W/kg at 0.05 mi (80m) out of the Start Pen! Click anytime for a manual Avg W/kg reset.">Rst</button>
           </div>
         </div>
       </div>
@@ -1956,7 +2935,7 @@
           <div class="tactical-right">
             <span id="ttt1mStatus" class="tactical-status-pill"><=2.0w/kg OK</span>
             <span id="ttt1mTimer" class="tactical-timer" title="Live Group / Blob Speed (kph)">37.0kph</span>
-            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Reset 100K distance counter to 0.0 km">100K</button>
+            <button id="ttt1mToggleBtn" class="tactical-mini-btn" type="button" title="Shows Distance Remaining (Zwift zeroes official events automatically at the pen gate — only click to manually zero on an informal Free Ride)">100K</button>
           </div>
         </div>
       </div>
@@ -1994,12 +2973,38 @@
       <!-- Right Radar: Chasing B & C Groups Behind D Group -->
       <div id="bcRadarCard" class="radar-card radar-info" title="Chasing B & C Groups Radar: Automatically detects Cat B and Cat C riders/blobs approaching from behind (via Zwift subgroup categories & high-speed blob detection) + tracks estimated catch toward ~60K.">
         <div class="radar-left">
-          <span class="radar-title">🚂 B/C</span>
+          <span id="bcRadarTitle" class="radar-title">🚂 B/C</span>
           <span id="bcRadarDetail" class="radar-detail">Scanning B/C...</span>
         </div>
         <div class="radar-right">
-          <span id="bcRadarStatus" class="radar-badge" style="color:#38bdf8;">~60K CATCH</span>
-          <button id="bcStaggerBtn" class="tactical-mini-btn" type="button" title="Cycle B/C staggered start offset (5m / 10m / 15m / Live Only) for pre-radar ETA estimation">Stg 5m</button>
+          <span id="bcRadarStatus" class="radar-badge" style="color:#38bdf8;">ETA --</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2C (v21.7): Built-In 0 -> 100 All-Categories (E, D, C, B, A) Live Horizontal Distance Ribbon -->
+    <div id="allCatsRibbonBar" class="all-cats-ribbon-bar" title="Live 0 to 100 All-Categories Distance Ribbon (E, D, C, B, A): Shows all 5 WOW categories moving left-to-right from 0 (Pen) to 100 (100K or 100M Finish). Chasing dots glow when within 5 mins of catching your group!">
+      <div class="ribbon-header-strip">
+        <div class="ribbon-title-left">
+          <span id="ribbonScaleTitle" style="color:#fde047; font-weight:900;">📏 0→100M RIBBON</span>
+          <span id="ribbonSummaryStrip" class="ribbon-cats-summary"></span>
+        </div>
+        <button id="detachRibbonMiniBtn" class="tactical-mini-btn" type="button" style="border-color:#7dd3fc; color:#e0f2fe;" title="Pop out a larger Detachable 0-100 All-Categories Ribbon Window with Interactive Time-Warp Simulator">📏 Detach ↗</button>
+      </div>
+      <div class="ribbon-track-wrap">
+        <div id="ribbonTrackLine" class="ribbon-track-line">
+          <div id="ribbonDFill" class="ribbon-d-fill"></div>
+          <div id="ribbonCatchSeg" class="ribbon-catch-seg"></div>
+          <div class="ribbon-tick" style="left:0%;"><span class="ribbon-tick-lbl" style="left:4px;">0</span></div>
+          <div class="ribbon-tick" style="left:25%;"><span class="ribbon-tick-lbl">25</span></div>
+          <div class="ribbon-tick" style="left:50%;"><span class="ribbon-tick-lbl">50</span></div>
+          <div class="ribbon-tick" style="left:75%;"><span class="ribbon-tick-lbl">75</span></div>
+          <div class="ribbon-tick" style="left:100%;"><span id="ribbonTick100Lbl" class="ribbon-tick-lbl" style="left:-6px;">100M</span></div>
+          <div id="ribMarkerE" class="ribbon-marker" style="background:#c084fc; left:0%;" title="Cat E">E<span class="rib-mini-stem down" style="background:#c084fc;"></span><span id="ribMiniTagE" class="rib-mini-tag down" style="color:#e9d5ff;">E</span></div>
+          <div id="ribMarkerD" class="ribbon-marker cat-me" style="background:#facc15; left:0%;" title="Cat D">D<span class="rib-mini-stem up" style="background:#facc15;"></span><span id="ribMiniTagD" class="rib-mini-tag up" style="color:#fef08a;">👑D</span></div>
+          <div id="ribMarkerC" class="ribbon-marker" style="background:#38bdf8; left:0%;" title="Cat C">C<span class="rib-mini-stem down" style="background:#38bdf8;"></span><span id="ribMiniTagC" class="rib-mini-tag down" style="color:#bae6fd;">C</span></div>
+          <div id="ribMarkerB" class="ribbon-marker" style="background:#22c55e; left:0%;" title="Cat B">B<span class="rib-mini-stem up" style="background:#22c55e;"></span><span id="ribMiniTagB" class="rib-mini-tag up" style="color:#bbf7d0;">B</span></div>
+          <div id="ribMarkerA" class="ribbon-marker" style="background:#f87171; left:0%;" title="Cat A">A<span class="rib-mini-stem down" style="background:#f87171;"></span><span id="ribMiniTagA" class="rib-mini-tag down" style="color:#fecaca;">A</span></div>
         </div>
       </div>
     </div>
@@ -2007,6 +3012,7 @@
     <!-- Rider Telemetry Feed -->
     <div id="tableWrap" class="table-wrap">
       <div id="resizeGuideLine" class="resize-guide-line"></div>
+      <button id="recenterFloatingPill" class="recenter-floating-pill" type="button" title="Click to immediately snap your pinned Center-Lock rider back to the middle of the table">🎯 Re-Center Middle (5s)</button>
       <table id="riderTable">
         <colgroup id="tableColGroup">
           <col id="col-0" />
@@ -2962,15 +3968,167 @@
     // Personal 5-Minute FTP (Default 3.40 W/kg) Countdown Tank (300s -> 0s)
     // & 1-Minute WTRL TTT Pull Pacer (60s -> 0s)
     // =========================================================================
+    // =========================================================================
+    // WOW 100K TTT Category Profiles (Cat A, B, C, D & E from WOW Chat to Text)
+    // =========================================================================
+    const WOW_100K_CAT_PROFILES = {
+      A: { label: 'A', rangeText: '3.5-4.5', minWkg: 3.50, maxWkg: 4.50, frontWkg: 4.50, speedKph: 44, atkWkg: 5.2, chasers: [],                   passAhead: ['B', 'C', 'D', 'E'], radarTitle: '🚂 AHEAD' },
+      B: { label: 'B', rangeText: '2.7-3.3', minWkg: 2.70, maxWkg: 3.30, frontWkg: 3.30, speedKph: 41, atkWkg: 4.2, chasers: ['A'],                passAhead: ['C', 'D', 'E'],      radarTitle: '🚂 CAT A' },
+      C: { label: 'C', rangeText: '2.1-2.6', minWkg: 2.10, maxWkg: 2.60, frontWkg: 2.60, speedKph: 39, atkWkg: 3.4, chasers: ['B', 'A'],           passAhead: ['D', 'E'],           radarTitle: '🚂 B/A' },
+      D: { label: 'D', rangeText: '1.6-2.0', minWkg: 1.60, maxWkg: 2.00, frontWkg: 2.00, speedKph: 37, atkWkg: 2.8, chasers: ['C', 'B', 'A'],      passAhead: ['E'],                radarTitle: '🚂 C/B/A' },
+      E: { label: 'E', rangeText: '1.2-1.5', minWkg: 1.20, maxWkg: 1.50, frontWkg: 1.50, speedKph: 33, atkWkg: 2.2, chasers: ['D', 'C', 'B', 'A'], passAhead: [],                   radarTitle: '🚂 D/C/B/A' }
+    };
+
+    let active100kCat = localStorage.getItem('zwift_100k_hud_active_cat') || 'D';
+    if (!WOW_100K_CAT_PROFILES[active100kCat]) active100kCat = 'D';
+    let whole100kMinWkg = WOW_100K_CAT_PROFILES[active100kCat].minWkg;
+
     // Whole-100K TTT Event W/kg Target & Cumulative Session Average Tracker
-    let whole100kTargetWkg = 2.00; // Default Max 2.00 W/kg for the D WOW 100K event
+    let whole100kTargetWkg = WOW_100K_CAT_PROFILES[active100kCat].maxWkg;
     let whole100kWkgWeightedSum = 0;
     let whole100kSampleSeconds = 0;
     let ftp5mLastMs = performance.now();
 
-    const EVENT_TOTAL_KM = 100.0;     // 100K TTT Event Distance (100.0 km)
-    let leaderFrontTargetWkg = 2.00; // D WOW 100K Leader front cap: Max 2.00 W/kg
-    let groupTargetKph = 37;         // D WOW 100K speed target: 37 kph (adjustable)
+    let eventTotalKm = Number(localStorage.getItem('zwift_unified_event_km') || '100.0') || 100.0;
+    let activeUnifiedMode = localStorage.getItem('zwift_unified_hud_mode') || '100K'; // 'RACE' | '40K' | '100K' | '100M'
+    let useMilesUnits = localStorage.getItem('zwift_unified_use_miles') === '1';
+    const KM_TO_MI = 0.621371;
+
+    // Multi-Lap Circuit Filter for Watopia 150 (5.013 km Lightning Lap + 1.8 km lead-in) & Monthly 100-Milers
+    const CIRCUIT_LAP_PRESETS = [
+      { id: 'W150', label: '🔄 5.0K Lp', lapKm: 5.013, leadInKm: 1.8, desc: 'Watopia 150 Lightning Lap (5.01km loop + 1.8km lead-in)' },
+      { id: 'VOLC', label: '🔄 4.1K Lp', lapKm: 4.10,  leadInKm: 0.5, desc: 'Seafoam / Volcano Circuit (~4.1km loop)' },
+      { id: 'TEMP', label: '🔄 17.3K Lp', lapKm: 17.30, leadInKm: 2.4, desc: 'Tempus Fugit Loop (~17.3km)' },
+      { id: 'OFF',  label: '➡️ Pt-to-Pt', lapKm: 0,     leadInKm: 0,   desc: 'Single Big Loop / Point-to-Point (No Lap Filter)' }
+    ];
+    let circuitPresetIdx = Number(localStorage.getItem('zwift_unified_circuit_idx') || '0');
+    if (circuitPresetIdx < 0 || circuitPresetIdx >= CIRCUIT_LAP_PRESETS.length) circuitPresetIdx = 0;
+
+    // Tracks categories that have already completed a genuine SAME-LAP pass (e.g. 'C' -> '37.4M') & timestamp for Fence Re-On cue
+    const realPassStamps = new Map();
+    const realPassClearedAtMs = new Map();
+
+    function getRiderEventDistKm(entry) {
+      if (!entry || !entry.state) return 0;
+      if (entry.state.eventDistance != null) {
+        const evM = Number(entry.state.eventDistance);
+        if (evM > 0) return evM / 1000;
+        // In an official Zwift Event start pen before the gate drops, eventDistance is 0 — ignore pre-pen warmup miles
+        if (evM === 0 && (entry.state.eventSubgroupId || entry.eventSubgroupId || Number(entry.state.speed || 0) < 1.0)) {
+          return 0;
+        }
+      }
+      const rawM = Number(entry.state.distance ?? 0);
+      return rawM > 0 ? (rawM / 1000) : 0;
+    }
+
+    function getCatSpeedRank(catLetter) {
+      const ranks = { A: 5, B: 4, C: 3, D: 2, E: 1 };
+      return ranks[catLetter] || 0;
+    }
+
+    function evaluateRiderLapStatus(entry, selfEntry) {
+      const preset = CIRCUIT_LAP_PRESETS[circuitPresetIdx] || CIRCUIT_LAP_PRESETS[0];
+      if (!preset.lapKm || preset.lapKm <= 0 || !entry || !selfEntry || entry.watching) {
+        return { lapDelta: 0, isSameLap: true, badgeHtml: '', kind: 'same', deltaKm: 0 };
+      }
+      const myKm = getRiderEventDistKm(selfEntry);
+      const theirKm = getRiderEventDistKm(entry);
+      let deltaKm = 0;
+      let lapDelta = 0;
+
+      if (myKm > 0.15 && theirKm > 0.15) {
+        deltaKm = theirKm - myKm;
+        const halfLap = preset.lapKm * 0.45; // ~2.25 km on 5.01 km Lightning Lap
+        if (Math.abs(deltaKm) >= halfLap) {
+          lapDelta = Math.round(deltaKm / preset.lapKm);
+          if (lapDelta === 0) lapDelta = deltaKm > 0 ? 1 : -1;
+        }
+      } else if (entry.state?.laps != null && selfEntry.state?.laps != null) {
+        lapDelta = Number(entry.state.laps) - Number(selfEntry.state.laps);
+        deltaKm = lapDelta * preset.lapKm;
+      }
+
+      const rCat = detectRiderCategory(entry);
+      const myRank = getCatSpeedRank(active100kCat);
+      const theirRank = getCatSpeedRank(rCat);
+      const isDifferentFasterCat = theirRank > 0 && myRank > 0 && theirRank > myRank;
+      const isSlowerTargetInA = active100kCat === 'A' && theirRank > 0 && theirRank < myRank;
+
+      if (lapDelta === 0) {
+        if ((isDifferentFasterCat || isSlowerTargetInA) && (activeUnifiedMode === '100M' || myKm >= preset.lapKm)) {
+          return {
+            lapDelta: 0,
+            isSameLap: true,
+            kind: 'real-pass',
+            deltaKm,
+            badgeHtml: `<span class="lap-status-tag lap-real-pass" title="REAL SAME-LAP GROUP! Total distance matches yours (${deltaKm >= 0 ? '+' : ''}${deltaKm.toFixed(1)} km)">SAME LP</span>`
+          };
+        }
+        return { lapDelta: 0, isSameLap: true, kind: 'same', deltaKm, badgeHtml: '' };
+      }
+
+      if (lapDelta >= 1) {
+        return {
+          lapDelta,
+          isSameLap: false,
+          kind: 'lapping-ahead',
+          deltaKm,
+          badgeHtml: `<span class="lap-status-tag lap-ahead-lapping" title="LAPPING YOU (+${lapDelta} Lap${lapDelta > 1 ? 's' : ''} / +${deltaKm.toFixed(1)} km ahead in event distance) — Hold your pace, do NOT chase!">+${lapDelta} LAP</span>`
+        };
+      }
+
+      if (isDifferentFasterCat) {
+        return {
+          lapDelta,
+          isSameLap: false,
+          kind: 'unlapping-behind',
+          deltaKm,
+          badgeHtml: `<span class="lap-status-tag lap-behind-unlap" title="UNLAPPING (${lapDelta} Lap${Math.abs(lapDelta) > 1 ? 's' : ''} / ${deltaKm.toFixed(1)} km behind you from staggered start) — NOT a real pass yet!">${lapDelta}L UNLAP</span>`
+        };
+      }
+
+      return {
+        lapDelta,
+        isSameLap: false,
+        kind: 'lapped-straggler',
+        deltaKm,
+        badgeHtml: `<span class="lap-status-tag lap-straggler-down" title="LAPPED RIDER (${lapDelta} Lap${Math.abs(lapDelta) > 1 ? 's' : ''} / ${deltaKm.toFixed(1)} km behind your group) — Sweeps ignore!">⤵️ ${lapDelta}L</span>`
+      };
+    }
+
+    function formatDistUnit(kmValue, decimals = 1) {
+      if (useMilesUnits) {
+        const mi = kmValue * KM_TO_MI;
+        return `${mi.toFixed(decimals)}M`;
+      }
+      return `${kmValue.toFixed(decimals)}K`;
+    }
+
+    function formatTotalTargetLabel() {
+      if (useMilesUnits) {
+        const mi = eventTotalKm * KM_TO_MI;
+        const cleanMi = Math.abs(mi - Math.round(mi)) < 0.08 ? String(Math.round(mi)) : mi.toFixed(1);
+        return `${cleanMi}M`;
+      }
+      return Number.isInteger(eventTotalKm) ? `${eventTotalKm}K` : `${eventTotalKm.toFixed(1)}K`;
+    }
+
+    // 🎯 CENTER-LOCK HORIZON STATE (Pins YOU, LDR, or any clicked 🎯 rider dead-center in the middle of the table!)
+    let centerLockMode = localStorage.getItem('zwift_unified_center_lock_mode') || 'YOU'; // 'YOU' | 'LDR' | 'CUSTOM' | 'OFF'
+    let customCenterLockRiderKey = localStorage.getItem('zwift_unified_center_lock_rkey') || '';
+    let manualScrollPauseUntilMs = 0;
+
+    // RACE MODE POWER CURVE TANKS (15s: 6.71, 1m: 4.23, 5m: 3.40, 20m: 2.98 W/kg)
+    const powerTanks = {
+      s15: { maxSec: 15, remSec: 15, trigWkg: 6.00 },
+      m1:  { maxSec: 60, remSec: 60, trigWkg: 4.00 },
+      m5:  { maxSec: 300, remSec: 300, trigWkg: 3.20 },
+      m20: { maxSec: 1200, remSec: 1200, trigWkg: 2.85 }
+    };
+    let lastPowerTankMs = performance.now();
+    let leaderFrontTargetWkg = WOW_100K_CAT_PROFILES[active100kCat].frontWkg;
+    let groupTargetKph = WOW_100K_CAT_PROFILES[active100kCat].speedKph;
     let distanceOffsetKm = 0;
     let lastRawDistKm = 0;
 
@@ -2985,8 +4143,74 @@
     let lastRenderedNearbyList = [];
     const subgroupCategoryCache = new Map(); // subgroupId -> 'A'|'B'|'C'|'D'|'E'
     let sauceRpcRef = null;
-    const STAGGER_OPTIONS_MIN = [5, 10, 15, 0]; // 0 = Live Radar Only
-    let staggerIdx = 0;
+    // Stagger Modes: 0 = Auto (Official WOW Schedule + Automatic Live Handoff for 100K & 100M/150) | 1 = Live Nearby Only (auto-selected for Race/40K)
+    const STAGGER_MODE_LABELS = ['Auto: WOW Stg + Live', 'Live Nearby Only'];
+    const savedStgModeRaw = localStorage.getItem('zwift_unified_stagger_mode_idx_v3');
+    let staggerIdx = savedStgModeRaw !== null
+      ? Number(savedStgModeRaw)
+      : ((activeUnifiedMode === 'RACE' || activeUnifiedMode === '40K') ? 1 : 0);
+    if (staggerIdx < 0 || staggerIdx >= STAGGER_MODE_LABELS.length) staggerIdx = 0;
+
+    // Radar Direction Mode: 'AUTO' (Chaser Behind for E/D/C/B; Group Ahead for A) | 'AHEAD' (Force Catching Group Ahead)
+    let radarFocusDir = localStorage.getItem('zwift_unified_radar_dir') || 'AUTO';
+    let catchAlertSnoozeUntilMs = 0;
+    let timeOffsetSecAtZero = 0;
+    let lastRawTimeSec = 0;
+
+    const DEFAULT_WOW_START_TIMES = { E: '13:30', D: '13:45', C: '13:55', B: '14:04', A: '14:11' };
+    let wowStartTimes = { ...DEFAULT_WOW_START_TIMES };
+    try {
+      const savedStg = JSON.parse(localStorage.getItem('zwift_wow_stagger_times_v1') || 'null');
+      if (savedStg && typeof savedStg === 'object') {
+        for (const k of ['E', 'D', 'C', 'B', 'A']) {
+          if (typeof savedStg[k] === 'string' && /^\d{1,2}[:.]\d{2}$/.test(savedStg[k].trim())) {
+            wowStartTimes[k] = savedStg[k].trim().replace('.', ':');
+          }
+        }
+      }
+    } catch (e) {}
+
+    function parseHhMmToMinutes(str, fallbackMin) {
+      if (!str) return fallbackMin;
+      const clean = String(str).trim().replace('.', ':');
+      const m = clean.match(/^(\d{1,2}):(\d{2})$/);
+      if (!m) return fallbackMin;
+      return (Number(m[1]) * 60) + Number(m[2]);
+    }
+
+    function getStaggerOffsetMinutes(catLetter) {
+      const baseEMin = parseHhMmToMinutes(wowStartTimes.E, 13 * 60 + 30);
+      const defaults = { E: 810, D: 825, C: 835, B: 844, A: 851 };
+      const catMin = parseHhMmToMinutes(wowStartTimes[catLetter], defaults[catLetter] ?? baseEMin);
+      return catMin - baseEMin;
+    }
+
+    // Persistent Live Category Telemetry Cache: remembers exact eventDistance & speed whenever a category passes through nearby!
+    const catGroupMemory = new Map(); // cat -> { eventDistKm, speedKph, seenAtMs, isBeacon, riderCount }
+
+    function formatShortCatchDist(distKm) {
+      const absKm = Math.max(0, Math.abs(Number(distKm) || 0));
+      if (useMilesUnits) {
+        const mi = absKm * KM_TO_MI;
+        if (mi < 0.35) {
+          const yds = Math.round(mi * 1760);
+          return `${yds}yd`;
+        }
+        return `${mi.toFixed(2)}mi`;
+      }
+      if (absKm < 1.0) {
+        return `${Math.round(absKm * 1000)}m`;
+      }
+      return `${absKm.toFixed(2)}km`;
+    }
+
+    function formatCatchDuration(secVal) {
+      const s = Math.max(1, Math.round(Number(secVal) || 0));
+      if (s < 60) return `${s}s`;
+      const totalMin = Math.floor(s / 60);
+      const remSec = s % 60;
+      return `${totalMin}m ${remSec < 10 ? '0' : ''}${remSec}s`;
+    }
 
     const ftp5mCard = document.getElementById('ftp5mCard');
     const ftp5mFill = document.getElementById('ftp5mFill');
@@ -3067,6 +4291,9 @@
         localStorage.setItem('zwift_100k_leader_name_filter', '');
         savePinnedLeaders();
 
+        realPassStamps.clear();
+        realPassClearedAtMs.clear();
+        catGroupMemory.clear();
         pinnedSweeps.clear();
         unpinnedAutoSweeps.clear();
         customSweepNameFilter = '';
@@ -3077,17 +4304,107 @@
       });
     }
 
+    const bcDirBtn = document.getElementById('bcDirBtn');
+    const leaderCatchAlertBar = document.getElementById('leaderCatchAlertBar');
+    const leaderCatchAlertText = document.getElementById('leaderCatchAlertText');
+    const leaderCatchAheadSub = document.getElementById('leaderCatchAheadSub');
+    const dismissCatchAlertBtn = document.getElementById('dismissCatchAlertBtn');
+
+    function syncStaggerButtonsAndInputsUI() {
+      if (bcStaggerBtn) {
+        bcStaggerBtn.textContent = STAGGER_MODE_LABELS[staggerIdx] || 'Auto: WOW Stg + Live';
+        bcStaggerBtn.style.background = staggerIdx === 0 ? 'rgba(34, 197, 94, 0.42)' : 'rgba(56, 189, 248, 0.28)';
+        bcStaggerBtn.style.borderColor = staggerIdx === 0 ? '#4ade80' : '#38bdf8';
+      }
+      if (bcDirBtn) {
+        const effDir = active100kCat === 'A' ? 'AHEAD' : (active100kCat === 'E' ? 'BEHIND' : (radarFocusDir === 'AHEAD' ? 'AHEAD' : 'BEHIND'));
+        bcDirBtn.textContent = effDir === 'AHEAD' ? 'Focus: ⇄ Ahead' : 'Focus: ⇄ Behind';
+        bcDirBtn.style.color = effDir === 'AHEAD' ? '#fde047' : '#e0f2fe';
+        bcDirBtn.style.borderColor = effDir === 'AHEAD' ? '#facc15' : 'rgba(255, 255, 255, 0.35)';
+      }
+      for (const c of ['E', 'D', 'C', 'B', 'A']) {
+        const inp = document.getElementById(`stgInput${c}`);
+        if (inp) inp.value = wowStartTimes[c];
+      }
+    }
+
     if (bcStaggerBtn) {
       bcStaggerBtn.addEventListener('click', () => {
-        staggerIdx = (staggerIdx + 1) % STAGGER_OPTIONS_MIN.length;
-        const m = STAGGER_OPTIONS_MIN[staggerIdx];
-        bcStaggerBtn.textContent = m > 0 ? `Stg ${m}m` : 'Live Only';
+        staggerIdx = (staggerIdx + 1) % STAGGER_MODE_LABELS.length;
+        localStorage.setItem('zwift_unified_stagger_mode_idx_v3', String(staggerIdx));
+        syncStaggerButtonsAndInputsUI();
         if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
       });
     }
 
+    if (bcDirBtn) {
+      bcDirBtn.addEventListener('click', () => {
+        radarFocusDir = radarFocusDir === 'AHEAD' ? 'AUTO' : 'AHEAD';
+        localStorage.setItem('zwift_unified_radar_dir', radarFocusDir);
+        syncStaggerButtonsAndInputsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    if (dismissCatchAlertBtn) {
+      dismissCatchAlertBtn.addEventListener('click', () => {
+        catchAlertSnoozeUntilMs = performance.now() + 120000;
+        if (leaderCatchAlertBar) leaderCatchAlertBar.classList.remove('visible');
+      });
+    }
+
+    for (const c of ['E', 'D', 'C', 'B', 'A']) {
+      const inp = document.getElementById(`stgInput${c}`);
+      if (inp) {
+        inp.addEventListener('change', (e) => {
+          const val = String(e.target.value || '').trim().replace('.', ':');
+          if (/^\d{1,2}:\d{2}$/.test(val)) {
+            wowStartTimes[c] = val;
+            localStorage.setItem('zwift_wow_stagger_times_v1', JSON.stringify(wowStartTimes));
+            if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+          } else {
+            e.target.value = wowStartTimes[c];
+          }
+        });
+      }
+    }
+
+    const resetStgScheduleBtn = document.getElementById('resetStgScheduleBtn');
+    if (resetStgScheduleBtn) {
+      resetStgScheduleBtn.addEventListener('click', () => {
+        wowStartTimes = { ...DEFAULT_WOW_START_TIMES };
+        localStorage.setItem('zwift_wow_stagger_times_v1', JSON.stringify(wowStartTimes));
+        syncStaggerButtonsAndInputsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+    syncStaggerButtonsAndInputsUI();
+
     // Use mousedown instead of click so 1-second table re-renders never swallow your click!
     tbody.addEventListener('mousedown', (e) => {
+      const midBtn = e.target.closest('.mid-pin-btn');
+      if (midBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const rKey = midBtn.dataset.rkey;
+        const isSelfRow = midBtn.dataset.isself === '1';
+        manualScrollPauseUntilMs = 0;
+        if (isSelfRow) {
+          centerLockMode = (centerLockMode === 'YOU') ? 'OFF' : 'YOU';
+        } else if (centerLockMode === 'CUSTOM' && customCenterLockRiderKey === rKey) {
+          centerLockMode = 'YOU';
+          customCenterLockRiderKey = '';
+        } else {
+          centerLockMode = 'CUSTOM';
+          customCenterLockRiderKey = rKey;
+        }
+        localStorage.setItem('zwift_unified_center_lock_mode', centerLockMode);
+        localStorage.setItem('zwift_unified_center_lock_rkey', customCenterLockRiderKey);
+        updateCenterLockButtonsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+        return;
+      }
+
       const ldrBtn = e.target.closest('.ldr-pin-btn');
       if (ldrBtn) {
         e.preventDefault();
@@ -3137,10 +4454,14 @@
       if (sauceRpcRef && typeof sauceRpcRef.getEventSubgroup === 'function') {
         try {
           const sg = await sauceRpcRef.getEventSubgroup(subgroupId);
-          if (sg && sg.subgroupLabel) {
-            const label = String(sg.subgroupLabel).trim().toUpperCase();
-            subgroupCategoryCache.set(subgroupId, label);
-            return label;
+          if (sg && (sg.subgroupLabel || sg.name)) {
+            const rawLbl = String(sg.subgroupLabel || sg.name).trim().toUpperCase();
+            const mCat = rawLbl.match(/\b([A-E])\b/);
+            const cleanLbl = mCat ? mCat[1] : (['A', 'B', 'C', 'D', 'E'].includes(rawLbl) ? rawLbl : null);
+            if (cleanLbl) {
+              subgroupCategoryCache.set(subgroupId, cleanLbl);
+              return cleanLbl;
+            }
           }
         } catch (e) {}
       }
@@ -3164,7 +4485,7 @@
       return null;
     }
 
-    // Detects Official Zwift Yellow Beacon Leader (entry.eventLeader) & Co-Leaders
+    // Detects Official Zwift Yellow Beacon Leader & Co-Leaders for OUR active category (so passing C/B beacons don't hijack D's LDR card in 800-rider events!)
     function isEntryLeader(entry, riderKey) {
       if (!entry) return { isLeader: false, mode: '', isOfficialBeacon: false };
       const isOfficialBeacon = Boolean(
@@ -3176,12 +4497,17 @@
       if (unpinnedAutoLeaders.has(riderKey)) {
         return { isLeader: false, mode: '', isOfficialBeacon };
       }
-      if (isOfficialBeacon) {
-        return { isLeader: true, mode: 'ZWIFT BEACON', isOfficialBeacon: true };
-      }
       const name = String(entry.athlete?.sanitizedFullname || entry.athlete?.fullname || '');
       if (customLeaderNameFilter.length >= 2 && name.toLowerCase().includes(customLeaderNameFilter.toLowerCase())) {
         return { isLeader: true, mode: 'CO-LDR NAME', isOfficialBeacon: false };
+      }
+      const rCat = detectRiderCategory(entry);
+      const isSameMyCat = Boolean(entry.watching) || !rCat || rCat === active100kCat;
+      if (!isSameMyCat) {
+        return { isLeader: false, mode: '', isOfficialBeacon };
+      }
+      if (isOfficialBeacon) {
+        return { isLeader: true, mode: 'ZWIFT BEACON', isOfficialBeacon: true };
       }
       if (/\b(co-leader|coleader|leader|ldr)\b/i.test(name)) {
         return { isLeader: true, mode: 'CO-LDR TAG', isOfficialBeacon: false };
@@ -3189,15 +4515,19 @@
       return { isLeader: false, mode: '', isOfficialBeacon: false };
     }
 
+    // Detects Sweeps for OUR active category (so passing C/B Red Sweeps don't hijack D's SWP radar in 800-rider events!)
     function isEntrySweep(entry, riderKey) {
       if (pinnedSweeps.has(riderKey)) return { isSweep: true, mode: 'PINNED' };
       if (unpinnedAutoSweeps.has(riderKey)) return { isSweep: false, mode: '' };
-      if (entry.eventSweeper || entry.state?.eventSweeper || entry.athlete?.eventSweeper) {
-        return { isSweep: true, mode: 'ZWIFT BEACON' };
-      }
       const name = String(entry.athlete?.sanitizedFullname || entry.athlete?.fullname || '');
       if (customSweepNameFilter.length >= 2 && name.toLowerCase().includes(customSweepNameFilter.toLowerCase())) {
         return { isSweep: true, mode: 'NAME MATCH' };
+      }
+      const rCat = detectRiderCategory(entry);
+      const isSameMyCat = Boolean(entry.watching) || !rCat || rCat === active100kCat;
+      if (!isSameMyCat) return { isSweep: false, mode: '' };
+      if (entry.eventSweeper || entry.state?.eventSweeper || entry.athlete?.eventSweeper) {
+        return { isSweep: true, mode: 'ZWIFT BEACON' };
       }
       if (/\b(sweep|swp)\b/i.test(name)) return { isSweep: true, mode: 'TAG' };
       return { isSweep: false, mode: '' };
@@ -3223,10 +4553,27 @@
 
     ftp5mMinus.addEventListener('click', () => setFtp5mTarget(whole100kTargetWkg - 0.05));
     ftp5mPlus.addEventListener('click', () => setFtp5mTarget(whole100kTargetWkg + 0.05));
-    ftp5mResetBtn.addEventListener('click', () => {
+    // v21.7 Automatic Start-Pen Roll-Out Reset State (auto-resets Avg W/kg at 0.05 mi / 0.08 km out of the pen)
+    let sawPenOrPreStart = false;
+    let autoStartResetDone = false;
+    let autoStartBadgeUntilMs = 0;
+
+    function resetRideAvgWkgCounter(nowMs = performance.now(), showAutoBadge = false) {
       whole100kWkgWeightedSum = 0;
       whole100kSampleSeconds = 0;
-      ftp5mLastMs = performance.now();
+      ftp5mLastMs = nowMs;
+      if (showAutoBadge) {
+        autoStartBadgeUntilMs = nowMs + 10000;
+      }
+    }
+
+    ftp5mResetBtn.addEventListener('click', () => {
+      autoStartBadgeUntilMs = 0;
+      resetRideAvgWkgCounter(performance.now(), false);
+      ftp5mResetBtn.textContent = 'Rst';
+      ftp5mResetBtn.style.background = '';
+      ftp5mResetBtn.style.borderColor = '';
+      ftp5mResetBtn.style.color = '';
     });
 
     ttt1mMinus.addEventListener('click', () => setTtt1mTarget(leaderFrontTargetWkg - 0.05));
@@ -3236,8 +4583,13 @@
 
     ttt1mToggleBtn.addEventListener('click', () => {
       distanceOffsetKm = lastRawDistKm;
-      if (event100kTitle) event100kTitle.textContent = '100K';
-      ttt1mToggleBtn.textContent = '100K';
+      timeOffsetSecAtZero = lastRawTimeSec;
+      catGroupMemory.clear();
+      realPassStamps.clear();
+      realPassClearedAtMs.clear();
+      const totLbl = formatTotalTargetLabel();
+      if (event100kTitle) event100kTitle.textContent = totLbl;
+      ttt1mToggleBtn.textContent = totLbl;
     });
 
     function updatePersonalPowerGauges(selfWkg, nowMs, metrics100k = {}) {
@@ -3245,20 +4597,64 @@
       ftp5mLastMs = nowMs;
 
       const curWkg = (selfWkg != null && !Number.isNaN(selfWkg)) ? Number(selfWkg) : 0;
+      const rawDistKm = metrics100k.distanceKm ?? 0;
+      const selfSpdKph = Number(metrics100k.selfSpeedKph ?? metrics100k.groupSpeedKph ?? 0);
 
-      // 1. Update Top-Left Banner: Whole-100K Event W/kg Target & Session Average Pacer
-      if (curWkg > 0.3 && dt > 0) {
+      // Detect entering an official Zwift Event pen from a Free-Ride warmup (distance drops back to 0.0)
+      if (!demoMode && lastRawDistKm > 0.30 && rawDistKm < 0.08) {
+        distanceOffsetKm = 0;
+        timeOffsetSecAtZero = 0;
+        sawPenOrPreStart = true;
+        autoStartResetDone = false;
+        realPassStamps.clear();
+        realPassClearedAtMs.clear();
+        catGroupMemory.clear();
+        resetRideAvgWkgCounter(nowMs, false);
+      }
+
+      const eventKm = Math.max(0, rawDistKm - distanceOffsetKm);
+
+      // Arm pen-exit auto-reset whenever rider is seen in the pen / first 0.05 mi (< 0.08 km)
+      if (!demoMode && eventKm < 0.08) {
+        sawPenOrPreStart = true;
+      }
+
+      // Trigger Automatic Ride-Average W/kg Reset as rider rolls across 0.05 mi (0.08 km / 80m) out of the pen!
+      if (!demoMode && sawPenOrPreStart && !autoStartResetDone && eventKm >= 0.08) {
+        autoStartResetDone = true;
+        realPassStamps.clear();
+        realPassClearedAtMs.clear();
+        catGroupMemory.clear();
+        resetRideAvgWkgCounter(nowMs, true);
+      }
+
+      // Show subtle green "Auto✓" confirmation on Rst button for 10s after crossing 0.05 mi
+      if (ftp5mResetBtn) {
+        if (!demoMode && nowMs < autoStartBadgeUntilMs) {
+          ftp5mResetBtn.textContent = 'Auto✓';
+          ftp5mResetBtn.style.background = '#15803d';
+          ftp5mResetBtn.style.borderColor = '#86efac';
+          ftp5mResetBtn.style.color = '#ffffff';
+        } else if (ftp5mResetBtn.textContent !== 'Rst') {
+          ftp5mResetBtn.textContent = 'Rst';
+          ftp5mResetBtn.style.background = '';
+          ftp5mResetBtn.style.borderColor = '';
+          ftp5mResetBtn.style.color = '';
+        }
+      }
+
+      // 1. Update Top-Left Banner: Whole-Event W/kg Target & Session Average Pacer
+      // Ignore stationary pen spinning (< 0.02 km & speed < 2 kph) so waiting in pen stays clean
+      const isStationaryInPen = !demoMode && eventKm < 0.02 && selfSpdKph < 2.0;
+      if (!isStationaryInPen && curWkg > 0.3 && dt > 0) {
         whole100kWkgWeightedSum += (curWkg * dt);
         whole100kSampleSeconds += dt;
       }
       const avg100kWkg = whole100kSampleSeconds > 0
         ? (whole100kWkgWeightedSum / whole100kSampleSeconds)
         : curWkg;
-
-      const rawDistKm = metrics100k.distanceKm ?? 0;
-      const eventKm = Math.max(0, rawDistKm - distanceOffsetKm);
       const pct100k = eventKm > 0.1
-        ? Math.max(12, Math.min(100, Math.round((eventKm / EVENT_TOTAL_KM) * 100)))
+        ? Math.max(12, Math.min(100, Math.round((eventKm / eventTotalKm) * 100)))
         : 100;
 
       ftp5mFill.style.width = `${pct100k}%`;
@@ -3279,16 +4675,17 @@
         ftp5mStatus.textContent = `AVG HIGH (${curWkg.toFixed(2)})`;
         ftp5mStatus.style.background = '#78350f';
         ftp5mStatus.style.color = '#fde047';
-      } else if (curWkg > 0 && diff100kLive < -0.35) {
+      } else if (curWkg > 0 && curWkg < (whole100kMinWkg - 0.10)) {
         ftp5mCard.className = 'tactical-card state-ttt-under';
         ftp5mFill.style.background = 'linear-gradient(90deg, rgba(56, 189, 248, 0.45), rgba(37, 99, 235, 0.72))';
-        ftp5mStatus.textContent = `LOW ${curWkg.toFixed(2)}w/kg`;
+        ftp5mStatus.textContent = `LOW ${curWkg.toFixed(2)} (<${whole100kMinWkg.toFixed(1)})`;
         ftp5mStatus.style.background = '#1e3a8a';
         ftp5mStatus.style.color = '#bae6fd';
       } else {
+        const cProf = WOW_100K_CAT_PROFILES[active100kCat] || WOW_100K_CAT_PROFILES.D;
         ftp5mCard.className = 'tactical-card state-ttt-good';
         ftp5mFill.style.background = 'linear-gradient(90deg, rgba(34, 197, 94, 0.55), rgba(16, 185, 129, 0.82))';
-        ftp5mStatus.textContent = curWkg > 0 ? `100K OK (${curWkg.toFixed(2)})` : `100K <=${whole100kTargetWkg.toFixed(2)}`;
+        ftp5mStatus.textContent = curWkg > 0 ? `${active100kCat} ${cProf.rangeText} OK (${curWkg.toFixed(2)})` : `CAT ${active100kCat} ${cProf.rangeText}`;
         ftp5mStatus.style.background = '#14532d';
         ftp5mStatus.style.color = '#bbf7d0';
       }
@@ -3300,11 +4697,39 @@
       lastRawDistKm = rawDistKm;
 
       ttt1mFill.style.width = `${pct100k}%`;
-      if (event100kTitle) {
-        event100kTitle.textContent = eventKm > 0.1 ? `${eventKm.toFixed(1)}/100K` : '100K';
+      const totLbl = formatTotalTargetLabel();
+      const cirPreset = CIRCUIT_LAP_PRESETS[circuitPresetIdx] || CIRCUIT_LAP_PRESETS[0];
+      let lapInfoSuffix = '';
+      if (cirPreset.lapKm > 0 && eventKm > 0.1) {
+        const totLaps = Math.max(1, Math.ceil(Math.max(1, eventTotalKm - cirPreset.leadInKm) / cirPreset.lapKm));
+        const curLap = eventKm <= cirPreset.leadInKm
+          ? 0
+          : Math.min(totLaps, Math.floor((eventKm - cirPreset.leadInKm) / cirPreset.lapKm) + 1);
+        if (activeUnifiedMode === '100M' || eventTotalKm >= 145) {
+          lapInfoSuffix = curLap === 0 ? ' (Lead)' : ` • LP ${curLap}/${totLaps}`;
+        }
       }
-      ttt1mToggleBtn.textContent = eventKm > 0.1 ? `${Math.max(0, Math.round(EVENT_TOTAL_KM - eventKm))}K left` : '100K';
-      ttt1mTimer.textContent = groupKph > 0 ? `${groupKph.toFixed(1)}kph` : `${groupTargetKph}.0kph`;
+
+      if (event100kTitle) {
+        const curDisp = useMilesUnits ? (eventKm * KM_TO_MI).toFixed(1) : eventKm.toFixed(1);
+        event100kTitle.textContent = eventKm > 0.1 ? `${curDisp}/${totLbl}${lapInfoSuffix}` : `${totLbl}`;
+      }
+      const remKm = Math.max(0, eventTotalKm - eventKm);
+      const coffeeLockTag = (eventTotalKm >= 95 && remKm > 0.05 && remKm <= 5.0) ? ' ☕LOCK!' : '';
+      if (eventKm > 0.1) {
+        const remDisp = useMilesUnits ? `${(remKm * KM_TO_MI).toFixed(1)}M` : `${remKm.toFixed(1)}K`;
+        ttt1mToggleBtn.textContent = `${remDisp} left${coffeeLockTag}`;
+      } else {
+        ttt1mToggleBtn.textContent = totLbl;
+      }
+      if (useMilesUnits) {
+        const liveMph = (groupKph > 0 ? groupKph : groupTargetKph) * KM_TO_MI;
+        ttt1mTimer.textContent = `${liveMph.toFixed(1)}mph`;
+        if (kphTargetText) kphTargetText.textContent = `${(groupTargetKph * KM_TO_MI).toFixed(1)}mph`;
+      } else {
+        ttt1mTimer.textContent = groupKph > 0 ? `${groupKph.toFixed(1)}kph` : `${groupTargetKph}.0kph`;
+        if (kphTargetText) kphTargetText.textContent = `${groupTargetKph}kph`;
+      }
 
       const wkgDiffSelf = curWkg - leaderFrontTargetWkg;
       const wkgDiffFront = frontWkg - leaderFrontTargetWkg;
@@ -3641,14 +5066,15 @@
           const myName = detectedSelfAthlete.name || selfEntry?.athlete?.sanitizedFullname || 'YOU (Main)';
           const shortMyName = myName.length > 13 ? myName.slice(0, 12) + '…' : myName;
           leaderRadarName.textContent = shortMyName;
-          leaderRadarGap.textContent = `${selfWkg > 0 ? selfWkg.toFixed(2) : '2.00'}w/kg`;
+          leaderRadarGap.textContent = `${selfWkg > 0 ? selfWkg.toFixed(2) : leaderFrontTargetWkg.toFixed(2)}w/kg`;
           leaderRadarRole.textContent = selfLdrInfo.isOfficialBeacon ? '🟡 BEACON ON' : '👑 MAIN LDR';
           leaderRadarRole.style.color = '#facc15';
         }
       }
 
-      // 1. SWEEP TRACKER (Middle Radar Card)
+      // 1. SWEEP TRACKER (Middle Radar Card) — Automatically ignores Lapped Stragglers (-1L) on multi-lap circuits!
       const behindRiders = sorted.filter(r => !r.watching && (r.gap ?? 0) > 0);
+      const sameLapBehindRiders = behindRiders.filter(r => evaluateRiderLapStatus(r, selfEntry).lapDelta === 0);
       const taggedSweeps = sorted.filter(r => {
         if (r.watching) return false;
         const rKey = String(r.athleteId ?? (r.athlete?.sanitizedFullname || ''));
@@ -3659,13 +5085,11 @@
       let sweepModeLabel = '';
 
       if (taggedSweeps.length > 0) {
-        // Pick the tagged sweep furthest behind (or actively sweeping behind the leader)
         primarySweep = taggedSweeps[taggedSweeps.length - 1];
         sweepModeLabel = pinnedSweeps.size > 0 ? 'PIN' : 'BCN';
-      } else if (behindRiders.length > 0) {
-        // Auto Tail-Sweep Detection: pick rider at the back of the D blob (+2.0s to +45.0s behind)
-        const tailCandidates = behindRiders.filter(r => (r.gap ?? 0) >= 1.5 && (r.gap ?? 0) <= 55.0);
-        primarySweep = tailCandidates.length > 0 ? tailCandidates[tailCandidates.length - 1] : behindRiders[behindRiders.length - 1];
+      } else if (sameLapBehindRiders.length > 0) {
+        const tailCandidates = sameLapBehindRiders.filter(r => (r.gap ?? 0) >= 1.5 && (r.gap ?? 0) <= 55.0);
+        primarySweep = tailCandidates.length > 0 ? tailCandidates[tailCandidates.length - 1] : sameLapBehindRiders[sameLapBehindRiders.length - 1];
         sweepModeLabel = 'AUTO';
       }
 
@@ -3681,7 +5105,7 @@
         const sTrend = evaluateRiderGapTrend(sKey, sGap, false, nowMs);
 
         // Count how many riders are within ±3.5s of the sweep (riders being paced back!)
-        const ridersWithSweep = behindRiders.filter(r => r !== primarySweep && Math.abs((r.gap ?? 0) - sGap) <= 3.5).length;
+        const ridersWithSweep = sameLapBehindRiders.filter(r => r !== primarySweep && Math.abs((r.gap ?? 0) - sGap) <= 3.5).length;
         const assistSuffix = ridersWithSweep > 0 ? ` (+${ridersWithSweep})` : '';
 
         sweepRadarName.textContent = `${shortName}${assistSuffix}`;
@@ -3708,7 +5132,7 @@
           sweepRadarAction.style.color = '#fde047';
         } else {
           sweepRadarCard.className = 'radar-card radar-ok';
-          sweepRadarAction.textContent = 'HOLD 2.0';
+          sweepRadarAction.textContent = `HOLD ${leaderFrontTargetWkg.toFixed(1)}`;
           sweepRadarAction.style.color = '#4ade80';
         }
       } else if (sweepRadarCard) {
@@ -3719,81 +5143,695 @@
         sweepRadarAction.style.color = '#4ade80';
       }
 
-      // 2. CHASING CAT B & CAT C GROUPS RADAR (Right Radar Card)
+      // 2. v21.7 INSTANT FENCE-CONTROLLED CHASER RADAR (C & B ALWAYS VISIBLE) + 🚧 FENCE-OFF ALERT
       if (!bcRadarCard) return;
+      const catProf = WOW_100K_CAT_PROFILES[active100kCat] || WOW_100K_CAT_PROFILES.D;
+      const mySpeedEff = (myGroupKph && myGroupKph > 12) ? myGroupKph : groupTargetKph;
 
-      const catBRidersBehind = behindRiders.filter(r => detectRiderCategory(r) === 'B');
-      const catCRidersBehind = behindRiders.filter(r => detectRiderCategory(r) === 'C');
+      // Track elapsed seconds since our pen started
+      const rawTimeSec = Number(selfEntry?.state?.eventTime ?? selfEntry?.state?.time ?? 0);
+      lastRawTimeSec = rawTimeSec;
+      let myElapsedSec = rawTimeSec > timeOffsetSecAtZero ? (rawTimeSec - timeOffsetSecAtZero) : 0;
+      if (myElapsedSec <= 5 && eventKm > 0.15) {
+        myElapsedSec = Math.round((eventKm / Math.max(20, mySpeedEff)) * 3600);
+      }
 
-      // Also detect any unlabelled high-speed chasing blob (> 4.5s behind moving >= 2.0 kph faster than D group)
-      const fastChasers = behindRiders.filter(r => (r.gap ?? 0) > 4.5 && Number(r.state?.speed || 0) >= Math.max(38.8, (myGroupKph || 37) + 1.8));
+      // v21.7 Fence-Controlled Instant Group Lock (No Breakaways):
+      // Since all WOW groups (A–E) ride behind an active Fence, there are no solo breakaways.
+      // Locks immediately onto the very first Cat C / B / A rider or Official Yellow Beacon entering nearby!
+      for (const cKey of ['A', 'B', 'C', 'D', 'E']) {
+        if (cKey === active100kCat) continue;
+        const cRiders = sorted.filter(r => !r.watching && detectRiderCategory(r) === cKey);
+        if (cRiders.length === 0) continue;
 
-      if (catCRidersBehind.length > 0 || catBRidersBehind.length > 0) {
-        const parts = [];
-        let minGapSec = 9999;
-        let fastestKph = 0;
+        const beaconRider = cRiders.find(r => r.eventLeader || r.state?.eventLeader || r.athlete?.eventLeader);
+        const sameLapMoving = cRiders.filter(r =>
+          (r.state?.speed == null || Number(r.state.speed) >= 18.0) &&
+          evaluateRiderLapStatus(r, selfEntry).lapDelta === 0
+        );
+        const anyMoving = cRiders.filter(r => r.state?.speed == null || Number(r.state.speed) >= 18.0);
 
-        if (catCRidersBehind.length > 0) {
-          const cFront = catCRidersBehind[0];
-          const cGap = Number(cFront.gap ?? 0);
-          const cSpeed = Number(cFront.state?.speed || 39.5);
-          if (cGap < minGapSec) minGapSec = cGap;
-          if (cSpeed > fastestKph) fastestKph = cSpeed;
-          parts.push(`C: ${formatGapMinSec(cGap)} ▲ (${cSpeed.toFixed(0)}kph)`);
+        const isFenceGroupVisible = Boolean(beaconRider) || sameLapMoving.length >= 1 || anyMoving.length >= 1 || demoMode;
+        if (!isFenceGroupVisible) continue;
+
+        const refPool = beaconRider ? [beaconRider] : (sameLapMoving.length > 0 ? sameLapMoving : (anyMoving.length > 0 ? anyMoving : cRiders));
+        const repRider = beaconRider || refPool[0];
+        const repDistKm = Math.max(0, getRiderEventDistKm(repRider) - distanceOffsetKm);
+        const avgSpd = refPool.reduce((acc, r) => acc + Number(r.state?.speed || WOW_100K_CAT_PROFILES[cKey].speedKph), 0) / refPool.length;
+        const prevMem = catGroupMemory.get(cKey);
+        const smoothedSpd = prevMem ? ((prevMem.speedKph * 0.45) + (avgSpd * 0.55)) : avgSpd;
+
+        if (repDistKm > 0.05) {
+          catGroupMemory.set(cKey, {
+            eventDistKm: repDistKm,
+            speedKph: smoothedSpd,
+            seenAtMs: nowMs,
+            isBeacon: Boolean(beaconRider),
+            riderCount: cRiders.length,
+            roadGapSec: Number(repRider.gap ?? 0),
+            lapInfo: evaluateRiderLapStatus(repRider, selfEntry)
+          });
         }
-        if (catBRidersBehind.length > 0) {
-          const bFront = catBRidersBehind[0];
-          const bGap = Number(bFront.gap ?? 0);
-          const bSpeed = Number(bFront.state?.speed || 42.0);
-          if (bGap < minGapSec) minGapSec = bGap;
-          if (bSpeed > fastestKph) fastestKph = bSpeed;
-          parts.push(`B: ${formatGapMinSec(bGap)} ▲ (${bSpeed.toFixed(0)}kph)`);
+      }
+
+      // Detect Active Real Pass-Through (`+18s` behind to `-28s` ahead on SAME LAP) & Clean Pass Completion (`<= -28s` ahead)
+      // Locks immediately onto the first same-lap Cat C / B / A rider or Yellow Beacon (zero >=3 cluster delay)
+      const fasterCatsForMe = catProf.chasers || [];
+      let activePassingCatNow = null;
+      let activePassingGapSec = 0;
+
+      for (const fCat of fasterCatsForMe) {
+        const sameLapCatRiders = sorted.filter(r =>
+          !r.watching &&
+          detectRiderCategory(r) === fCat &&
+          (Boolean(r.eventLeader || r.state?.eventLeader || r.athlete?.eventLeader) || r.state?.speed == null || Number(r.state.speed) >= 18.0) &&
+          evaluateRiderLapStatus(r, selfEntry).lapDelta === 0
+        );
+        if (sameLapCatRiders.length === 0) continue;
+
+        const fBeacon = sameLapCatRiders.find(r => r.eventLeader || r.state?.eventLeader || r.athlete?.eventLeader);
+        const frontCatRider = sameLapCatRiders[0];
+        const refR = fBeacon || frontCatRider;
+        const passTriggerGap = fBeacon
+          ? Math.min(Number(fBeacon.gap ?? 0), Number(frontCatRider.gap ?? 0))
+          : Number(frontCatRider.gap ?? 0);
+        const clearRefGap = Number(refR.gap ?? 0);
+
+        // Currently flowing past our group (+18s behind to -28s ahead on same lap)
+        if (passTriggerGap <= 18.0 && clearRefGap > -28.0 && !realPassStamps.has(fCat)) {
+          if (!activePassingCatNow) {
+            activePassingCatNow = fCat;
+            activePassingGapSec = passTriggerGap;
+          }
         }
 
-        bcRadarDetail.textContent = parts.join(' | ');
+        // Group beacon / front rider has cleared >= 28s ahead on same lap -> Stamp Real Pass Complete!
+        if (clearRefGap <= -28.0 && eventKm > 2.5 && !realPassStamps.has(fCat)) {
+          realPassStamps.set(fCat, formatDistUnit(eventKm, 1));
+          realPassClearedAtMs.set(fCat, nowMs);
+        }
+      }
 
-        if (minGapSec <= 25) {
-          bcRadarCard.className = 'radar-card radar-danger';
-          bcRadarStatus.textContent = 'PASSING NOW!';
-          bcRadarStatus.style.color = '#fef2f2';
-        } else if (minGapSec <= 75) {
-          bcRadarCard.className = 'radar-card radar-warn';
-          bcRadarStatus.textContent = `CATCH <1m`;
-          bcRadarStatus.style.color = '#fde047';
+      const stampSummary = realPassStamps.size > 0
+        ? [...realPassStamps.entries()].map(([c, d]) => `✓${c}@${d}`).join(' ')
+        : '';
+
+      // Helper: Estimate current position, distance delta, & time-to-catch for any other category `otherCat`
+      const evaluateOtherCategoryCatch = (otherCat, isChaserBehind) => {
+        const oProf = WOW_100K_CAT_PROFILES[otherCat];
+        if (!oProf) return null;
+        const mem = catGroupMemory.get(otherCat);
+        const memAgeSec = mem ? ((nowMs - mem.seenAtMs) / 1000) : 999999;
+
+        let otherDistKm = null;
+        let otherSpeedKph = oProf.speedKph;
+        let sourceTag = 'STG';
+        let inPenWaitSec = 0;
+        let liveRoadGapSec = null;
+        let liveLapDelta = 0;
+
+        if (mem && memAgeSec <= 900) {
+          otherSpeedKph = mem.speedKph;
+          otherDistKm = mem.eventDistKm + (otherSpeedKph * (memAgeSec / 3600));
+          sourceTag = memAgeSec <= 8 ? 'LIVE' : 'LOCK';
+          if (memAgeSec <= 5) {
+            liveRoadGapSec = mem.roadGapSec;
+            liveLapDelta = mem.lapInfo ? mem.lapInfo.lapDelta : 0;
+          }
+        } else if (staggerIdx === 0) {
+          const myOffMin = getStaggerOffsetMinutes(active100kCat);
+          const otherOffMin = getStaggerOffsetMinutes(otherCat);
+          const staggerDiffSec = (otherOffMin - myOffMin) * 60;
+          const otherElapsedSec = myElapsedSec - staggerDiffSec;
+          if (otherElapsedSec <= 0) {
+            inPenWaitSec = Math.abs(otherElapsedSec);
+            otherDistKm = 0;
+          } else {
+            otherDistKm = (otherElapsedSec / 3600) * oProf.speedKph;
+          }
+          sourceTag = 'STG';
         } else {
-          const dSpeed = Math.max(1.2, fastestKph - (myGroupKph || 37));
-          const catchMin = Math.max(1, Math.round((minGapSec / 3600) * (fastestKph / dSpeed) * 60));
-          bcRadarCard.className = 'radar-card radar-info';
-          bcRadarStatus.textContent = `ETA ~${catchMin}m`;
-          bcRadarStatus.style.color = '#38bdf8';
+          return null;
         }
-      } else if (fastChasers.length >= 2) {
-        const frontChaser = fastChasers[0];
-        const chGap = Number(frontChaser.gap ?? 0);
-        const chSpeed = Number(frontChaser.state?.speed || 40.0);
-        bcRadarDetail.textContent = `Fast Blob (${fastChasers.length}): ${formatGapMinSec(chGap)} ▲`;
-        if (chGap <= 25) {
-          bcRadarCard.className = 'radar-card radar-warn';
-          bcRadarStatus.textContent = `PASSING (${chSpeed.toFixed(0)}kph)`;
-          bcRadarStatus.style.color = '#fde047';
+
+        if (isChaserBehind) {
+          if (realPassStamps.has(otherCat)) {
+            return {
+              cat: otherCat,
+              alreadyPassed: true,
+              passedAtText: realPassStamps.get(otherCat),
+              sourceTag
+            };
+          }
+          if (otherCat === activePassingCatNow) {
+            return {
+              cat: otherCat,
+              isPassingNow: true,
+              inPen: false,
+              alreadyPassed: false,
+              distKm: 0,
+              catchSec: 0,
+              liveRoadGapSec: activePassingGapSec,
+              speedKph: otherSpeedKph,
+              sourceTag: 'LIVE'
+            };
+          }
+          if (inPenWaitSec > 0) {
+            const distAtLaunchKm = eventKm + (mySpeedEff * (inPenWaitSec / 3600));
+            const dvNom = Math.max(1.2, oProf.speedKph - mySpeedEff);
+            const rideCatchSec = (distAtLaunchKm / dvNom) * 3600;
+            return {
+              cat: otherCat,
+              inPen: true,
+              inPenWaitSec,
+              distKm: eventKm,
+              catchSec: inPenWaitSec + rideCatchSec,
+              speedKph: oProf.speedKph,
+              sourceTag,
+              startClock: wowStartTimes[otherCat] || ''
+            };
+          }
+          let distBehindKm = eventKm - otherDistKm;
+          if (liveRoadGapSec !== null && liveLapDelta === 0 && liveRoadGapSec > 0 && distBehindKm >= -0.25 && distBehindKm < 1.8) {
+            const gapDistKm = (liveRoadGapSec * (otherSpeedKph / 3.6)) / 1000;
+            distBehindKm = (distBehindKm > 0.05) ? ((distBehindKm * 0.4) + (gapDistKm * 0.6)) : gapDistKm;
+          }
+          if (distBehindKm <= -0.22) {
+            return {
+              cat: otherCat,
+              alreadyPassed: true,
+              passedAtText: formatDistUnit(Math.max(0, eventKm), 1),
+              sourceTag
+            };
+          }
+          const dv = otherSpeedKph - mySpeedEff;
+          const effDv = Math.max(0.6, dv > 0.4 ? dv : (oProf.speedKph - catProf.speedKph));
+          let catchSec = (Math.max(0.01, distBehindKm) / Math.max(0.8, effDv)) * 3600;
+          if (liveRoadGapSec !== null && liveLapDelta === 0 && liveRoadGapSec > 0 && liveRoadGapSec < 110 && dv > 0.5) {
+            catchSec = Math.min(catchSec, liveRoadGapSec * (otherSpeedKph / Math.max(1.2, dv)));
+          }
+          const cleanDistBehindKm = Math.max(0.01, distBehindKm);
+          const roadTimeGapSec = (liveRoadGapSec !== null && liveLapDelta === 0 && liveRoadGapSec > 0)
+            ? liveRoadGapSec
+            : ((cleanDistBehindKm / Math.max(20, otherSpeedKph)) * 3600);
+          return {
+            cat: otherCat,
+            isPassingNow: false,
+            inPen: false,
+            alreadyPassed: false,
+            distKm: cleanDistBehindKm,
+            roadTimeGapSec,
+            catchSec,
+            closingKph: dv,
+            speedKph: otherSpeedKph,
+            sourceTag,
+            liveLapDelta,
+            liveRoadGapSec,
+            startClock: wowStartTimes[otherCat] || ''
+          };
         } else {
-          bcRadarCard.className = 'radar-card radar-info';
-          bcRadarStatus.textContent = `${chSpeed.toFixed(1)}kph ▲`;
-          bcRadarStatus.style.color = '#38bdf8';
+          const distAheadKm = otherDistKm - eventKm;
+          if (distAheadKm <= -0.15) return null;
+          const dv = mySpeedEff - otherSpeedKph;
+          const effDv = Math.max(0.6, dv > 0.4 ? dv : (catProf.speedKph - oProf.speedKph));
+          const cleanDistAheadKm = Math.max(0.01, distAheadKm);
+          const catchSec = (cleanDistAheadKm / Math.max(0.8, effDv)) * 3600;
+          const roadTimeGapSec = (cleanDistAheadKm / Math.max(20, mySpeedEff)) * 3600;
+          return {
+            cat: otherCat,
+            distKm: cleanDistAheadKm,
+            roadTimeGapSec,
+            catchSec,
+            closingKph: dv,
+            speedKph: otherSpeedKph,
+            sourceTag,
+            startClock: wowStartTimes[otherCat] || ''
+          };
+        }
+      };
+
+      // Build map of all chaser evaluations in category order (e.g. for D -> ['C', 'B', 'A'])
+      const chaserMap = new Map();
+      const activeChasers = [];
+      for (const chCat of fasterCatsForMe) {
+        const res = evaluateOtherCategoryCatch(chCat, true);
+        if (!res) continue;
+        chaserMap.set(chCat, res);
+        if (!res.alreadyPassed) activeChasers.push(res);
+      }
+      activeChasers.sort((a, b) => {
+        if (a.isPassingNow && !b.isPassingNow) return -1;
+        if (!a.isPassingNow && b.isPassingNow) return 1;
+        return a.catchSec - b.catchSec;
+      });
+
+      const aheadTargets = [];
+      for (const ahCat of (catProf.passAhead || [])) {
+        const res = evaluateOtherCategoryCatch(ahCat, false);
+        if (res) aheadTargets.push(res);
+      }
+      aheadTargets.sort((a, b) => a.catchSec - b.catchSec);
+
+      const urgentChaser = activeChasers[0] || null;
+      const primaryAhead = aheadTargets[0] || null;
+
+      // Check if a category just finished passing within the last 25 seconds (for Green Fence Re-Enable Confirmation!)
+      let recentlyClearedCat = null;
+      for (const [cDone, clearedMs] of realPassClearedAtMs.entries()) {
+        if ((nowMs - clearedMs) <= 25000) {
+          recentlyClearedCat = cDone;
+        }
+      }
+
+      // Check if a +1L lapper is physically right behind on multi-lap circuits (shown ONLY as a tiny micro-tag, NEVER hiding C & B!)
+      const roadLappingEntry = behindRiders.find(r => {
+        const rc = detectRiderCategory(r);
+        return fasterCatsForMe.includes(rc) && (r.gap ?? 0) <= 25 && evaluateRiderLapStatus(r, selfEntry).lapDelta >= 1;
+      });
+
+      // Format single chaser slot cleanly for Side-by-Side display showing Distance + Exact Road Time Behind in Minutes & Seconds (e.g. "C: -2.73mi (6m 41s)")
+      const formatChaserSlot = (chObj, catLetter) => {
+        if (!chObj) return null;
+        if (chObj.alreadyPassed) return `✓${catLetter} Passed`;
+        if (chObj.isPassingNow) return `🚀${catLetter}: PASSING NOW!`;
+        if (chObj.inPen) return `${catLetter}: Pen -${formatCatchDuration(chObj.inPenWaitSec)}`;
+        const dispSec = chObj.roadTimeGapSec || chObj.catchSec;
+        return `${catLetter}: -${formatShortCatchDist(chObj.distKm)} (${formatCatchDuration(dispSec)})`;
+      };
+
+      // Update Top Leader Catch & Fence-Off Warning Banner (`leaderCatchAlertBar`)
+      const isSnoozed = nowMs < catchAlertSnoozeUntilMs;
+      const fenceVerb = active100kCat === 'D'
+        ? `Switch ${active100kCat} Fence OFF`
+        : `Drop ${active100kCat} Fence`;
+
+      if (leaderCatchAlertBar && leaderCatchAlertText) {
+        leaderCatchAlertBar.classList.remove('imminent-pass', 'passing-active', 'pass-cleared-ok');
+        if (!isSnoozed && urgentChaser && urgentChaser.isPassingNow) {
+          const nextBehind = activeChasers.find(x => x.cat !== urgentChaser.cat && !x.inPen);
+          leaderCatchAlertBar.classList.add('visible', 'passing-active');
+          leaderCatchAlertText.textContent = `🚀 CAT ${urgentChaser.cat} PASSING ${active100kCat} NOW! Keep ${active100kCat} Fence OFF so riders can join ${urgentChaser.cat} — Staying ${active100kCat} riders hold ${leaderFrontTargetWkg.toFixed(1)}w/kg!`;
+          if (leaderCatchAheadSub) {
+            leaderCatchAheadSub.textContent = nextBehind
+              ? `Next ${nextBehind.cat}: -${formatShortCatchDist(nextBehind.distKm)} (${formatCatchDuration(nextBehind.catchSec)})`
+              : '';
+          }
+        } else if (!isSnoozed && urgentChaser && !urgentChaser.inPen && (urgentChaser.catchSec <= 90 || urgentChaser.distKm <= 0.45)) {
+          const dTxt = formatShortCatchDist(urgentChaser.distKm);
+          const tTxt = formatCatchDuration(urgentChaser.catchSec);
+          const nextBehind = activeChasers.find(x => x.cat !== urgentChaser.cat && !x.inPen);
+          leaderCatchAlertBar.classList.add('visible', 'imminent-pass');
+          leaderCatchAlertText.textContent = `🚧 ${fenceVerb.toUpperCase()} NOW! Cat ${urgentChaser.cat} REAL PASS in ${tTxt} (-${dTxt} back) — Let ${active100kCat} riders jump onto Cat ${urgentChaser.cat}!`;
+          if (leaderCatchAheadSub) {
+            leaderCatchAheadSub.textContent = nextBehind
+              ? `Cat ${nextBehind.cat}: -${formatShortCatchDist(nextBehind.distKm)} (${formatCatchDuration(nextBehind.catchSec)})`
+              : '';
+          }
+        } else if (!isSnoozed && recentlyClearedCat) {
+          leaderCatchAlertBar.classList.add('visible', 'pass-cleared-ok');
+          const nextTxt = urgentChaser && !urgentChaser.inPen
+            ? ` | Next: Cat ${urgentChaser.cat} -${formatShortCatchDist(urgentChaser.distKm)} (${formatCatchDuration(urgentChaser.catchSec)})`
+            : '';
+          leaderCatchAlertText.textContent = `✅ CAT ${recentlyClearedCat} CLEAR AHEAD — Safe to turn ${active100kCat} Fence back ON if desired${nextTxt}`;
+          if (leaderCatchAheadSub) leaderCatchAheadSub.textContent = '';
+        } else if (!isSnoozed && urgentChaser && !urgentChaser.inPen && urgentChaser.catchSec <= 300) {
+          const dTxt = formatShortCatchDist(urgentChaser.distKm);
+          const tTxt = formatCatchDuration(urgentChaser.catchSec);
+          const nextBehind = activeChasers.find(x => x.cat !== urgentChaser.cat && !x.inPen);
+          const subB = nextBehind ? ` | Cat ${nextBehind.cat}: -${formatShortCatchDist(nextBehind.distKm)} (${formatCatchDuration(nextBehind.catchSec)})` : '';
+          leaderCatchAlertBar.classList.add('visible');
+          leaderCatchAlertText.textContent = `⚠️ CHASER HEADS-UP: Cat ${urgentChaser.cat} is -${dTxt} behind (catches ${active100kCat} in ${tTxt})${subB} — Prepare Fence OFF!`;
+          if (leaderCatchAheadSub) leaderCatchAheadSub.textContent = '';
+        } else if (!isSnoozed && primaryAhead && primaryAhead.catchSec <= 300) {
+          const dTxt = formatShortCatchDist(primaryAhead.distKm);
+          const tTxt = formatCatchDuration(primaryAhead.catchSec);
+          leaderCatchAlertBar.classList.add('visible');
+          leaderCatchAlertBar.classList.toggle('imminent-pass', primaryAhead.catchSec <= 90);
+          leaderCatchAlertText.textContent = `🚀 CATCHING GROUP AHEAD: Your ${active100kCat} group catches Cat ${primaryAhead.cat} (+${dTxt} ahead) in ${tTxt}!`;
+          if (leaderCatchAheadSub) leaderCatchAheadSub.textContent = '';
+        } else {
+          leaderCatchAlertBar.classList.remove('visible');
+        }
+      }
+
+      // Build rich multi-group tooltip showing full 5-Category Catch Board
+      const tooltipLines = [`WOW Staggered Starts: E ${wowStartTimes.E} | D ${wowStartTimes.D} | C ${wowStartTimes.C} | B ${wowStartTimes.B} | A ${wowStartTimes.A}`];
+      for (const chCat of fasterCatsForMe) {
+        const ch = chaserMap.get(chCat);
+        if (!ch) continue;
+        if (ch.alreadyPassed) tooltipLines.push(`Behind Cat ${chCat}: ✓ Already Passed (@ ${ch.passedAtText})`);
+        else if (ch.isPassingNow) tooltipLines.push(`Behind Cat ${chCat}: 🚀 PASSING NOW (Keep Fence OFF!)`);
+        else if (ch.inPen) tooltipLines.push(`Behind Cat ${chCat} (${ch.startClock}): In Pen (-${formatCatchDuration(ch.inPenWaitSec)})`);
+        else tooltipLines.push(`Behind Cat ${chCat} [${ch.sourceTag}]: -${formatShortCatchDist(ch.distKm)} behind • Catches ${active100kCat} in ${formatCatchDuration(ch.catchSec)}`);
+      }
+      for (const ah of aheadTargets) {
+        tooltipLines.push(`Ahead Cat ${ah.cat} [${ah.sourceTag}]: +${formatShortCatchDist(ah.distKm)} ahead • You catch in ${formatCatchDuration(ah.catchSec)}`);
+      }
+      if (stampSummary) tooltipLines.push(`Real Passes Logged: ${stampSummary}`);
+      bcRadarCard.title = tooltipLines.join('\n');
+
+      // v22.0: Compute 0 -> 100 All-Categories (E, D, C, B, A) Live Positions + 5-Group Leader Names for Built-In Ribbon & Detachable Ribbon Window
+      try {
+        const CAT_COLORS_RIB = { E: '#c084fc', D: '#facc15', C: '#38bdf8', B: '#22c55e', A: '#f87171' };
+        const allCatsState = {};
+        const totalTargetDistKm = Math.max(5, Number(eventTotalKm) || 100);
+        const totScaleDisp = formatTotalTargetLabel();
+        let savedGroupNames = { E: '', D: 'Mark', C: '', B: '', A: '' };
+        try {
+          const parsedGN = JSON.parse(localStorage.getItem('zwift_wow_group_names_v22') || '{}');
+          for (const gk of ['E', 'D', 'C', 'B', 'A']) {
+            if (typeof parsedGN[gk] === 'string' && parsedGN[gk].trim()) savedGroupNames[gk] = parsedGN[gk].trim();
+          }
+        } catch (e) {}
+        const liveBeaconNames = { E: '', D: '', C: '', B: '', A: '' };
+        for (const gk of ['E', 'D', 'C', 'B', 'A']) {
+          const bRider = sorted.find(r => detectRiderCategory(r) === gk && (r.eventLeader || r.state?.eventLeader || r.athlete?.eventLeader));
+          if (bRider) {
+            const bn = String(bRider?.athlete?.sanitizedFullname || bRider?.athlete?.fullname || '').trim();
+            if (bn) liveBeaconNames[gk] = bn;
+          }
+        }
+
+        for (const catKey of ['E', 'D', 'C', 'B', 'A']) {
+          const prof = WOW_100K_CAT_PROFILES[catKey];
+          if (catKey === active100kCat) {
+            const pct = Math.max(0, Math.min(100, (eventKm / totalTargetDistKm) * 100));
+            allCatsState[catKey] = {
+              cat: catKey,
+              isMe: true,
+              inPen: false,
+              inPenWaitSec: 0,
+              distKm: eventKm,
+              pct,
+              speedKph: mySpeedEff,
+              deltaFromMeKm: 0,
+              catchSec: 0,
+              isGlowing: false,
+              isFenceOff: false,
+              isPassingNow: false,
+              alreadyPassed: false,
+              chipText: `👑${catKey}: ${formatDistUnit(eventKm, 1)}`
+            };
+            continue;
+          }
+
+          const chEval = chaserMap.get(catKey);
+          const ahEval = aheadTargets.find(x => x.cat === catKey);
+          const mem = catGroupMemory.get(catKey);
+          const memAgeSec = mem ? ((nowMs - mem.seenAtMs) / 1000) : 999999;
+
+          let cDistKm = 0;
+          let cSpdKph = prof ? prof.speedKph : 37;
+          let inPen = false;
+          let inPenWaitSec = 0;
+
+          if (chEval) {
+            cSpdKph = chEval.speedKph || cSpdKph;
+            if (chEval.inPen) {
+              inPen = true;
+              inPenWaitSec = chEval.inPenWaitSec || 0;
+              cDistKm = 0;
+            } else if (chEval.alreadyPassed) {
+              if (mem && memAgeSec <= 900) {
+                cDistKm = mem.eventDistKm + (mem.speedKph * (memAgeSec / 3600));
+              } else {
+                const myOffMin = getStaggerOffsetMinutes(active100kCat);
+                const oOffMin = getStaggerOffsetMinutes(catKey);
+                const oElapSec = Math.max(0, myElapsedSec - ((oOffMin - myOffMin) * 60));
+                cDistKm = Math.max(eventKm + 0.35, (oElapSec / 3600) * cSpdKph);
+              }
+            } else if (chEval.isPassingNow) {
+              cDistKm = eventKm;
+            } else {
+              cDistKm = Math.max(0, eventKm - Number(chEval.distKm || 0));
+            }
+          } else if (ahEval) {
+            cSpdKph = ahEval.speedKph || cSpdKph;
+            cDistKm = eventKm + Number(ahEval.distKm || 0);
+          } else {
+            const myOffMin = getStaggerOffsetMinutes(active100kCat);
+            const oOffMin = getStaggerOffsetMinutes(catKey);
+            const oElapSec = myElapsedSec - ((oOffMin - myOffMin) * 60);
+            if (oElapSec <= 0) {
+              inPen = true;
+              inPenWaitSec = Math.abs(oElapSec);
+              cDistKm = 0;
+            } else {
+              cDistKm = (oElapSec / 3600) * cSpdKph;
+            }
+          }
+
+          cDistKm = Math.max(0, Math.min(totalTargetDistKm, cDistKm));
+          const pct = Math.max(0, Math.min(100, (cDistKm / totalTargetDistKm) * 100));
+          const deltaKm = cDistKm - eventKm;
+          const absDeltaKm = Math.abs(deltaKm);
+          const refGapSpeedKph = deltaKm < 0 ? Math.max(20, cSpdKph) : Math.max(20, mySpeedEff);
+          const roadTimeGapSec = chEval?.roadTimeGapSec || ahEval?.roadTimeGapSec || ((absDeltaKm / refGapSpeedKph) * 3600);
+          const catchSec = chEval ? (chEval.catchSec || 0) : (ahEval ? (ahEval.catchSec || 0) : 0);
+          const isPassingNow = Boolean((chEval && chEval.isPassingNow) || (ahEval && ahEval.distKm <= 0.18));
+          const isFenceOff = Boolean(
+            (chEval && !chEval.inPen && !chEval.alreadyPassed && (roadTimeGapSec <= 120 || chEval.catchSec <= 90 || chEval.distKm <= 0.45)) ||
+            (ahEval && (roadTimeGapSec <= 120 || ahEval.catchSec <= 90 || ahEval.distKm <= 0.45))
+          );
+          const isGlowing = Boolean(
+            isPassingNow || isFenceOff ||
+            (chEval && !chEval.inPen && !chEval.alreadyPassed && (roadTimeGapSec <= 300 || chEval.catchSec <= 300)) ||
+            (ahEval && (roadTimeGapSec <= 300 || ahEval.catchSec <= 300))
+          );
+          const alreadyPassed = Boolean(chEval && chEval.alreadyPassed);
+
+          let chipText = '';
+          if (inPen) {
+            chipText = `${catKey}: Pen -${formatCatchDuration(inPenWaitSec)}`;
+          } else if (isPassingNow) {
+            chipText = `🚀${catKey}: PASSING NOW!`;
+          } else if (alreadyPassed) {
+            chipText = `✓${catKey}: +${formatShortCatchDist(Math.max(0.1, deltaKm))} (+${formatCatchDuration(roadTimeGapSec)})`;
+          } else if (chEval && !chEval.inPen) {
+            chipText = `${catKey}: -${formatShortCatchDist(chEval.distKm)} (-${formatCatchDuration(roadTimeGapSec)})`;
+          } else if (ahEval) {
+            chipText = `${catKey}: +${formatShortCatchDist(ahEval.distKm)} (+${formatCatchDuration(roadTimeGapSec)})`;
+          } else {
+            const sign = deltaKm >= 0 ? '+' : '-';
+            chipText = `${catKey}: ${sign}${formatShortCatchDist(absDeltaKm)} (${sign}${formatCatchDuration(roadTimeGapSec)})`;
+          }
+
+          allCatsState[catKey] = {
+            cat: catKey,
+            isMe: false,
+            inPen,
+            inPenWaitSec,
+            distKm: cDistKm,
+            pct,
+            speedKph: cSpdKph,
+            deltaFromMeKm: deltaKm,
+            roadTimeGapSec,
+            catchSec,
+            isGlowing,
+            isFenceOff,
+            isPassingNow,
+            alreadyPassed,
+            chipText
+          };
+        }
+
+        // Update Built-In 0 -> 100 All-Categories Ribbon UI (#allCatsRibbonBar)
+        const ribTitleEl = document.getElementById('ribbonScaleTitle');
+        const ribTick100El = document.getElementById('ribbonTick100Lbl');
+        const ribSummaryEl = document.getElementById('ribbonSummaryStrip');
+        const ribDFillEl = document.getElementById('ribbonDFill');
+        const ribCatchSegEl = document.getElementById('ribbonCatchSeg');
+
+        if (ribTitleEl) ribTitleEl.textContent = `📏 0→${totScaleDisp}`;
+        if (ribTick100El) ribTick100El.textContent = totScaleDisp;
+
+        const meState = allCatsState[active100kCat];
+        if (ribDFillEl && meState) {
+          ribDFillEl.style.width = `${meState.pct.toFixed(1)}%`;
+        }
+
+        // Highlight glowing catch segment on the ribbon when a chaser is within 5 mins of catching our group
+        const glowingChaser = ['C', 'B', 'A'].map(k => allCatsState[k]).find(x => x && !x.isMe && x.isGlowing && !x.inPen);
+        if (ribCatchSegEl && meState && glowingChaser) {
+          const leftPct = Math.min(glowingChaser.pct, meState.pct);
+          const widthPct = Math.max(0.8, Math.abs(meState.pct - glowingChaser.pct));
+          const segCol = CAT_COLORS_RIB[glowingChaser.cat] || '#38bdf8';
+          ribCatchSegEl.style.display = 'block';
+          ribCatchSegEl.style.left = `${leftPct.toFixed(1)}%`;
+          ribCatchSegEl.style.width = `${widthPct.toFixed(1)}%`;
+          ribCatchSegEl.style.background = `linear-gradient(90deg, ${segCol}, #fde047)`;
+          ribCatchSegEl.style.boxShadow = `0 0 10px ${segCol}`;
+        } else if (ribCatchSegEl) {
+          ribCatchSegEl.style.display = 'none';
+        }
+
+        if (ribSummaryEl) {
+          ribSummaryEl.innerHTML = ['E', 'D', 'C', 'B', 'A'].map(k => {
+            const st = allCatsState[k];
+            if (!st) return '';
+            const col = CAT_COLORS_RIB[k];
+            const glowCls = (st.isFenceOff || st.isPassingNow) ? ' glow-catch' : '';
+            const borderStyle = st.isMe ? `border-color:#fde047; background:rgba(113,63,18,0.75); color:#fef08a;` : `border-color:${col}88; color:${col};`;
+            return `<span class="rib-cat-chip${glowCls}" style="${borderStyle}">${st.chipText}</span>`;
+          }).join('');
+        }
+
+        for (const k of ['E', 'D', 'C', 'B', 'A']) {
+          const mEl = document.getElementById(`ribMarker${k}`);
+          const tEl = document.getElementById(`ribMiniTag${k}`);
+          const st = allCatsState[k];
+          if (!mEl || !st) continue;
+          mEl.style.left = `${st.pct.toFixed(2)}%`;
+          mEl.classList.toggle('cat-me', st.isMe);
+          mEl.classList.toggle('real-pass-glow', st.isGlowing);
+          mEl.classList.toggle('in-pen', st.inPen);
+          mEl.title = `Cat ${k}: ${st.chipText} (${formatDistUnit(st.distKm, 1)} / ${totScaleDisp})`;
+          if (tEl) {
+            if (st.isMe) {
+              tEl.textContent = `👑${k} ${formatDistUnit(st.distKm, 1)}`;
+            } else if (st.inPen) {
+              tEl.textContent = `${k}: Pen`;
+            } else {
+              const sign = (st.deltaFromMeKm ?? 0) >= 0 ? '+' : '-';
+              tEl.textContent = `${k} ${sign}${formatCatchDuration(st.roadTimeGapSec || st.catchSec)}`;
+            }
+          }
+        }
+
+        // Publish live 5-Category 0->100 state to Detachable Ribbon Window (map.html)
+        if (!window.__rfMapBus) {
+          window.__rfMapBus = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('riderfeed_hud_bus_v21') : null;
+        }
+        if (window.__rfMapBus) {
+          window.__rfMapBus.postMessage({
+            type: 'HUD_STATE_V21_7',
+            ts: Date.now(),
+            demoMode,
+            activeCat: active100kCat,
+            activeMode: activeUnifiedMode,
+            useMiles: useMilesUnits,
+            eventTotalKm: totalTargetDistKm,
+            totScaleDisp,
+            eventKm,
+            mySpeedEff,
+            myElapsedSec,
+            wowStartTimes,
+            groupNames: savedGroupNames,
+            liveBeaconNames,
+            allCatsState,
+            recentlyClearedCat
+          });
+        }
+      } catch (e) {}
+
+      const showAheadCard = (active100kCat === 'A') || (radarFocusDir === 'AHEAD' && primaryAhead !== null);
+      const bcRadarTitleEl = document.getElementById('bcRadarTitle');
+
+      if (showAheadCard) {
+        if (bcRadarTitleEl) bcRadarTitleEl.textContent = '🚂 AHEAD';
+        if (primaryAhead) {
+          const secondAhead = aheadTargets[1] || null;
+          const slot1 = `${primaryAhead.cat}: +${formatShortCatchDist(primaryAhead.distKm)} (${formatCatchDuration(primaryAhead.catchSec)})`;
+          const slot2 = secondAhead ? ` | ${secondAhead.cat}: +${formatShortCatchDist(secondAhead.distKm)} (${formatCatchDuration(secondAhead.catchSec)})` : '';
+          bcRadarDetail.textContent = `${slot1}${slot2}`;
+          if (primaryAhead.catchSec <= 90) {
+            bcRadarCard.className = 'radar-card radar-danger';
+            bcRadarStatus.textContent = `PASS ${primaryAhead.cat} ${formatCatchDuration(primaryAhead.catchSec)}!`;
+            bcRadarStatus.style.color = '#fef08a';
+          } else if (primaryAhead.catchSec <= 300) {
+            bcRadarCard.className = 'radar-card radar-warn';
+            bcRadarStatus.textContent = `IN ${formatCatchDuration(primaryAhead.catchSec)}`;
+            bcRadarStatus.style.color = '#fde047';
+          } else {
+            bcRadarCard.className = 'radar-card radar-info';
+            bcRadarStatus.textContent = `FWD ${formatCatchDuration(primaryAhead.catchSec)}`;
+            bcRadarStatus.style.color = '#38bdf8';
+          }
+        } else {
+          bcRadarCard.className = 'radar-card radar-ok';
+          bcRadarDetail.textContent = active100kCat === 'A' ? 'Cat A Lead Group on Road' : 'Clear Road Ahead';
+          bcRadarStatus.textContent = 'CLEAR AHEAD';
+          bcRadarStatus.style.color = '#4ade80';
+        }
+        return;
+      }
+
+      // DEFAULT FOR E, D, C, B: ALWAYS SHOW SIDE-BY-SIDE CHASER DISTANCE & TIME BEHIND!
+      let displaySlots = [];
+      if (active100kCat === 'D') {
+        const cObj = chaserMap.get('C');
+        const bObj = chaserMap.get('B');
+        const aObj = chaserMap.get('A');
+        if (cObj && !cObj.alreadyPassed) displaySlots.push(formatChaserSlot(cObj, 'C'));
+        if (bObj && !bObj.alreadyPassed) displaySlots.push(formatChaserSlot(bObj, 'B'));
+        if (cObj && cObj.alreadyPassed && displaySlots.length < 2) {
+          displaySlots.unshift(`✓C`);
+        }
+        if (aObj && !aObj.alreadyPassed && !aObj.inPen && (aObj.catchSec <= 300 || displaySlots.length < 2)) {
+          if (displaySlots.length >= 2) displaySlots[1] = formatChaserSlot(aObj, 'A');
+          else displaySlots.push(formatChaserSlot(aObj, 'A'));
         }
       } else {
-        // Before B/C enter Zwift's nearby telemetry bubble, estimate gap using staggered start & ~60K catch point
-        const stagMin = STAGGER_OPTIONS_MIN[staggerIdx];
-        if (stagMin > 0 && eventKm < 38) {
-          const kmToCatch = Math.max(0, 25.0 - eventKm);
-          const estGapSec = Math.round((kmToCatch / 25.0) * (stagMin * 60));
+        for (const chCat of fasterCatsForMe) {
+          const obj = chaserMap.get(chCat);
+          if (obj && !obj.alreadyPassed && displaySlots.length < 2) {
+            displaySlots.push(formatChaserSlot(obj, chCat));
+          }
+        }
+      }
+
+      if (displaySlots.length > 0 && urgentChaser) {
+        const pairLabel = active100kCat === 'D' ? '🚂 C&B' : (fasterCatsForMe.slice(0, 2).length > 1 ? `🚂 ${fasterCatsForMe[0]}&${fasterCatsForMe[1]}` : `🚂 CAT ${fasterCatsForMe[0]}`);
+        const lapMicroTag = roadLappingEntry ? ' 🔄+1L' : '';
+        if (bcRadarTitleEl) bcRadarTitleEl.textContent = `${pairLabel}${lapMicroTag}`;
+        bcRadarDetail.textContent = displaySlots.filter(Boolean).join(' | ');
+
+        if (urgentChaser.isPassingNow) {
+          bcRadarCard.className = 'radar-card radar-passing-now';
+          bcRadarStatus.textContent = `🔓 FENCE OFF (${urgentChaser.cat})`;
+          bcRadarStatus.style.color = '#fef08a';
+        } else if (!urgentChaser.inPen && (urgentChaser.catchSec <= 90 || urgentChaser.distKm <= 0.45)) {
+          bcRadarCard.className = 'radar-card radar-danger';
+          bcRadarStatus.textContent = `🚧 FENCE OFF! (${formatCatchDuration(urgentChaser.catchSec)})`;
+          bcRadarStatus.style.color = '#fef08a';
+        } else if (!urgentChaser.inPen && (urgentChaser.catchSec <= 300 || urgentChaser.distKm <= 1.8)) {
+          bcRadarCard.className = 'radar-card radar-warn';
+          bcRadarStatus.textContent = `⚠️ ${urgentChaser.cat} IN ${formatCatchDuration(urgentChaser.catchSec)}`;
+          bcRadarStatus.style.color = '#fde047';
+        } else if (urgentChaser.inPen) {
           bcRadarCard.className = 'radar-card radar-info';
-          bcRadarDetail.textContent = `Est C/B: ${formatGapMinSec(estGapSec)} (Out of Bubble)`;
-          bcRadarStatus.textContent = kmToCatch > 1 ? `CATCH ~${Math.round(eventKm + kmToCatch)}K` : 'NEAR BUBBLE';
+          bcRadarStatus.textContent = 'IN PEN';
           bcRadarStatus.style.color = '#38bdf8';
         } else {
-          bcRadarCard.className = 'radar-card radar-info';
-          bcRadarDetail.textContent = 'No B/C in Nearby Bubble';
+          bcRadarCard.className = roadLappingEntry ? 'radar-card radar-lapping' : 'radar-card radar-info';
+          bcRadarStatus.textContent = roadLappingEntry
+            ? `LAP HOLD • ${urgentChaser.cat} ${formatCatchDuration(urgentChaser.catchSec)}`
+            : `${urgentChaser.cat} IN ${formatCatchDuration(urgentChaser.catchSec)}`;
+          bcRadarStatus.style.color = roadLappingEntry ? '#f3e8ff' : '#38bdf8';
+        }
+      } else {
+        const sameLapFastChasers = sameLapBehindRiders.filter(r => {
+          const rc = detectRiderCategory(r);
+          return (!rc || rc !== active100kCat) &&
+            (r.gap ?? 0) > 4.5 &&
+            Number(r.state?.speed || 0) >= Math.max(groupTargetKph + 1.8, mySpeedEff + 1.8);
+        });
+        if (sameLapFastChasers.length >= 1) {
+          const frontChaser = sameLapFastChasers[0];
+          const chGap = Number(frontChaser.gap ?? 0);
+          const chSpeed = Number(frontChaser.state?.speed || (groupTargetKph + 3));
+          const estDistKm = (chGap * (chSpeed / 3.6)) / 1000;
+          const dv = Math.max(1.2, chSpeed - mySpeedEff);
+          const catchSec = (estDistKm / dv) * 3600;
+          if (bcRadarTitleEl) bcRadarTitleEl.textContent = '🚂 BLOB';
+          bcRadarDetail.textContent = `Fast Pack: -${formatShortCatchDist(estDistKm)} (${formatCatchDuration(catchSec)})`;
+          bcRadarCard.className = catchSec <= 90 ? 'radar-card radar-danger' : (catchSec <= 300 ? 'radar-card radar-warn' : 'radar-card radar-info');
+          bcRadarStatus.textContent = catchSec <= 90 ? `🚧 FENCE OFF!` : `IN ${formatCatchDuration(catchSec)}`;
+          bcRadarStatus.style.color = catchSec <= 90 ? '#fef08a' : '#fde047';
+        } else {
+          if (bcRadarTitleEl) bcRadarTitleEl.textContent = active100kCat === 'D' ? '🚂 C&B' : catProf.radarTitle;
+          bcRadarCard.className = 'radar-card radar-ok';
+          bcRadarDetail.textContent = stampSummary ? `All Passed: ${stampSummary}` : 'No Chasers Behind';
           bcRadarStatus.textContent = 'CLEAR BEHIND';
           bcRadarStatus.style.color = '#4ade80';
         }
@@ -4047,7 +6085,51 @@
           })
         : sorted;
 
+      // Map overall road rank (1..N) across sorted riders
+      const roadRankMap = new Map();
+      sorted.forEach((r, idx) => roadRankMap.set(r, idx + 1));
+
+      // Determine active Center-Lock target rider in filteredSorted
+      let centerAnchorEntry = null;
+      let centerAnchorIdx = -1;
+      const isManualScrollPaused = performance.now() < manualScrollPauseUntilMs;
+      const recenterPill = document.getElementById('recenterFloatingPill');
+      if (recenterPill) {
+        if (isManualScrollPaused && centerLockMode !== 'OFF') {
+          const remS = Math.max(1, Math.ceil((manualScrollPauseUntilMs - performance.now()) / 1000));
+          recenterPill.textContent = `🎯 Re-Center Middle (${remS}s)`;
+          recenterPill.classList.add('visible');
+        } else {
+          recenterPill.classList.remove('visible');
+        }
+      }
+
+      if (centerLockMode === 'YOU') {
+        centerAnchorIdx = filteredSorted.findIndex(r => r && r.watching);
+      } else if (centerLockMode === 'LDR') {
+        centerAnchorIdx = filteredSorted.findIndex(r => {
+          const rk = String(r.athleteId ?? (r.athlete?.sanitizedFullname || ''));
+          return !r.watching && isEntryLeader(r, rk).isLeader;
+        });
+        if (centerAnchorIdx === -1) {
+          centerAnchorIdx = filteredSorted.findIndex(r => r && r.watching);
+        }
+      } else if (centerLockMode === 'CUSTOM' && customCenterLockRiderKey) {
+        centerAnchorIdx = filteredSorted.findIndex(r => {
+          const rk = String(r.athleteId ?? (r.athlete?.sanitizedFullname || ''));
+          return rk === customCenterLockRiderKey;
+        });
+        if (centerAnchorIdx === -1) {
+          centerAnchorIdx = filteredSorted.findIndex(r => r && r.watching);
+        }
+      }
+      if (centerAnchorIdx !== -1) {
+        centerAnchorEntry = filteredSorted[centerAnchorIdx];
+      }
+
       let visibleRiders = [];
+      const stickyHorizonMeta = new Map(); // entry -> { pos: 'top'|'bottom', deltaCount: number, label: string }
+
       if (pagedModeEnabled) {
         const pageSize = PAGE_SIZE_OPTIONS[pageSizeIdx] || 8;
         totalPagesCount = Math.max(1, Math.ceil(filteredSorted.length / pageSize));
@@ -4062,9 +6144,64 @@
         if (pagedModeBtn) {
           pagedModeBtn.textContent = `📄 Page ${currentPageIdx + 1}/${totalPagesCount}`;
         }
+      } else if (centerLockMode !== 'OFF' && !isManualScrollPaused && centerAnchorIdx !== -1 && !riderSearchFilterText) {
+        // 🎯 CENTER-LOCK HORIZON SLICE: Places the pinned anchor dead-center in the middle of the visible table!
+        const wrapH = tableWrap.clientHeight || 320;
+        const estRowH = Math.max(24, Math.round(29 * currentWinScale * currentMonScale));
+        let maxVisibleRows = Math.max(7, Math.min(21, Math.floor((wrapH - 30) / estRowH)));
+        if (maxVisibleRows % 2 === 0) maxVisibleRows = Math.max(7, maxVisibleRows - 1); // Odd count so there is an exact middle row!
+        const halfSpan = Math.floor(maxVisibleRows / 2);
+
+        if (filteredSorted.length <= maxVisibleRows) {
+          visibleRiders = filteredSorted;
+        } else {
+          let startIdx = centerAnchorIdx - halfSpan;
+          let endIdx = centerAnchorIdx + halfSpan + 1;
+          if (startIdx < 0) {
+            endIdx = Math.min(filteredSorted.length, endIdx + Math.abs(startIdx));
+            startIdx = 0;
+          }
+          if (endIdx > filteredSorted.length) {
+            startIdx = Math.max(0, startIdx - (endIdx - filteredSorted.length));
+            endIdx = filteredSorted.length;
+          }
+          visibleRiders = filteredSorted.slice(startIdx, endIdx);
+
+          // Dual-Anchor Sticky Horizon: If YOU or Main Yellow Beacon LDR is outside [startIdx..endIdx), dock them at top/bottom!
+          const selfFullIdx = filteredSorted.findIndex(r => r && r.watching);
+          const primaryLdrFullIdx = filteredSorted.findIndex(r => {
+            const rk = String(r.athleteId ?? (r.athlete?.sanitizedFullname || ''));
+            return !r.watching && isEntryLeader(r, rk).isLeader;
+          });
+
+          const checkAndDock = (fullIdx, roleTag) => {
+            if (fullIdx === -1) return;
+            const targetObj = filteredSorted[fullIdx];
+            if (visibleRiders.includes(targetObj)) return;
+            if (fullIdx < startIdx) {
+              const aheadCount = centerAnchorIdx - fullIdx;
+              visibleRiders[0] = targetObj;
+              stickyHorizonMeta.set(targetObj, { pos: 'top', deltaCount: aheadCount, label: `⬆️${aheadCount} ahead` });
+            } else if (fullIdx >= endIdx) {
+              const behindCount = fullIdx - centerAnchorIdx;
+              visibleRiders[visibleRiders.length - 1] = targetObj;
+              stickyHorizonMeta.set(targetObj, { pos: 'bottom', deltaCount: behindCount, label: `⬇️${behindCount} back` });
+            }
+          };
+
+          checkAndDock(selfFullIdx, 'YOU');
+          checkAndDock(primaryLdrFullIdx, 'LDR');
+        }
       } else {
-        // FULL SCROLLABLE EVENT RIDER LIST (Allows scrolling through all riders in the event!)
-        visibleRiders = filteredSorted;
+        // FULL SCROLLABLE EVENT RIDER LIST (Capped at 120 closest riders around YOU in 800-rider mega-events unless filtering!)
+        if (!riderSearchFilterText && filteredSorted.length > 120) {
+          const selfPos = filteredSorted.findIndex(r => r && r.watching);
+          const anchor = selfPos !== -1 ? selfPos : 0;
+          const s0 = Math.max(0, Math.min(filteredSorted.length - 120, anchor - 60));
+          visibleRiders = filteredSorted.slice(s0, s0 + 120);
+        } else {
+          visibleRiders = filteredSorted;
+        }
       }
 
       let nearestElasticSlipGap = null;
@@ -4121,17 +6258,30 @@
         const sweepInfo = isEntrySweep(entry, riderKey);
         const catLabel = detectRiderCategory(entry);
         const catBadgeHtml = catLabel ? `<span class="cat-tag cat-${catLabel}" title="Category ${catLabel}">${catLabel}</span>` : '';
+        const lapStatus = evaluateRiderLapStatus(entry, watchedEntry);
+        const lapBadgeHtml = lapStatus.badgeHtml;
+
+        const roadRank = roadRankMap.get(entry) || (rowIdx + 1);
+        const roadPosBadgeHtml = `<span class="road-pos-badge ${roadRank <= 3 ? 'pos-podium' : ''}" title="Road Position #${roadRank} of ${sorted.length}">#${roadRank}</span>`;
+
+        const isCenterAnchor = (centerLockMode !== 'OFF' && entry === centerAnchorEntry);
+        const midBtnHtml = `<button type="button" class="mid-pin-btn ${isCenterAnchor ? 'active-mid' : ''}" data-rkey="${riderKey}" data-isself="${isSelf ? '1' : '0'}" title="Click 🎯 to Lock/Unlock ${isSelf ? 'YOU' : name} dead-center in the middle of the table!">${isCenterAnchor ? '🎯MID' : '🎯'}</button>`;
+
+        const horizonMeta = stickyHorizonMeta.get(entry);
+        const horizonTagHtml = horizonMeta ? `<span class="horizon-delta-tag" title="Docked on Horizon (${horizonMeta.label} from center anchor)">${horizonMeta.label}</span>` : '';
 
         const ldrBtnHtml = !isSelf
-          ? `<button type="button" class="ldr-pin-btn ${leaderInfo.isLeader ? 'active-ldr' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a Yellow Beacon Leader / Co-Leader (highlights their row in BEACON YELLOW & pins them at the top)">${leaderInfo.isLeader ? (leaderInfo.isOfficialBeacon ? '🟡LDR' : '👑CO') : 'LDR'}</button>`
-          : `<span class="self-beacon-badge" title="${leaderInfo.isOfficialBeacon ? 'Zwift Official Yellow Beacon Active on YOU' : 'Main 100K Event Leader (YOU)'}">${leaderInfo.isOfficialBeacon ? '🟡👑 LDR' : '👑 LDR'}</span>`;
+          ? `<button type="button" class="ldr-pin-btn ${leaderInfo.isLeader ? 'active-ldr' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a Yellow Beacon Leader / Co-Leader (highlights their row in BEACON YELLOW)">${leaderInfo.isLeader ? (leaderInfo.isOfficialBeacon ? '🟡LDR' : '👑CO') : 'LDR'}</button>`
+          : `<span class="self-beacon-badge" title="${leaderInfo.isOfficialBeacon ? 'Zwift Official Yellow Beacon Active on YOU' : 'Active Rider (YOU)'}">${leaderInfo.isOfficialBeacon ? '🟡👑 LDR' : '👑 YOU'}</span>`;
 
         const swpBtnHtml = !isSelf
-          ? `<button type="button" class="swp-pin-btn ${sweepInfo.isSweep ? 'active-swp' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a WOW 100K Sweep (highlights their row in ORANGE & pins them at the bottom)">${sweepInfo.isSweep ? '🧹SWP' : 'SWP'}</button>`
+          ? `<button type="button" class="swp-pin-btn ${sweepInfo.isSweep ? 'active-swp' : ''}" data-rkey="${riderKey}" title="Click to Pin/Unpin ${name} as a Sweep (highlights their row in RED)">${sweepInfo.isSweep ? '🧹SWP' : 'SWP'}</button>`
           : '';
 
         const rowClasses = [
           isSelf ? 'watching' : '',
+          isCenterAnchor ? 'center-locked-anchor-row' : '',
+          horizonMeta ? (horizonMeta.pos === 'top' ? 'sticky-horizon-top-row' : 'sticky-horizon-bottom-row') : '',
           (!isSelf && leaderInfo.isLeader) ? 'pinned-leader-row' : '',
           (!isSelf && !leaderInfo.isLeader && sweepInfo.isSweep) ? 'pinned-sweep-row' : '',
           (!leaderInfo.isLeader && !sweepInfo.isSweep && attackInfo.isAttacking) ? 'rider-attack-row' : (isInZone567 ? 'hr-surge-row' : '')
@@ -4153,7 +6303,7 @@
               <div class="self-full-bar-ambient" style="background: ${ambientBg};"></div>
               <div class="self-full-bar-fill" style="width: ${selfTone.fillPct}%; background: ${barBg}; box-shadow: ${glowShadow};"></div>
               <div class="self-rider-label">
-                <span>${ldrBtnHtml}${swpBtnHtml}${catBadgeHtml}${name}${attackBadgeHtml}</span>
+                <span>${roadPosBadgeHtml}${midBtnHtml}${horizonTagHtml}${ldrBtnHtml}${swpBtnHtml}${catBadgeHtml}${lapBadgeHtml}${name}${attackBadgeHtml}</span>
               </div>
               ${resizerFor(0)}
             </td>
@@ -4167,7 +6317,7 @@
           riderCellHtml = `
             <td class="col-rider other-rider-cell" style="border-left: 3px solid ${hr !== null ? rivalTone.rgbCss : 'transparent'};" title="${name} | Age: ${ageDisplay} -> Max HR: ${maxHr} bpm (${pctOfMax ?? '—'}% Max, ${hrZoneInfo.zoneLabel}) | Z5/6/7 Trigger: >=${z567ThresholdBpm} bpm">
               <div class="other-rider-label">
-                <span>${ldrBtnHtml}${swpBtnHtml}${catBadgeHtml}${name}${attackBadgeHtml}</span>
+                <span>${roadPosBadgeHtml}${midBtnHtml}${horizonTagHtml}${ldrBtnHtml}${swpBtnHtml}${catBadgeHtml}${lapBadgeHtml}${name}${attackBadgeHtml}</span>
               </div>
               <div class="other-hr-track">
                 <div class="other-hr-fill" style="width: ${rivalTone.fillPct}%; background: ${rivalBarBg};"></div>
@@ -4248,11 +6398,11 @@
 
       const ridersAheadInPack = sorted.filter(r => !r.watching && (r.gap ?? 0) < -0.3 && (r.gap ?? 0) >= -5.0);
       const isLeaderOnFront = ridersAheadInPack.length === 0 || ((watchedEntry?.state?.draft ?? 0) === 0 && (selfLiveWkg ?? 0) >= 1.5);
-      const rawDistMeters = Number(watchedEntry?.state?.distance ?? 0);
-      const distanceKm = rawDistMeters > 0 ? (rawDistMeters / 1000) : 0;
+      const distanceKm = getRiderEventDistKm(watchedEntry);
 
       updatePersonalPowerGauges(selfLiveWkg, nowMs, {
         groupSpeedKph,
+        selfSpeedKph: Number(watchedEntry?.state?.speed ?? 0),
         frontWkg,
         isLeaderOnFront,
         distanceKm
@@ -4265,6 +6415,9 @@
       updateClimbWheelSitAdvisor(watchedEntry, ridersAhead, nearestElasticSlipGap);
 
       tbody.innerHTML = rowsHtml;
+
+      // Update Race Mode Green POS Box & 15s/1m/5m/20m Power Curve Countdown Tanks
+      updateRacePosAndPowerTanks(sorted, watchedEntry, selfLiveWkg, nowMs);
     }
 
     // 1. Primary Connection: Sauce Native Common Module
@@ -4333,11 +6486,14 @@
       });
 
       ws.addEventListener('message', (msg) => {
-        if (demoMode) return;
         try {
           const payload = JSON.parse(msg.data);
           if (payload.type === 'event' && payload.data) {
             if (Array.isArray(payload.data.data)) {
+              if (demoMode && payload.data.data.length > 0) {
+                toggleDemoMode(); // Auto-switch from Demo preview to Live Zwift WS stream!
+              }
+              if (demoMode) return;
               liveConnected = true;
               statusDot.className = 'status-dot live';
               statusText.textContent = `Live (${payload.data.data.length})`;
@@ -4380,8 +6536,10 @@
       { id: 18, name: 'G. Robertson [SWP]', cat: 'D', sweeper: true, weight: 75.0, age: 55, baseGap: 12.0, gapAmp: 1.6, gapPhase: 1.2, basePwr: 176, baseHr: 140, baseDraft: 40, baseSpeed: 36.0, gradeOffset: -0.004 },
       { id: 19, name: 'T. Tyler', cat: 'D', weight: 68.0, age: 59, baseGap: 18.5, gapAmp: 1.2, gapPhase: 0.7, basePwr: 128, baseHr: 115, baseDraft: 50, baseSpeed: 34.2, gradeOffset: -0.005 },
       { id: 20, name: 'L. Riquelme [SWP 2]', cat: 'D', sweeper: true, weight: 69.0, age: 45, baseGap: 19.2, gapAmp: 1.2, gapPhase: 0.7, basePwr: 165, baseHr: 139, baseDraft: 30, baseSpeed: 34.5, gradeOffset: -0.005 },
-      { id: 21, name: 'WOW Cat C Leader', cat: 'C', weight: 74.0, age: 46, baseGap: 38.0, gapAmp: 3.0, gapPhase: 0.5, basePwr: 185, baseHr: 146, baseDraft: 65, baseSpeed: 38.2, gradeOffset: -0.005 },
-      { id: 22, name: 'WOW Cat B Leader', cat: 'B', weight: 73.0, age: 39, baseGap: 84.0, gapAmp: 4.0, gapPhase: 1.0, basePwr: 225, baseHr: 154, baseDraft: 75, baseSpeed: 40.8, gradeOffset: -0.006 }
+      { id: 21, name: 'WOW Cat C Beacon', chaserBeacon: true, cat: 'C', lapSimOffset: 0,  weight: 74.0, age: 46, baseGap: 58.0, gapAmp: 1.5, gapPhase: 0.5, basePwr: 192, baseHr: 146, baseDraft: 65, baseSpeed: 40.5, gradeOffset: -0.005 },
+      { id: 22, name: 'WOW Cat B Beacon', chaserBeacon: true, cat: 'B', lapSimOffset: 0,  weight: 73.0, age: 39, baseGap: 245.0, gapAmp: 2.0, gapPhase: 1.0, basePwr: 228, baseHr: 154, baseDraft: 75, baseSpeed: 41.6, gradeOffset: -0.006 },
+      { id: 23, name: 'Cat A Lapper (+1L)', cat: 'A', lapSimOffset: 1,  weight: 71.0, age: 34, baseGap: 42.0, gapAmp: 2.5, gapPhase: 0.8, basePwr: 275, baseHr: 161, baseDraft: 55, baseSpeed: 44.3, gradeOffset: 0.0 },
+      { id: 24, name: 'D. Straggler (Lapped)', cat: 'D', lapSimOffset: -1, weight: 82.0, age: 60, baseGap: 9.2, gapAmp: 0.9, gapPhase: 1.7, basePwr: 118, baseHr: 132, baseDraft: 0, baseSpeed: 31.0, gradeOffset: 0.0 }
     ];
 
     function toggleDemoMode() {
@@ -4404,6 +6562,14 @@
         clearInterval(demoTimer);
         demoBtn.style.background = '';
         demoBtn.textContent = '▶ Demo';
+        // Wipe simulated Demo W/kg average & radar caches so Live Zwift starts 100% clean
+        resetRideAvgWkgCounter(performance.now(), false);
+        lastRawDistKm = 0;
+        realPassStamps.clear();
+        realPassClearedAtMs.clear();
+        catGroupMemory.clear();
+        riderRedlineTimers.clear();
+        riderGapTrackers.clear();
         statusDot.className = liveConnected ? 'status-dot live' : 'status-dot';
         statusText.textContent = liveConnected ? 'Live' : 'Waiting...';
         renderRiders([]);
@@ -4433,28 +6599,64 @@
         demoClimbDir = 0.005;
       }
 
+      const cProf = WOW_100K_CAT_PROFILES[active100kCat] || WOW_100K_CAT_PROFILES.D;
+      const wkgScale = cProf.maxWkg / 2.00;
+      const spdDelta = cProf.speedKph - 37.0;
+      const chaserCat1 = (cProf.chasers && cProf.chasers[0]) ? cProf.chasers[0] : 'B';
+      const chaserCat2 = (cProf.chasers && cProf.chasers[1]) ? cProf.chasers[1] : (cProf.chasers && cProf.chasers[0] ? cProf.chasers[0] : 'C');
+
       const simulated = sampleRiders.map(r => {
         const wave = Math.sin((demoTickCount * 0.45) + r.gapPhase) * r.gapAmp;
         const rawGap = r.watching ? 0 : (r.baseGap < 0 ? Math.min(-0.2, r.baseGap + wave) : Math.max(0.2, r.baseGap + wave));
+        let rowCat = active100kCat;
+        let rowName = r.name;
+        let finalSimGap = rawGap;
+        // Cycle Demo Cat C Beacon smoothly from +68s behind -> +18s (🚧 FENCE OFF!) -> -15s (🚀 PASSING NOW!) -> -32s (✅ CLEAR!) every 80s!
+        const demoCycleTick = demoTickCount % 80;
+        if (r.id === 21) {
+          rowCat = chaserCat1;
+          rowName = `WOW Cat ${chaserCat1} Beacon`;
+          finalSimGap = 68.0 - (demoCycleTick * 1.30);
+          if (demoCycleTick === 1) { realPassStamps.clear(); realPassClearedAtMs.clear(); catGroupMemory.clear(); }
+        } else if (r.id === 22) {
+          rowCat = chaserCat2;
+          rowName = `WOW Cat ${chaserCat2} Beacon`;
+          finalSimGap = 235.0 - (demoCycleTick * 1.15); // ~1.65 mi / ~8m behind right beside Cat C!
+        } else if (r.id === 23) {
+          rowCat = active100kCat === 'A' ? 'B' : 'A';
+          rowName = `Cat ${rowCat} Lapper`;
+        }
+
+        const scaledBasePwr = Math.round(r.basePwr * wkgScale);
+        const scaledBaseSpd = (r.baseSpeed || 37.0) + spdDelta;
+        const baseDemoMeters = (activeUnifiedMode === '100M' ? 91800 : 58500) + (demoTickCount * 10.3);
+        const cirLapM = ((CIRCUIT_LAP_PRESETS[circuitPresetIdx]?.lapKm) || 5.013) * 1000;
+        const lapOffsetM = (r.lapSimOffset || 0) * cirLapM;
+        const riderEventDistM = Math.max(500, Math.round(baseDemoMeters + lapOffsetM - (finalSimGap * 10.8)));
+        const simGrade = activeUnifiedMode === '100M' ? 0.0 : (demoClimbGrade + (r.gradeOffset || 0));
+
         return {
           athleteId: r.id,
           watching: !!r.watching,
-          category: r.cat || 'D',
-          eventLeader: !!(r.watching || r.leader),
+          category: rowCat,
+          eventLeader: !!(r.watching || r.leader || r.chaserBeacon),
           eventSweeper: !!r.sweeper,
-          gap: r.watching ? 0 : +rawGap.toFixed(2),
+          gap: r.watching ? 0 : +finalSimGap.toFixed(2),
           athlete: {
-            sanitizedFullname: r.watching ? (detectedSelfAthlete.name || r.name) : r.name,
+            sanitizedFullname: r.watching ? (detectedSelfAthlete.name || r.name) : rowName,
             weight: r.watching ? (detectedSelfAthlete.weight || r.weight) : r.weight,
             age: r.watching ? selfDemoAge : r.age
           },
           state: {
-            power: Math.max(85, Math.round(r.basePwr + Math.sin(demoTickCount * 0.35) * 8 + (Math.random() * 6 - 3))),
+            power: Math.max(75, Math.round(scaledBasePwr + Math.sin(demoTickCount * 0.35) * 8 + (Math.random() * 6 - 3))),
             heartrate: r.watching ? demoSelfHr : Math.round(r.baseHr + (Math.random() * 6 - 3)),
             draft: Math.max(0, Math.round(r.baseDraft + (Math.random() * 24 - 12))),
-            speed: +((r.baseSpeed || 37.0) + Math.sin(demoTickCount * 0.25) * 0.8 + (Math.random() * 0.3 - 0.15)).toFixed(1),
-            distance: 18500 + (demoTickCount * 95),
-            grade: demoClimbGrade + (r.gradeOffset || 0)
+            speed: +(scaledBaseSpd + Math.sin(demoTickCount * 0.25) * 0.8 + (Math.random() * 0.3 - 0.15)).toFixed(1),
+            distance: riderEventDistM,
+            eventDistance: riderEventDistM,
+            time: Math.round((baseDemoMeters / 1000) / 37.0 * 3600),
+            eventTime: Math.round((baseDemoMeters / 1000) / 37.0 * 3600),
+            grade: simGrade
           }
         };
       });
@@ -4463,17 +6665,75 @@
 
     const preset40kBtn = document.getElementById('preset40kBtn');
     const preset100kBtn = document.getElementById('preset100kBtn');
+    const cat100kWkgTitle = document.getElementById('cat100kWkgTitle');
+
+    function updateCatButtonsUI(catLetter) {
+      document.querySelectorAll('.cat-sel-btn').forEach(btn => {
+        const bCat = btn.dataset.cat;
+        btn.classList.remove('active-cat-A', 'active-cat-B', 'active-cat-C', 'active-cat-D', 'active-cat-E');
+        if (bCat === catLetter) {
+          btn.classList.add(`active-cat-${catLetter}`);
+        }
+      });
+    }
+
+    function selectWow100kCategory(catLetter, applyTargets = true) {
+      const cleanCat = WOW_100K_CAT_PROFILES[catLetter] ? catLetter : 'D';
+      active100kCat = cleanCat;
+      const prof = WOW_100K_CAT_PROFILES[cleanCat];
+      whole100kMinWkg = prof.minWkg;
+      localStorage.setItem('zwift_100k_hud_active_cat', cleanCat);
+
+      updateCatButtonsUI(cleanCat);
+      if (typeof syncStaggerButtonsAndInputsUI === "function") syncStaggerButtonsAndInputsUI();
+
+      if (cat100kWkgTitle) {
+        cat100kWkgTitle.textContent = activeUnifiedMode === '100M' ? `100M ${cleanCat}` : `100K ${cleanCat}`;
+        cat100kWkgTitle.title = `WOW 100K Category ${cleanCat}: Steady ${prof.rangeText} W/kg (~${prof.speedKph} kph)`;
+      }
+      if (preset100kBtn) {
+        preset100kBtn.textContent = `100K ${cleanCat} (${prof.rangeText} • ${prof.speedKph}kph)`;
+      }
+      const bcRadarTitleEl = document.getElementById('bcRadarTitle');
+      if (bcRadarTitleEl) bcRadarTitleEl.textContent = prof.radarTitle;
+
+      if (applyTargets) {
+        window.eventTotalKm_OVERRIDE = 100.0;
+        setFtp5mTarget(prof.maxWkg);
+        setTtt1mTarget(prof.frontWkg);
+        setGroupTargetKph(prof.speedKph);
+        setAtkWkg(String(prof.atkWkg));
+        if (atkSlider) atkSlider.value = String(prof.atkWkg);
+        const curTotLbl = formatTotalTargetLabel();
+        if (event100kTitle && !event100kTitle.textContent.includes('/')) event100kTitle.textContent = curTotLbl;
+        if (ttt1mToggleBtn && !ttt1mToggleBtn.textContent.includes('left')) ttt1mToggleBtn.textContent = curTotLbl;
+      }
+
+      if (demoMode) {
+        updateDemoTick();
+      } else if (lastRenderedNearbyList.length > 0) {
+        renderRiders(lastRenderedNearbyList);
+      }
+    }
+
+    document.querySelectorAll('.cat-sel-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const chosenCat = btn.dataset.cat;
+        if (chosenCat) selectWow100kCategory(chosenCat, true);
+      });
+    });
 
     function applyEventPreset(modeStr) {
       if (modeStr === '40K') {
-        window.EVENT_TOTAL_KM_OVERRIDE = 40.0;
+        window.eventTotalKm_OVERRIDE = 40.0;
+        whole100kMinWkg = 1.80;
         setFtp5mTarget(2.40);
         setTtt1mTarget(2.40);
         setGroupTargetKph(35);
         setAtkWkg('3.0');
         atkSlider.value = '3.0';
-        const lTitle = document.querySelector('#ftp5mCard .tactical-title');
-        if (lTitle) lTitle.textContent = '40K WKG';
+        if (cat100kWkgTitle) cat100kWkgTitle.textContent = '40K WKG';
         if (event100kTitle) event100kTitle.textContent = '40K';
         if (ttt1mToggleBtn) ttt1mToggleBtn.textContent = '40K';
         if (preset40kBtn) {
@@ -4485,14 +6745,8 @@
           preset100kBtn.style.borderColor = '';
         }
       } else {
-        window.EVENT_TOTAL_KM_OVERRIDE = 100.0;
-        setFtp5mTarget(2.00);
-        setTtt1mTarget(2.00);
-        setGroupTargetKph(37);
-        setAtkWkg('2.8');
-        atkSlider.value = '2.8';
-        const lTitle = document.querySelector('#ftp5mCard .tactical-title');
-        if (lTitle) lTitle.textContent = '100K WKG';
+        window.eventTotalKm_OVERRIDE = 100.0;
+        selectWow100kCategory(active100kCat, true);
         if (event100kTitle) event100kTitle.textContent = '100K';
         if (ttt1mToggleBtn) ttt1mToggleBtn.textContent = '100K';
         if (preset100kBtn) {
@@ -4509,6 +6763,361 @@
 
     if (preset40kBtn) preset40kBtn.addEventListener('click', () => applyEventPreset('40K'));
     if (preset100kBtn) preset100kBtn.addEventListener('click', () => applyEventPreset('100K'));
+
+    // Initialize UI for saved active100kCat without overwriting custom saved slider tweaks unless first load
+    selectWow100kCategory(active100kCat, false);
+
+
+    // =========================================================================
+    // UNIFIED ALL-IN-ONE CONTROLLER: MODE SWITCHER, ANY-MILEAGE & 🎯 CENTER-LOCK
+    // =========================================================================
+    const modeRaceBtn = document.getElementById('modeRaceBtn');
+    const mode40kBtn = document.getElementById('mode40kBtn');
+    const mode100kBtn = document.getElementById('mode100kBtn');
+    const presetRaceBtn = document.getElementById('presetRaceBtn');
+    const customKmInput = document.getElementById('customKmInput');
+    const lockSelfBtn = document.getElementById('lockSelfBtn');
+    const lockLdrBtn = document.getElementById('lockLdrBtn');
+    const lockOffBtn = document.getElementById('lockOffBtn');
+    const recenterFloatingPill = document.getElementById('recenterFloatingPill');
+
+    function updateRacePosAndPowerTanks(sorted, selfEntry, selfWkg, nowMs) {
+      const dt = Math.max(0, Math.min(2.5, (nowMs - lastPowerTankMs) / 1000));
+      lastPowerTankMs = nowMs;
+      const wkg = Number(selfWkg || 0);
+
+      // Update 15s, 1m, 5m, 20m tanks (drain when >= trigWkg, recharge at 0.35s/s when < 2.6 W/kg)
+      const updateTank = (tk, fillId, valId, isMinFmt = false) => {
+        if (wkg >= tk.trigWkg) {
+          const overdrive = Math.max(1.0, 1.0 + ((wkg - tk.trigWkg) * 0.35));
+          tk.remSec = Math.max(0, tk.remSec - (dt * overdrive));
+        } else if (wkg < 2.65) {
+          tk.remSec = Math.min(tk.maxSec, tk.remSec + (dt * 0.35));
+        }
+        const pct = Math.round((tk.remSec / tk.maxSec) * 100);
+        const fEl = document.getElementById(fillId);
+        const vEl = document.getElementById(valId);
+        if (fEl) fEl.style.width = `${pct}%`;
+        if (vEl) {
+          if (isMinFmt) {
+            const m = Math.floor(tk.remSec / 60);
+            const s = Math.round(tk.remSec % 60);
+            vEl.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+          } else {
+            vEl.textContent = `${Math.round(tk.remSec)}s`;
+          }
+        }
+      };
+
+      updateTank(powerTanks.s15, 'tank15sFill', 'tank15sVal', false);
+      updateTank(powerTanks.m1,  'tank1mFill',  'tank1mVal',  false);
+      updateTank(powerTanks.m5,  'tank5mFill',  'tank5mVal',  false);
+      updateTank(powerTanks.m20, 'tank20mFill', 'tank20mVal', true);
+
+      // Update Green POS Box: POS X / Total | C #Rank | B Wheel: -X.Xs
+      const selfIdx = sorted.findIndex(r => r && r.watching);
+      const overallPos = selfIdx !== -1 ? (selfIdx + 1) : 1;
+      const myCat = detectRiderCategory(selfEntry) || 'C';
+      const sameCatRiders = sorted.filter(r => (detectRiderCategory(r) || myCat) === myCat);
+      const catRankIdx = sameCatRiders.findIndex(r => r && r.watching);
+      const catRank = catRankIdx !== -1 ? (catRankIdx + 1) : overallPos;
+
+      const ridersAhead = sorted.filter(r => !r.watching && (r.gap ?? 0) < 0);
+      const nearestAhead = ridersAhead.length > 0 ? ridersAhead[ridersAhead.length - 1] : null;
+      const wheelGapStr = nearestAhead ? `${Number(nearestAhead.gap).toFixed(1)}s` : 'Front';
+
+      const posMainEl = document.getElementById('racePosMain');
+      const catRankEl = document.getElementById('raceCatRank');
+      const wheelGapEl = document.getElementById('raceBWheelGap');
+      if (posMainEl) posMainEl.textContent = `POS ${overallPos}/${sorted.length}`;
+      if (catRankEl) catRankEl.textContent = `${myCat} #${catRank}`;
+      if (wheelGapEl) wheelGapEl.textContent = `Wheel: ${wheelGapStr}`;
+    }
+
+    function updateCenterLockButtonsUI() {
+      if (lockSelfBtn) lockSelfBtn.classList.toggle('active-lock', centerLockMode === 'YOU');
+      if (lockLdrBtn) lockLdrBtn.classList.toggle('active-lock', centerLockMode === 'LDR' || centerLockMode === 'CUSTOM');
+      if (lockOffBtn) lockOffBtn.classList.toggle('active-lock', centerLockMode === 'OFF');
+      if (lockLdrBtn) {
+        lockLdrBtn.textContent = centerLockMode === 'CUSTOM' ? '🎯 Pin' : '👑 LDR';
+      }
+    }
+
+    if (lockSelfBtn) {
+      lockSelfBtn.addEventListener('click', () => {
+        centerLockMode = 'YOU';
+        manualScrollPauseUntilMs = 0;
+        localStorage.setItem('zwift_unified_center_lock_mode', 'YOU');
+        updateCenterLockButtonsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    if (lockLdrBtn) {
+      lockLdrBtn.addEventListener('click', () => {
+        centerLockMode = 'LDR';
+        manualScrollPauseUntilMs = 0;
+        localStorage.setItem('zwift_unified_center_lock_mode', 'LDR');
+        updateCenterLockButtonsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    if (lockOffBtn) {
+      lockOffBtn.addEventListener('click', () => {
+        centerLockMode = 'OFF';
+        manualScrollPauseUntilMs = 0;
+        localStorage.setItem('zwift_unified_center_lock_mode', 'OFF');
+        updateCenterLockButtonsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    // Pause Center-Lock for 5 seconds when user scrolls with mouse wheel so they can inspect the pack freely
+    tableWrap.addEventListener('wheel', () => {
+      if (centerLockMode !== 'OFF') {
+        manualScrollPauseUntilMs = performance.now() + 5000;
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      }
+    }, { passive: true });
+
+    if (recenterFloatingPill) {
+      recenterFloatingPill.addEventListener('click', () => {
+        manualScrollPauseUntilMs = 0;
+        tableWrap.scrollTop = 0;
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    const mode100mBtn = document.getElementById('mode100mBtn');
+    const preset100mBtn = document.getElementById('preset100mBtn');
+    const unitToggleBtn = document.getElementById('unitToggleBtn');
+    const lapCircuitBtn = document.getElementById('lapCircuitBtn');
+
+    function updateUnitAndCircuitButtonsUI() {
+      if (unitToggleBtn) {
+        unitToggleBtn.textContent = useMilesUnits ? 'MI' : 'KM';
+        unitToggleBtn.classList.toggle('active-mi', useMilesUnits);
+      }
+      if (lapCircuitBtn) {
+        const cp = CIRCUIT_LAP_PRESETS[circuitPresetIdx] || CIRCUIT_LAP_PRESETS[0];
+        lapCircuitBtn.textContent = cp.label;
+        lapCircuitBtn.title = `Active Multi-Lap Circuit Filter: ${cp.desc} (Click to cycle)`;
+      }
+    }
+
+    if (unitToggleBtn) {
+      unitToggleBtn.addEventListener('click', () => {
+        useMilesUnits = !useMilesUnits;
+        localStorage.setItem('zwift_unified_use_miles', useMilesUnits ? '1' : '0');
+        updateUnitAndCircuitButtonsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    if (lapCircuitBtn) {
+      lapCircuitBtn.addEventListener('click', () => {
+        circuitPresetIdx = (circuitPresetIdx + 1) % CIRCUIT_LAP_PRESETS.length;
+        localStorage.setItem('zwift_unified_circuit_idx', String(circuitPresetIdx));
+        updateUnitAndCircuitButtonsUI();
+        if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+      });
+    }
+
+    function setEventMileageKm(kmVal, save = true) {
+      const cleanKm = Math.max(5, Math.min(300, Number(kmVal) || 100));
+      eventTotalKm = cleanKm;
+      if (customKmInput) customKmInput.value = String(+(cleanKm.toFixed(1)));
+      document.querySelectorAll('.km-preset-btn').forEach(btn => {
+        btn.classList.toggle('active-km', Math.abs(Number(btn.dataset.km) - cleanKm) < 0.25);
+      });
+      const totLbl = formatTotalTargetLabel();
+      if (event100kTitle) event100kTitle.textContent = totLbl;
+      if (ttt1mToggleBtn) ttt1mToggleBtn.textContent = totLbl;
+      if (save) {
+        localStorage.setItem('zwift_unified_event_km', String(cleanKm));
+      }
+      if (lastRenderedNearbyList.length > 0) renderRiders(lastRenderedNearbyList);
+    }
+
+    document.querySelectorAll('.km-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kmV = Number(btn.dataset.km);
+        if (Math.abs(kmV - 160.9) < 0.3) {
+          switchUnifiedMode('100M', true);
+        } else {
+          setEventMileageKm(kmV, true);
+        }
+      });
+    });
+
+    if (customKmInput) {
+      customKmInput.addEventListener('change', (e) => {
+        setEventMileageKm(Number(e.target.value), true);
+      });
+    }
+
+    function switchUnifiedMode(modeStr, updateKm = true) {
+      activeUnifiedMode = modeStr;
+      localStorage.setItem('zwift_unified_hud_mode', modeStr);
+
+      hudContainer.classList.toggle('race-mode-active', modeStr === 'RACE');
+      if (modeRaceBtn) modeRaceBtn.classList.toggle('active-mode-race', modeStr === 'RACE');
+      if (mode40kBtn) mode40kBtn.classList.toggle('active-mode-40k', modeStr === '40K');
+      if (mode100kBtn) mode100kBtn.classList.toggle('active-mode-100k', modeStr === '100K');
+      if (mode100mBtn) mode100mBtn.classList.toggle('active-mode-100m', modeStr === '100M');
+
+      if (modeStr === 'RACE') {
+        if (updateKm) {
+          useMilesUnits = false;
+          localStorage.setItem('zwift_unified_use_miles', '0');
+          staggerIdx = 1; // Scratch Race -> Live Nearby Only automatically
+          localStorage.setItem('zwift_unified_stagger_mode_idx_v3', '1');
+          setEventMileageKm(22.5, true);
+        }
+        whole100kMinWkg = 2.40;
+        setFtp5mTarget(2.98);
+        setTtt1mTarget(3.40);
+        setGroupTargetKph(40);
+        setAtkWkg('4.2');
+        if (atkSlider) atkSlider.value = '4.2';
+        if (cat100kWkgTitle) cat100kWkgTitle.textContent = 'RACE zFTP';
+      } else if (modeStr === '40K') {
+        if (updateKm) {
+          useMilesUnits = false;
+          localStorage.setItem('zwift_unified_use_miles', '0');
+          staggerIdx = 1; // 40K Recovery -> Live Nearby Only automatically
+          localStorage.setItem('zwift_unified_stagger_mode_idx_v3', '1');
+          setEventMileageKm(40.0, true);
+        }
+        applyEventPreset('40K');
+      } else if (modeStr === '100M') {
+        // Monthly WOW 100-Mile & Watopia 150 (100 Miles = 160.93 km, ~31.8 Lightning Laps of 5.013 km!)
+        applyEventPreset('100K');
+        if (updateKm) {
+          useMilesUnits = true;
+          localStorage.setItem('zwift_unified_use_miles', '1');
+          circuitPresetIdx = 0; // Default to Watopia 150 5.013km Lightning Lap filter
+          localStorage.setItem('zwift_unified_circuit_idx', '0');
+          staggerIdx = 0; // WOW 100M/150 -> Auto WOW Stagger + Live Handoff automatically
+          radarFocusDir = 'AUTO';
+          localStorage.setItem('zwift_unified_stagger_mode_idx_v3', '0');
+          localStorage.setItem('zwift_unified_radar_dir', 'AUTO');
+          setEventMileageKm(160.93, true);
+        }
+        if (cat100kWkgTitle) cat100kWkgTitle.textContent = `100M ${active100kCat}`;
+      } else {
+        if (updateKm) {
+          useMilesUnits = false;
+          localStorage.setItem('zwift_unified_use_miles', '0');
+          staggerIdx = 0; // WOW 100K TTT -> Auto WOW Stagger + Live Handoff automatically
+          radarFocusDir = 'AUTO';
+          localStorage.setItem('zwift_unified_stagger_mode_idx_v3', '0');
+          localStorage.setItem('zwift_unified_radar_dir', 'AUTO');
+          setEventMileageKm(100.0, true);
+        }
+        applyEventPreset('100K');
+      }
+      syncStaggerButtonsAndInputsUI();
+      updateUnitAndCircuitButtonsUI();
+      if (demoMode) {
+        updateDemoTick();
+      } else if (lastRenderedNearbyList.length > 0) {
+        renderRiders(lastRenderedNearbyList);
+      }
+    }
+
+    if (modeRaceBtn) modeRaceBtn.addEventListener('click', () => switchUnifiedMode('RACE', true));
+    if (mode40kBtn) mode40kBtn.addEventListener('click', () => switchUnifiedMode('40K', true));
+    if (mode100kBtn) mode100kBtn.addEventListener('click', () => switchUnifiedMode('100K', true));
+    if (mode100mBtn) mode100mBtn.addEventListener('click', () => switchUnifiedMode('100M', true));
+    if (presetRaceBtn) presetRaceBtn.addEventListener('click', () => switchUnifiedMode('RACE', true));
+    if (preset100mBtn) preset100mBtn.addEventListener('click', () => switchUnifiedMode('100M', true));
+
+    updateCenterLockButtonsUI();
+    updateUnitAndCircuitButtonsUI();
+    setEventMileageKm(eventTotalKm, false);
+    switchUnifiedMode(activeUnifiedMode, false);
+
+
+    const helpModal = document.getElementById('helpModal');
+    const openHelpModalBtn = document.getElementById('openHelpModalBtn');
+    const topBarHelpBtn = document.getElementById('topBarHelpBtn');
+    const openMapWindowBtn = document.getElementById('openMapWindowBtn');
+    const topBarMapBtn = document.getElementById('topBarMapBtn');
+    const helpCloseBtn = document.getElementById('helpCloseBtn');
+    const quickCleanViewBtn = document.getElementById('quickCleanViewBtn');
+    let detachedHelpWin = null;
+    let detachedMapWin = null;
+
+    const detachRibbonMiniBtn = document.getElementById('detachRibbonMiniBtn');
+    function openDetachedMapWindow(e) {
+      if (e) e.stopPropagation();
+      try {
+        if (detachedMapWin && !detachedMapWin.closed) {
+          detachedMapWin.focus();
+          return;
+        }
+        const popLeft = Math.max(0, (window.screenX || 60));
+        const popTop = Math.max(0, (window.screenY || 80) + (window.outerHeight || 610) + 12);
+        const features = `popup=yes,width=920,height=390,left=${popLeft},top=${popTop},resizable=yes,scrollbars=no`;
+        detachedMapWin = window.open('map.html?v=22.1', 'RiderFeedHUD_Ribbon_v22_1', features);
+        if (detachedMapWin) {
+          detachedMapWin.focus();
+        }
+      } catch (err) {}
+    }
+    if (openMapWindowBtn) openMapWindowBtn.addEventListener('click', openDetachedMapWindow);
+    if (topBarMapBtn) topBarMapBtn.addEventListener('click', openDetachedMapWindow);
+    if (detachRibbonMiniBtn) detachRibbonMiniBtn.addEventListener('click', openDetachedMapWindow);
+
+    function openDetachedHelpWindow(e) {
+      if (e) e.stopPropagation();
+      // Ensure any inline modal is closed so the live HUD rider table stays 100% unobstructed
+      if (helpModal) helpModal.classList.remove('open');
+      hudContainer.classList.remove('settings-open');
+
+      try {
+        if (detachedHelpWin && !detachedHelpWin.closed) {
+          detachedHelpWin.focus();
+          return;
+        }
+        const popLeft = Math.max(0, (window.screenX || 60) + (window.outerWidth || 860) + 16);
+        const popTop = Math.max(0, window.screenY || 80);
+        const features = `popup=yes,width=820,height=660,left=${popLeft},top=${popTop},resizable=yes,scrollbars=yes`;
+        detachedHelpWin = window.open('help.html?v=21.7', 'RiderFeedHUD_Help_v21_7', features);
+        if (detachedHelpWin) {
+          detachedHelpWin.focus();
+          return;
+        }
+      } catch (err) {}
+
+      // Fallback only if a restricted webview blocks window.open
+      if (helpModal) {
+        const isOpen = helpModal.classList.toggle('open');
+        hudContainer.classList.toggle('settings-open', isOpen);
+      }
+    }
+
+    if (openHelpModalBtn) openHelpModalBtn.addEventListener('click', openDetachedHelpWindow);
+    if (topBarHelpBtn) topBarHelpBtn.addEventListener('click', openDetachedHelpWindow);
+    if (helpCloseBtn) helpCloseBtn.addEventListener('click', () => {
+      helpModal.classList.remove('open');
+      hudContainer.classList.remove('settings-open');
+    });
+
+    if (quickCleanViewBtn) {
+      quickCleanViewBtn.addEventListener('click', () => {
+        // Toggle hiding the 2 pacer/radar rows while keeping the thin Mode bar visible so user can click Clean again!
+        const pBar = document.querySelector('.personal-tactical-bar');
+        const rBar = document.querySelector('.sweep-bc-radar-bar');
+        const isClean = pBar && pBar.style.display === 'none';
+        if (pBar) pBar.style.display = isClean ? '' : 'none';
+        if (rBar) rBar.style.display = isClean ? '' : 'none';
+        quickCleanViewBtn.classList.toggle('active-lock', !isClean);
+        quickCleanViewBtn.textContent = !isClean ? '👁️ Full' : '👁️ Clean';
+      });
+    }
 
     demoBtn.addEventListener('click', toggleDemoMode);
     checkMonitorTransition(true);
