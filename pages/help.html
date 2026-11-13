@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>❓ Master Unified RiderFeedHUD v21.7 — Help &amp; About (Detached Window)</title>
+  <style>
+    :root {
+      --help-font-px: 13.5px;
+      --bg-dark: #090f1a;
+      --panel-bg: rgba(15, 23, 42, 0.92);
+      --card-bg: rgba(30, 41, 59, 0.76);
+      --gold: #facc15;
+      --gold-bright: #fde047;
+      --cyan: #38bdf8;
+      --green: #4ade80;
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: var(--help-font-px);
+      line-height: 1.44;
+      overflow: hidden;
+    }
+
+    .window-shell {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, #102a45 0%, #090f1a 62%);
+      border: 1.5px solid rgba(250, 204, 21, 0.55);
+    }
+
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 14px;
+      background: linear-gradient(90deg, #0c4a6e, #0f172a 72%);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.4);
+      -webkit-app-region: drag;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 1.02em;
+      color: #ffffff;
+    }
+
+    .detached-badge {
+      background: rgba(20, 83, 45, 0.85);
+      border: 1px solid #4ade80;
+      color: #bbf7d0;
+      padding: 1px 8px;
+      border-radius: 999px;
+      font-size: 0.76em;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      -webkit-app-region: no-drag;
+    }
+
+    .ctrl-btn {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 5px;
+      padding: 3px 9px;
+      font-size: 0.84em;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ctrl-btn:hover { background: #0284c7; border-color: #ffffff; }
+    .ctrl-btn.close-btn { background: #dc2626; border-color: #fca5a5; color: #ffffff; }
+    .ctrl-btn.close-btn:hover { background: #ef4444; }
+
+    .tabs-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: rgba(9, 15, 26, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      flex-wrap: wrap;
+      -webkit-app-region: no-drag;
+    }
+
+    .tab-btn {
+      background: rgba(30, 41, 59, 0.85);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 5px 11px;
+      font-size: 0.86em;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .tab-btn:hover { color: #ffffff; border-color: #7dd3fc; }
+    .tab-btn.active {
+      background: linear-gradient(90deg, #eab308, #f59e0b);
+      color: #090d16;
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+    }
+
+    .tab-pane {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px 18px;
+      flex-direction: column;
+      gap: 11px;
+      -webkit-app-region: no-drag;
+    }
+
+    .tab-pane.active { display: flex; }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      padding: 11px 14px;
+    }
+
+    .section-card.gold-card { border-color: rgba(250, 204, 21, 0.65); background: rgba(66, 32, 6, 0.34); }
+    .section-card.cyan-card { border-color: rgba(56, 189, 248, 0.65); background: rgba(12, 74, 110, 0.34); }
+    .section-card.pink-card { border-color: rgba(244, 114, 182, 0.65); background: rgba(131, 24, 67, 0.28); }
+    .section-card.green-card { border-color: rgba(74, 222, 128, 0.65); background: rgba(20, 83, 45, 0.30); }
+
+    .section-card h3 {
+      font-size: 0.96em;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+      margin-bottom: 7px;
+      color: var(--gold-bright);
+    }
+
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 0.86em;
+      vertical-align: baseline;
+    }
+
+    .pill-gold { background: #eab308; color: #090d16; }
+    .pill-pink { background: linear-gradient(90deg, #9333ea, #ec4899); color: #ffffff; }
+    .pill-green { background: #15803d; color: #ffffff; border: 1px solid #86efac; }
+    .pill-cyan { background: #0369a1; color: #e0f2fe; border: 1px solid #7dd3fc; }
+    .pill-red { background: #dc2626; color: #ffffff; border: 1px solid #fde047; }
+    .pill-purple { background: #6b21a8; color: #f3e8ff; border: 1px solid #d8b4fe; }
+
+    table.spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 0.90em;
+    }
+
+    table.spec-table th, table.spec-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    table.spec-table th {
+      color: #94a3b8;
+      font-size: 0.82em;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .diagram-box {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 7px;
+      padding: 8px;
+      text-align: center;
+      cursor: zoom-in;
+    }
+
+    .diagram-box.zoomed {
+      cursor: zoom-out;
+      overflow-x: auto;
+    }
+
+    .diagram-box img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      transition: max-width 0.18s ease;
+    }
+
+    .diagram-box.zoomed img {
+      max-width: 165%;
+    }
+
+    code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #fde047;
+      font-size: 0.92em;
+    }
+  </style>
+</head>
+<body>
+  <div class="window-shell">
+    <div class="header-bar">
+      <div class="header-left">
+        <span>❓ RiderFeedHUD v21.7 — Help &amp; About</span>
+        <span class="detached-badge">Detached Window</span>
+      </div>
+      <div class="header-actions">
+        <button id="zoomOutBtn" class="ctrl-btn" type="button" title="Decrease Help Text Size">A−</button>
+        <button id="zoomInBtn" class="ctrl-btn" type="button" title="Increase Help Text Size">A+</button>
+        <button class="ctrl-btn" type="button" onclick="window.print()" title="Print Guide">🖨️</button>
+        <button class="ctrl-btn close-btn" type="button" onclick="window.close()" title="Close Detached Help Window">Close ✕</button>
+      </div>
+    </div>
+
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="tab-leader" type="button">👑 Leader &amp; Fence Guide</button>
+      <button class="tab-btn" data-tab="tab-map" type="button">🗺️ Visual Field Map (1–15)</button>
+      <button class="tab-btn" data-tab="tab-specs" type="button">⏱️ Stagger &amp; Pacing Specs</button>
+      <button class="tab-btn" data-tab="tab-about" type="button">ℹ️ About v21.7</button>
+    </div>
+
+    <!-- TAB 1: LEADER & FENCE GUIDE -->
+    <div id="tab-leader" class="tab-pane active">
+      <div class="section-card gold-card">
+        <h3>👑 60-Second Pre-Ride Setup (Leading WOW Group D — 100K or 100 Miles)</h3>
+        <div class="step-list">
+          <div><b>1. Pick Your Event Mode (Row 2):</b> Click <span class="pill pill-gold">👑 100K</span> for the weekly 100K TTT (KM / kph) or <span class="pill pill-pink">💯 100M/150</span> for the last-Sunday 100-Mile / Watopia 150 (100.0 Miles, MI / mph, <code>LP X/32</code>, and <code>🔄 5.0K Lp</code>).</div>
+          <div><b>2. Verify Your Category (Left Green Card):</b> Click <span class="pill pill-green">D</span> (<code>1.6–2.0 W/kg</code>, <code>2.00</code> front cap, <code>37 kph</code> / <code>23.0 mph</code>). Right Radar locks onto <span class="pill pill-cyan">🚂 C&amp;B</span> automatically.</div>
+          <div><b>3. Center-Lock Your Row (Row 2 Right):</b> Click <span class="pill pill-cyan">🎯 YOU</span> so your row stays pinned dead-center in the middle of the table even with 800 riders in the event!</div>
+          <div><b>4. Tag Co-Leaders &amp; Sweeps:</b> Click <code>LDR</code> on your Co-Leader's row (turns <b style="color:#fde047;">Beacon Yellow</b>) and <code>SWP</code> on your Sweeper's row (turns <b style="color:#f87171;">Vibrant Red</b>).</div>
+          <div style="background:rgba(20,83,45,0.45); border:1px solid #4ade80; border-radius:6px; padding:6px 9px;">
+            <b style="color:#86efac;">5. Automatic Pen-Exit Start (Zero Buttons to Click!):</b> Just roll out of the start pen! In official WOW events, Zwift zeroes your distance &amp; clock automatically at the pen gate, and <b>v21.7 automatically resets your Ride-Average W/kg (<span class="pill pill-green">Auto✓</span>) as you cross <code>0.05 mi</code> (<code>80m</code>)</b> so pen warm-up spinning never skews your ride average. <i>(Leave the right-most <code>left</code> distance button untouched in official events; it is only for manual Free-Ride zeroing.)</i>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card cyan-card">
+        <h3 style="color:#7dd3fc;">🚧 4-Stage "Fence Off" Workflow When Cat C or Cat B Catches D</h3>
+        <div style="margin-bottom:6px;">Because all WOW groups ride behind an active Fence (zero solo breakaways), the radar locks <b>immediately</b> onto the first front-edge rider / Yellow Beacon of Cat C and Cat B and shows both side-by-side (<code>C: -0.52mi (3m45s) | B: -1.85mi (9m)</code>):</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Trigger</th>
+              <th>Radar &amp; Top Banner Cue</th>
+              <th>Action for Group D Leader</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>1. Heads-Up</b></td>
+              <td><code>&lt;= 5m 00s</code></td>
+              <td><span class="pill pill-gold">⚠️ C IN 3m45s</span></td>
+              <td>Announce on Discord / Zwift Chat that Cat C (or B) is ~3–5 mins back.</td>
+            </tr>
+            <tr>
+              <td><b>2. Drop Fence!</b></td>
+              <td><code>&lt;= 90s</code><br>(<code>0.28mi</code>)</td>
+              <td><span class="pill pill-red">🚧 FENCE OFF! (48s)</span></td>
+              <td><b>Switch D Fence OFF now</b> in Zwift Companion so D riders can accelerate onto C/B without getting the 60s fence zapper!</td>
+            </tr>
+            <tr>
+              <td><b>3. Passing</b></td>
+              <td><code>+18s</code> to <code>-28s</code></td>
+              <td><span class="pill pill-green">🔓 FENCE OFF (C)</span></td>
+              <td>Keep D Fence OFF while the C/B blob flows through; staying D riders hold steady <code>2.0 w/kg</code> behind you.</td>
+            </tr>
+            <tr>
+              <td><b>4. All Clear</b></td>
+              <td><code>&lt;= -28s</code> ahead</td>
+              <td><span class="pill pill-green">✅ CAT C CLEAR</span></td>
+              <td>Logs <code>✓C</code> and shifts radar focus to Cat B. Safe to turn D Fence back ON if desired!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-card pink-card">
+        <h3 style="color:#fbcfe8;">🔄 Multi-Lap "Real Pass" vs. "Lapped" Badges (30+ Lap Watopia 150)</h3>
+        <div class="step-list">
+          <div>• <span class="pill pill-gold">SAME LP</span> — Total Zwift <code>eventDistance</code> matches yours (<code>±2.25 km</code>). <b>Genuine Real Pass!</b></div>
+          <div>• <span class="pill pill-purple">+1 LAP</span> — Faster group is <code>+5 km</code> / <code>+10 km</code> ahead in event distance (already passed you earlier). Lapping you — <b>keep steady pace, do NOT drop fence or surge!</b></div>
+          <div>• <span class="pill pill-cyan">-1L UNLAP</span> — Late-starting faster pen is still 1+ lap behind you in total distance. Physically unlapping, <b>not</b> the real pass yet!</div>
+          <div>• <code>⤵️ -1L</code> — Lapped straggler 1+ lap behind in distance. Automatically ignored by your <code>🧹 SWP</code> Sweep Radar!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: VISUAL FIELD MAP (1-15) -->
+    <div id="tab-map" class="tab-pane">
+      <div class="section-card">
+        <h3>🗺️ Numbered Visual Callout Map (Click Diagram to Zoom In / Out)</h3>
+        <div id="diagramZoomBox" class="diagram-box" title="Click to toggle 165% Zoom">
+          <img id="guideDiagramImg" src="RiderFeedHUD_Visual_Callout_Guide.png" alt="RiderFeedHUD Visual Callout Guide 1-15"
+               onerror="if(!this.dataset.step){this.dataset.step='1';this.src='visual_guide.png';}else if(this.dataset.step==='1'){this.dataset.step='2';this.src='../RiderFeedHUD_Visual_Callout_Guide.png';}else{this.style.display='none';document.getElementById('diagFallback').style.display='block';}" />
+          <div id="diagFallback" style="display:none; padding:8px; color:#cbd5e1;">Diagram image stored in <code>Documents\SauceMods\RiderFeedHUD\RiderFeedHUD_Visual_Callout_Guide.png</code>.</div>
+        </div>
+        <table class="spec-table" style="margin-top:10px;">
+          <thead>
+            <tr><th>#</th><th>Control / Card</th><th>What It Shows &amp; How to Use It</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>1</b></td><td>Climb &amp; Elastic Coach Pill</td><td>Row 1 live coach: Z1–Z4 HR headroom, draft watts, 2s early ramp warning &amp; elastic-slip alert.</td></tr>
+            <tr><td><b>2</b></td><td>Unified Event Mode Strip</td><td>1-click mode switch: <code>🏁 Race</code> | <code>🌿 40K</code> | <code>👑 100K</code> | <code>💯 100M/150</code>.</td></tr>
+            <tr><td><b>3</b></td><td>Mileage, <code>KM/MI</code> &amp; <code>🔄 Lap</code></td><td>Distance presets (<code>22.5K..100M</code>), custom <code>5–300</code> box, unit toggle &amp; circuit lap filter.</td></tr>
+            <tr><td><b>4</b></td><td><code>🎯 Mid-Pin</code>, <code>👁️ Clean</code> &amp; <code>❓ Help ↗</code></td><td>Pins <code>YOU</code> or <code>LDR</code> dead-center, declutters banners, or opens this detached Help window.</td></tr>
+            <tr><td><b>5–6</b></td><td>Race POS &amp; 4 Power Tanks</td><td>Overall/Cat position + <code>15s</code> (6.71w), <code>1m</code> (4.23w), <code>5m</code> (3.40w), <code>20m</code> (2.98w) tanks in Race Mode.</td></tr>
+            <tr><td><b>7</b></td><td>Left Event W/kg Card &amp; <code>Rst</code></td><td>Cat A–E selector, live vs. ride-avg W/kg, and <b>automatic <code>0.05 mi</code> pen-exit W/kg reset (<code>Auto✓</code>)</b>.</td></tr>
+            <tr><td><b>8</b></td><td>Right Front Cap &amp; Distance Left</td><td>Front W/kg cap (<code>2.00</code>), live blob speed (<code>37kph</code> / <code>23mph</code>), lap counter &amp; distance left (auto-zeroed by Zwift).</td></tr>
+            <tr><td><b>9–11</b></td><td><code>LDR</code> | <code>SWP</code> | <code>🚂 C&amp;B</code> Radars</td><td>Category-scoped Yellow Beacon &amp; Red Sweep trackers + Instant Fence-Lock C&amp;B Chaser Radar.</td></tr>
+            <tr><td><b>12–15</b></td><td>Live Rider Table &amp; <code>||</code> Splitters</td><td>256-colour HR bars, Zone 5/6/7 <code>RED 0-120s</code> blow-up timer, <code>CLIMB %</code>, <code>GAP</code> elastic arrows &amp; draggable column resizers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: STAGGER & PACING SPECS -->
+    <div id="tab-specs" class="tab-pane">
+      <div class="section-card cyan-card">
+        <h3 style="color:#7dd3fc;">⏱️ Official WOW Staggered Start Schedule &amp; Category Pacing Bands</h3>
+        <div style="margin-bottom:6px;">Pre-configured for both Weekly 100K TTT and Monthly 100-Mile / Watopia 150 (customizable anytime inside <code>⚙️ Settings</code>):</div>
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Start Clock</th>
+              <th>Stagger vs E</th>
+              <th>Steady W/kg Band</th>
+              <th>Front Ceiling</th>
+              <th>Target Speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Cat E</b></td><td><code>13:30</code></td><td><code>+0m</code></td><td>1.2 – 1.5 W/kg</td><td><code>1.50 W/kg</code></td><td>33 kph (20.5 mph)</td></tr>
+            <tr style="background:rgba(20,83,45,0.38);"><td><b>Cat D (You)</b></td><td><code>13:45</code></td><td><code>+15m</code></td><td><b>1.6 – 2.0 W/kg</b></td><td><b><code>2.00 W/kg</code></b></td><td><b>37 kph (23.0 mph)</b></td></tr>
+            <tr><td><b>Cat C</b></td><td><code>13:55</code></td><td><code>+25m</code> (+10m after D)</td><td>2.1 – 2.6 W/kg</td><td><code>2.60 W/kg</code></td><td>39 kph (24.2 mph)</td></tr>
+            <tr><td><b>Cat B</b></td><td><code>14:04</code></td><td><code>+34m</code> (+19m after D)</td><td>2.7 – 3.3 W/kg</td><td><code>3.30 W/kg</code></td><td>41 kph (25.5 mph)</td></tr>
+            <tr><td><b>Cat A</b></td><td><code>14:11</code></td><td><code>+41m</code> (+26m after D)</td><td>3.5 – 4.5 W/kg</td><td><code>4.50 W/kg</code></td><td>44 kph (27.3 mph)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-card">
+        <h3>❤️ Age-Calibrated Heart Rate Spectrum &amp; Zone 5/6/7 Redline Formula</h3>
+        <div class="step-list">
+          <div>• <b>Max HR Formula:</b> Computed automatically per rider from their Zwift Age: <code>Max HR = round(208 - 0.7 × Age)</code> (e.g., Age 68 → <code>160 bpm</code>).</div>
+          <div>• <b>256-Colour HR Bar:</b> Full-height bar on your row scales smoothly from <code>55 bpm</code> (Deep Blue) through Cyan, Emerald, Gold, and Orange to <code>Max HR</code> (Dark Crimson Red).</div>
+          <div>• <b>Zone 5/6/7 Redline Timer (<code>RED 0-120s</code>):</b> Triggers and flashes red strictly in <b>Zone 5/6/7</b> (default <code>&gt;= 90%</code> of Age Max HR, e.g., <code>&gt;= 144 bpm</code> at Age 68).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ABOUT v21.7 -->
+    <div id="tab-about" class="tab-pane">
+      <div class="section-card green-card">
+        <h3 style="color:#86efac;">ℹ️ Master Unified RiderFeedHUD v21.7 (Installer-v15)</h3>
+        <div class="step-list">
+          <div><b>• What's New in v21.7 (Option B: Built-In + Detachable 📏 0 → 100 All-Categories Horizontal Ribbon):</b>
+            <br>— <b>Built-In HUD Ribbon + Detachable Ribbon Window (<code>pages/map.html</code>):</b> Shows a single horizontal <code>0 → 100</code> distance track (<code>0–100K</code> or <code>0–100M</code>) right above the Rider Table AND as a detachable window via <span class="pill pill-cyan">📏 0-100 ↗</span>!
+            <br>— <b>All 5 WOW Categories (<code>🟣 E</code>, <code>🟡 D</code>, <code>🔵 C</code>, <code>🟢 B</code>, <code>🔴 A</code>):</b> Watch Group D's yellow bullseye move left-to-right from <code>0</code> to <code>100</code> while C, B, and A count down in the Start Pen at <code>0</code> and launch onto the ribbon with live distance &amp; time behind, glowing bright neon with a catch-bar when within 5 minutes of catching D!
+          </div>
+          <div><b>• Earlier Highlights:</b>
+            <br>— <b>Live Power Islands 5.01 km Loop + 1.80 km Start Pen Spur (<code>pages/map.html</code>):</b> Click <span class="pill pill-cyan">🗺️ Map ↗</span> on Row 2 (or toggle <code>rider-telemetry-hud-map</code> in Sauce Windows) to watch <b>🟡 Group D (Yellow Dots)</b>, <b>🔵 Cat C (Blue Dots)</b>, and <b>🟢 Cat B (Green Dots)</b> launch from the Start Pen and orbit the Watopia 150 circuit in real time.
+            <br>— <b>Calm "Lap Pass" vs. Glowing "Real Pass":</b> Blue (C) and Green (B) dots remain calm and matte during <code>-2L / -1L</code> unlaps and <code>+1L</code> laps, and <b>ignite with a pulsing neon halo, sonar shockwave rings, a glowing road catch-arc, and a <code>🚨 FENCE OFF!</code> banner ONLY on a genuine Same-Lap Real Pass</b>.
+            <br>— <b>Interactive Time-Warp Simulator (<code>1x / 15x / 45x</code>):</b> Includes 4 one-click scenario jump buttons (<code>1️⃣ Pen Launch</code>, <code>2️⃣ C Lap Pass (-1L)</code>, <code>3️⃣ 🚨 C Real Pass!</code>, <code>4️⃣ 🚨 B Real Pass!</code>) so you can preview the entire 100-mile race choreography before ride day.
+          </div>
+          <div><b>• v21.3 Clean Uncluttered Radar + Automatic Stagger/Live Handoff:</b>
+            <br>— <b>Automatic Stagger + Live Radar Management:</b> Removed the <code>WOW Stg / Live</code> and <code>⇄ Bhd</code> buttons from the live <code>🚂 C&amp;B</code> radar bar and tucked them safely inside <code>⚙️ Settings → 📡 Chaser Radar Mode</code> so they can never be clicked by accident mid-ride (freeing extra space for the side-by-side <code>C &amp; B</code> countdowns!).
+            <br>— <b>100% Automatic Mode Selection:</b> Clicking <code>👑 100K</code> or <code>💯 100M/150</code> automatically enables <b>WOW Stagger + Live Handoff</b>, while <code>🏁 Race</code> and <code>🌿 40K</code> automatically switch to <b>Live Nearby Only</b>.
+          </div>
+          <div><b>• v21.2 Zero-Click Start Pen Roll-Out:</b>
+            <br>— <b>Automatic <code>0.05 mi</code> (<code>80m</code>) Ride-Average W/kg Reset:</b> Detects your pen roll-out automatically, ignores stationary pen warm-up spinning, wipes any Demo preview stats on Live connect, and flashes <span class="pill pill-green">Auto✓</span> on the <code>Rst</code> button as you pass <code>0.05 mi</code>.
+            <br>— <b>True Event Pen Zeroing:</b> Ignores pre-event Free-Ride warm-up miles while waiting in an official Zwift Event start pen so your distance and multi-lap <code>SAME LP</code> ruler match Zwift's official event banner with zero manual clicks.
+          </div>
+          <div><b>• v21.1 Fence-Controlled Group Lock &amp; Detachable Help:</b>
+            <br>— Removed the <code>&gt;= 3</code> rider cluster wait so <code>catGroupMemory</code> and <code>REAL PASS</code> lock onto the very first Cat C / B / A rider or Yellow Beacon.
+            <br>— Added this detachable <code>pages/help.html</code> window (via <code>❓ Help ↗</code> and Sauce Windows menu <code>rider-telemetry-hud-help</code>).
+          </div>
+          <div><b>• Mod Location:</b> <code>Documents\SauceMods\RiderFeedHUD</code></div>
+          <div><b>• Master GitHub Repo:</b> <code>https://github.com/headmard-dev/RiderFeedHUD.git</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        tabBtns.forEach(b => b.classList.toggle('active', b === btn));
+        tabPanes.forEach(p => p.classList.toggle('active', p.id === target));
+      });
+    });
+
+    let fontPx = Number(localStorage.getItem('zwift_hud_help_font_px') || '13.5');
+    function applyHelpFont(px) {
+      fontPx = Math.max(11, Math.min(20, Math.round(px * 2) / 2));
+      document.documentElement.style.setProperty('--help-font-px', fontPx + 'px');
+      localStorage.setItem('zwift_hud_help_font_px', String(fontPx));
+    }
+    applyHelpFont(fontPx);
+    document.getElementById('zoomOutBtn').addEventListener('click', () => applyHelpFont(fontPx - 1));
+    document.getElementById('zoomInBtn').addEventListener('click', () => applyHelpFont(fontPx + 1));
+
+    const diagBox = document.getElementById('diagramZoomBox');
+    if (diagBox) {
+      diagBox.addEventListener('click', () => diagBox.classList.toggle('zoomed'));
+    }
+  </script>
+</body>
+</html>
